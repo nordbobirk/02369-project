@@ -23,12 +23,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <html lang="en">
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <header className="p-5 text-center border-2 border-black rounded-lg mx-4 my-4">
+          <p>Some temporary header with(out) some pretty background image...</p>
+      </header>
+
+      <main className="min-h-[60vh] p-5">
+          {children}
+      </main>
+
+      <footer className="p-5 border-2 border-black rounded-lg mx-4 my-4">
+          <div className="flex gap-10 mb-5 items-end">
+              <div className="p-8 border-2 border-black rounded-lg">
+                  <p>adress</p>
+                  <p>contact</p>
+                  <p>info</p>
+              </div>
+              <div className="p-5 border-2 border-black rounded-lg flex-1 text-center">
+                  <p>SoMe links - terms and conditions - privacy policy</p>
+              </div>
+          </div>
+          {/*<p className="text-center">Footer</p>*/}
+      </footer>
       </body>
-    </html>
+      </html>
   );
 }
