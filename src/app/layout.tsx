@@ -49,6 +49,7 @@ export default function RootLayout({
                   >
                       <p>Istedgade 101, 1 sal.<br/>Copenhagen<br/>1650, Vesterbro</p>
                   </a>
+                  <br/>
                   <a href="mailto:Istedgade101@gmail.com" className="hover:underline">
                       <p>Istedgade101@gmail.com</p>
                   </a>
