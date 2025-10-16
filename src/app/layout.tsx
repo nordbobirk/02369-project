@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from "next/link";
+import Image from "next/image";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,8 +27,11 @@ export default function RootLayout({
   return (
       <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-      <header className="p-5 text-center border-2 border-black rounded-lg mx-4 my-4">
-          <p>Some temporary header with(out) some pretty background image...</p>
+      <header className="p-5 border-2 border-black rounded-lg mx-4 my-4 flex items-center gap-4">
+          <Link href="/" className="flex-shrink-0">
+              <Image src="/icons/home-icon.svg" alt="Home" width={24} height={24} />
+          </Link>
+          <p className="flex-1 text-center">Some temporary header with(out) some pretty background image...</p>
       </header>
 
       <main className="min-h-[60vh] p-5">
@@ -41,11 +46,11 @@ export default function RootLayout({
               </div>
               <div className="p-5 border-2 border-black rounded-lg flex-1 flex items-center justify-center gap-4">
                   <a href="https://instagram.com/bebsisbadekar/" target="_blank" rel="noopener noreferrer">
-                      <img src="/icons/instagram.svg" alt="Instagram" className="w-6 h-6" />
+                      <Image src="/icons/instagram.svg" alt="Instagram" width={24} height={24} />
                   </a>
-                  <a href="/terms">Terms and Conditions</a>
+                  <Link href="/terms">Terms and Conditions</Link>
                   <span>-</span>
-                  <a href="/privacy">Privacy Policy</a>
+                  <Link href="/privacy">Privacy Policy</Link>
               </div>
           </div>
       </footer>
