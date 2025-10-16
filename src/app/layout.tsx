@@ -36,15 +36,18 @@ export default function RootLayout({
       <footer className="p-5 border-2 border-black rounded-lg mx-4 my-4">
           <div className="flex gap-10 mb-5 items-end">
               <div className="p-8 border-2 border-black rounded-lg">
-                  <p>adress</p>
-                  <p>contact</p>
-                  <p>info</p>
+                  <p>Istedgade 101, 1 sal.<br/>Copenhagen<br/>1650, Vesterbro</p>
+                  <p>?contact info?</p>
               </div>
-              <div className="p-5 border-2 border-black rounded-lg flex-1 text-center">
-                  <p>SoMe links - terms and conditions - privacy policy</p>
+              <div className="p-5 border-2 border-black rounded-lg flex-1 flex items-center justify-center gap-4">
+                  <a href="https://instagram.com/bebsisbadekar/" target="_blank" rel="noopener noreferrer">
+                      <img src="/icons/instagram.svg" alt="Instagram" className="w-6 h-6" />
+                  </a>
+                  <a href="/terms">Terms and Conditions</a>
+                  <span>-</span>
+                  <a href="/privacy">Privacy Policy</a>
               </div>
           </div>
-          {/*<p className="text-center">Footer</p>*/}
       </footer>
       </body>
       </html>
