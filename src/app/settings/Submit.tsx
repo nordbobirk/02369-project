@@ -11,12 +11,9 @@ export function SubmitButton() {
 
   const onClick = () => {
     setLoading(true);
-    console.log("Before if")
-    if(settingKey !== null && settingValue !== null ){
-      console.log("in if")
+    if(settingKey.length > 0 && settingValue.length > 0){
       setSetting(settingKey, settingValue).then(() => setLoading(false));
     } else {
-      console.log("In else")
       alert("Fields can't be empty!");
       setLoading(false);
     }
