@@ -6,23 +6,27 @@ import { CalendarIcon, HomeIcon, SettingsIcon } from "lucide-react";
 import * as React from "react"
 import Calender31 from "./calendar-31"
 
-
-// TODO add events from database
-const events = [
+// TODO get bookings from database
+const bookings = [
   {
-    title: "Team Sync Meeting",
-    from: "2025-06-12T09:00:00",
-    to: "2025-06-12T10:00:00",
+    title: "Booking 1",
+    content: "Important content",
   },
   {
-    title: "Design Review",
-    from: "2025-06-12T11:30:00",
-    to: "2025-06-12T12:30:00",
+    title: "Booking 2",
+    content: "Important content",
   },
   {
-    title: "Client Presentation",
-    from: "2025-06-12T14:00:00",
-    to: "2025-06-12T15:00:00",
+    title: "Booking 3",
+    content: "Important content",
+  },
+  {
+    title: "Booking 4",
+    content: "Important content",
+  },
+  {
+    title: "Booking 5",
+    content: "Important content",
   },
 ]
 
@@ -33,9 +37,9 @@ export default function Home() {
   )
 
   return (
-    <div>
+    <>
 
-      <div className="m-8">
+      <div className="m-8 flex border shadow-sm rounded-xl p-3">
         <Button variant={"secondary"}> 
           <HomeIcon />Home
         </Button>
@@ -47,12 +51,53 @@ export default function Home() {
         </Button>
       </div>
 
-
-
-      Hello world, I am a dashboard
-      <div className="">
+      <div className="flex justify-center pb-10 border-b shadow-sm">
         <Calender31></Calender31>
       </div>
+      <div className="flex justify-center">
+      <div className="m-10 rounded-xl border shadow-sm min-w-100">
+        <div>
+          <p className="border-b p-6">Pending booking requests</p>
+        </div>
+        <div className="p-4">
+          {bookings.map((booking) => (
+            <div
+            key={booking.title}
+            className="mb-3 bg-muted after:bg-primary/70 relative rounded-md p-2 pl-6 text-sm after:absolute after:inset-y-2 after:left-2 after:w-1 after:rounded-full flex justify-between">
+                          <div>
+                            <div className="font-medium">{booking.title}</div>
+                            <div className="text-muted-foreground text-xs">
+                              {booking.content}
+                            </div>
+                          </div>
+                          <Button>View booking</Button>
+                      </div>
+            ))}
+        </div>
+      </div>
+      
+      <div className="m-10 rounded-xl border shadow-sm min-w-100">
+        <div>
+          <p className="border-b p-6">Todays bookings</p>
+        </div>
+        <div className="p-4">
+          {bookings.map((booking) => (
+            <div
+            key={booking.title}
+            className="mb-3 bg-muted after:bg-primary/70 relative rounded-md p-2 pl-6 text-sm after:absolute after:inset-y-2 after:left-2 after:w-1 after:rounded-full flex justify-between">
+                          <div>
+                            <div className="font-medium">{booking.title}</div>
+                            <div className="text-muted-foreground text-xs">
+                              {booking.content}
+                            </div>
+                          </div>
+                          
+                      </div>
+            ))}
+        </div>
+      </div>
     </div>
+
+    </>
   );
 }

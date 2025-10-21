@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 
+// TODO get events from database
 const events = [
   {
     title: "Team Sync Meeting",
