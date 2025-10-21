@@ -1,9 +1,14 @@
-import Image from "next/image";
+import { initServerClient } from "@/lib/supabase/server";
+import { SubmitButton } from "./Submit";
+import { DeleteAll } from "./DeleteAll";
 
-export default function Home() {
-  return (
-    <div>
-      Hello world, I am the settings page
-    </div>
-  );
+export default async function Page() {
+  const supabase = await initServerClient();
+  const response = await supabase.from("settings").select();
+
+  return <div>
+    <pre>{JSON.stringify(response.data)}</pre>
+    <SubmitButton />
+    <DeleteAll />
+  </div>;
 }
