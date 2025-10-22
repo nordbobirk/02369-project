@@ -19,6 +19,7 @@ import { TypeDetails } from "./TypeDetails";
 import { General } from "./General";
 import { ContactInfo } from "./ContactInfo";
 import { Estimates } from "./Estimates";
+import { inspect } from "util";
 
 // Placeholder functions for price and time estimates
 const estimatePrice = (formData: BookingFormData): number => {
@@ -116,8 +117,12 @@ export default function BookingForm() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("submitting ", inspect(formData));
     setIsLoading(true);
-    // TODO: birk
+    new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
+      setIsLoading(false);
+    });
   };
 
   return (
