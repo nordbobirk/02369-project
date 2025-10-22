@@ -37,11 +37,11 @@ export default function Home() {
             </Button>
 
             <Button asChild variant="secondary" size="lg" className="rounded-full opacity-90 hover:opacity-100">
-              <Link href="/#faq">FAQ</Link>
+              <Link href="/faq">FAQ</Link>
             </Button>
 
             <Button asChild variant="secondary" size="lg" className="rounded-full opacity-90 hover:opacity-100">
-              <Link href="/aftercare">After care</Link>
+              <Link href="/aftercare">Aftercare</Link>
             </Button>
           </div>
         </div>
