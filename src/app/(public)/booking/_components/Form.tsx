@@ -15,6 +15,7 @@ import {
 } from "@/lib/types";
 import { FormTitle } from "./FormTitle";
 import { TypeSelect } from "./TypeSelect";
+import { TypeDetails } from "./TypeDetails";
 
 // Placeholder functions for price and time estimates
 const estimatePrice = (formData: BookingFormData): number => {
@@ -127,170 +128,16 @@ export default function BookingForm() {
               handleInputChange={handleInputChange}
             />
 
-            {/* Type-specific Information */}
-            <div className="bg-black/30 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50">
-              <h2 className="text-2xl font-bold text-white mb-6">
-                2. Detaljer
-              </h2>
-
-              {formData.tattooType === "FLASH" ? (
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-white font-medium mb-2">
-                      Upload et screenshot af det flash, du ønsker at få
-                      tatoveret.
-                    </label>
-                    <div
-                      onClick={() => flashFileInputRef.current?.click()}
-                      className="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center cursor-pointer hover:border-red-500/50 transition-colors"
-                    >
-                      <input
-                        type="file"
-                        ref={flashFileInputRef}
-                        onChange={handleFlashFileChange}
-                        accept="image/*"
-                        className="hidden"
-                      />
-                      {flashImageFile ? (
-                        <div className="space-y-2">
-                          <p className="text-green-400 flex items-center justify-center gap-2">
-                            <Upload className="h-5 w-5" />
-                            {flashImageFile.name}
-                          </p>
-                          <p className="text-slate-400 text-sm">
-                            Click to change image
-                          </p>
-                        </div>
-                      ) : (
-                        <div className="space-y-2">
-                          <Upload className="h-12 w-12 text-slate-500 mx-auto" />
-                          <p className="text-slate-300">
-                            Click to upload flash image
-                          </p>
-                          <p className="text-slate-400 text-sm">
-                            PNG, JPG or WEBP (max. 5MB)
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="flashComments"
-                      className="block text-white font-medium mb-2"
-                    >
-                      Eventuelle kommentarer (valgfri)
-                    </label>
-                    <textarea
-                      id="flashComments"
-                      name="flashComments"
-                      value={formData.flashComments}
-                      onChange={handleInputChange}
-                      rows={3}
-                      className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                      placeholder="Eventuelle små ændringer til flashet..."
-                    ></textarea>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  <div>
-                    <label
-                      htmlFor="customDescription"
-                      className="block text-white font-medium mb-2"
-                    >
-                      Beskriv din ide*
-                    </label>
-                    <textarea
-                      id="customDescription"
-                      name="customDescription"
-                      value={formData.customDescription || ""}
-                      onChange={handleInputChange}
-                      rows={4}
-                      required
-                      className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                      placeholder="Beskriv venligst din ide i detaljer..."
-                    ></textarea>
-                  </div>
-
-                  <div>
-                    <label className="block text-white font-medium mb-2">
-                      Referencebilleder (valgfri)
-                    </label>
-                    <div
-                      onClick={() => customFileInputRef.current?.click()}
-                      className="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center cursor-pointer hover:border-red-500/50 transition-colors"
-                    >
-                      <input
-                        type="file"
-                        ref={customFileInputRef}
-                        onChange={handleCustomFilesChange}
-                        accept="image/*"
-                        multiple
-                        className="hidden"
-                      />
-                      {customReferenceFiles.length > 0 ? (
-                        <div className="space-y-2">
-                          <p className="text-green-400 flex items-center justify-center gap-2">
-                            <Upload className="h-5 w-5" />
-                            {customReferenceFiles.length}{" "}
-                            {customReferenceFiles.length === 1
-                              ? "file"
-                              : "files"}{" "}
-                            selected
-                          </p>
-                          <p className="text-slate-300 text-sm">
-                            {customReferenceFiles
-                              .map((file) => file.name)
-                              .join(", ")}
-                          </p>
-                          <p className="text-slate-400 text-sm">
-                            Click to add more images
-                          </p>
-                        </div>
-                      ) : (
-                        <div className="space-y-2">
-                          <Upload className="h-12 w-12 text-slate-500 mx-auto" />
-                          <p className="text-slate-300">
-                            Click to upload reference images
-                          </p>
-                          <p className="text-slate-400 text-sm">
-                            PNG, JPG or WEBP (max. 5MB each)
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="detailLevel"
-                      className="block text-white font-medium mb-2"
-                    >
-                      Detaljegrad*
-                    </label>
-                    <select
-                      id="detailLevel"
-                      name="detailLevel"
-                      value={formData.detailLevel || ""}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                    >
-                      <option value="" disabled>
-                        Vælg detaljegrad
-                      </option>
-                      <option value="LOW">Meget simpel</option>
-                      <option value="MEDIUM">
-                        Simpel outline med noget skygge/tekstur
-                      </option>
-                      <option value="HIGH">Meget detaljeret</option>
-                    </select>
-                  </div>
-                </div>
-              )}
-            </div>
+            <TypeDetails
+              formData={formData}
+              customFileInputRef={customFileInputRef}
+              flashFileInputRef={flashFileInputRef}
+              customReferenceFiles={customReferenceFiles}
+              flashImageFile={flashImageFile}
+              handleCustomFilesChange={handleCustomFilesChange}
+              handleFlashFileChange={handleFlashFileChange}
+              handleInputChange={handleInputChange}
+            />
 
             {/* General Information */}
             <div className="bg-black/30 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50">
