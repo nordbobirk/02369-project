@@ -23,7 +23,7 @@ export function ContactInfo({
           <input
             type="text"
             id="name"
-            name="name"
+            name="customerName"
             value={formData.customerName}
             onChange={handleInputChange}
             required
@@ -39,7 +39,7 @@ export function ContactInfo({
           <input
             type="email"
             id="email"
-            name="email"
+            name="customerEmail"
             value={formData.customerEmail}
             onChange={handleInputChange}
             required
@@ -56,7 +56,7 @@ export function ContactInfo({
         <input
           type="tel"
           id="phone"
-          name="phone"
+          name="customerPhone"
           value={formData.customerPhone}
           onChange={handleInputChange}
           required
