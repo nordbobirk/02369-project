@@ -18,6 +18,7 @@ import { TypeSelect } from "./TypeSelect";
 import { TypeDetails } from "./TypeDetails";
 import { General } from "./General";
 import { ContactInfo } from "./ContactInfo";
+import { Estimates } from "./Estimates";
 
 // Placeholder functions for price and time estimates
 const estimatePrice = (formData: BookingFormData): number => {
@@ -151,45 +152,10 @@ export default function BookingForm() {
               handleInputChange={handleInputChange}
             />
 
-            {/* Estimates */}
-            <div className="bg-black/30 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50">
-              <h2 className="text-2xl font-bold text-white mb-6">Estimater</h2>
-              <p className="text-slate-400 mb-6">
-                Nedenstående er grove estimater baseret på dine valg. Den
-                endelige tid vil du modtage på mail, når din tid bliver
-                bekræftet, og den endelige pris bekræftes på dagen.
-              </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-slate-800/50 rounded-lg p-6 flex items-center gap-4">
-                  <DollarSign className="h-10 w-10 text-red-500" />
-                  <div>
-                    <h3 className="text-white font-medium">Estimeret pris</h3>
-                    <p className="text-2xl font-bold text-red-400">
-                      DKK {priceEstimate}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="bg-slate-800/50 rounded-lg p-6 flex items-center gap-4">
-                  <Clock className="h-10 w-10 text-red-500" />
-                  <div>
-                    <h3 className="text-white font-medium">Estimeret tid</h3>
-                    <p className="text-2xl font-bold text-red-400">
-                      {timeEstimate < 60
-                        ? `${timeEstimate} minutter`
-                        : `${Math.floor(timeEstimate / 60)} timer${
-                            Math.floor(timeEstimate / 60) !== 1 ? "s" : ""
-                          }${
-                            timeEstimate % 60 > 0
-                              ? ` ${timeEstimate % 60} min`
-                              : ""
-                          }`}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Estimates
+              timeEstimate={timeEstimate}
+              priceEstimate={priceEstimate}
+            />
 
             {/* Submit Button */}
             <div className="flex flex-col items-center">
