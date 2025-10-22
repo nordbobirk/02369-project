@@ -12,27 +12,31 @@ export default function PublicLayout({
     return (
         <div>
             <header>
-                <div className="m-8 flex border shadow-sm rounded-xl p-3 justify-between">
-                    <div className="flex flex-row space-x-3 justify-">
-                        <Button variant={"secondary"} asChild>
-                            <Link href={"/dashboard"}>
-                                <HomeIcon /> Home
+                <div className="m-2 flex flex-wrap items-center justify-between gap-2 rounded-xl border p-3 shadow-sm">
+                    <div className="flex flex-wrap gap-2">
+                        <Button variant="secondary" asChild>
+                            <Link href="/dashboard" className="flex items-center gap-1">
+                                <HomeIcon className="h-4 w-4" />
+                                <span className="hidden sm:inline">Home</span>
                             </Link>
                         </Button>
-                        <Button variant={"secondary"} asChild>
-                            <Link href={"/calendar"}>
-                                <CalendarIcon /> Calendar
+
+                        <Button variant="secondary" asChild>
+                            <Link href="/calendar" className="flex items-center gap-1">
+                                <CalendarIcon className="h-4 w-4" />
+                                <span className="hidden sm:inline">Calendar</span>
                             </Link>
                         </Button>
-                        <Button variant={"secondary"} asChild>
-                            <Link href="/dashboard/settings">
-                                <SettingsIcon />
-                                Settings
+
+                        <Button variant="secondary" asChild>
+                            <Link href="/dashboard/settings" className="flex items-center gap-1">
+                                <SettingsIcon className="h-4 w-4" />
+                                <span className="hidden sm:inline">Settings</span>
                             </Link>
                         </Button>
                     </div>
-                    <div className="flex flex-col">
-                        <DropdownMenuDemo></DropdownMenuDemo>
+                    <div className="ml-auto">
+                        <DropdownMenuDemo />
                     </div>
                 </div>
             </header>
