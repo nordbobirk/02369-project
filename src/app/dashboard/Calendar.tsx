@@ -28,9 +28,11 @@ const events = [
 ]
 
 export default function Calendar31() {
-  const [date, setDate] = React.useState<Date | undefined>(
-    new Date(2025, 5, 12)
-  )
+  const [date, setDate] = React.useState<Date | undefined>()
+
+  React.useEffect(() => {
+    setDate(new Date(2025, 5, 12))
+  }, [])
 
   return (
     <Card className="w-fit py-4">
@@ -46,21 +48,13 @@ export default function Calendar31() {
       <CardFooter className="flex flex-col items-start gap-3 border-l px-4 !pt-4">
         <div className="flex w-full items-center justify-between px-1">
           <div className="text-sm font-medium">
-            {date?.toLocaleDateString("en-US", {
+            {date?.toLocaleDateString("en-UK", {
               day: "numeric",
               month: "long",
               year: "numeric",
             })}
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="size-6"
-            title="Add Event"
-          >
-            <PlusIcon />
-            <span className="sr-only">Add Event</span>
-          </Button>
+          
         </div>
         <div className="flex w-full flex-col gap-2">
           {events.map((event) => (
