@@ -50,7 +50,7 @@ export default function Home() {
         <div className="absolute inset-0 flex items-center justify-end">
           <div className="relative h-full w-[85%] md:w-[90%]">
             <Image
-              src="/Andrea.png"
+              src="https://eophsfoggdyfhmcwtnhf.supabase.co/storage/v1/object/public/assets/andrea.jpg"
               alt="Andrea Carlberg"
               fill
               priority
