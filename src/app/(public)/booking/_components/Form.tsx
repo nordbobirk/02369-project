@@ -17,6 +17,7 @@ import { FormTitle } from "./FormTitle";
 import { TypeSelect } from "./TypeSelect";
 import { TypeDetails } from "./TypeDetails";
 import { General } from "./General";
+import { ContactInfo } from "./ContactInfo";
 
 // Placeholder functions for price and time estimates
 const estimatePrice = (formData: BookingFormData): number => {
@@ -145,71 +146,10 @@ export default function BookingForm() {
               handleInputChange={handleInputChange}
             />
 
-            {/* Contact Information */}
-            <div className="bg-black/30 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50">
-              <h2 className="text-2xl font-bold text-white mb-6">
-                4. Dine kontaktoplysninger
-              </h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-white font-medium mb-2"
-                  >
-                    Dit fulde navn*
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.customerName}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                    placeholder="Your full name"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-white font-medium mb-2"
-                  >
-                    Din emailadresse*
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.customerEmail}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                    placeholder="your@email.com"
-                  />
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <label
-                  htmlFor="phone"
-                  className="block text-white font-medium mb-2"
-                >
-                  Telefonnummer*
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={formData.customerPhone}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  placeholder="Your phone number"
-                />
-              </div>
-            </div>
+            <ContactInfo
+              formData={formData}
+              handleInputChange={handleInputChange}
+            />
 
             {/* Estimates */}
             <div className="bg-black/30 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50">
