@@ -16,6 +16,7 @@ import {
 import { FormTitle } from "./FormTitle";
 import { TypeSelect } from "./TypeSelect";
 import { TypeDetails } from "./TypeDetails";
+import { General } from "./General";
 
 // Placeholder functions for price and time estimates
 const estimatePrice = (formData: BookingFormData): number => {
@@ -139,177 +140,10 @@ export default function BookingForm() {
               handleInputChange={handleInputChange}
             />
 
-            {/* General Information */}
-            <div className="bg-black/30 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50">
-              <h2 className="text-2xl font-bold text-white mb-6">
-                3. Generel information
-              </h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label
-                    htmlFor="placement"
-                    className="block text-white font-medium mb-2"
-                  >
-                    Placering på kroppen*
-                  </label>
-                  <select
-                    id="placement"
-                    name="placement"
-                    value={formData.placement}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  >
-                    <option value="ARM_UPPER">Overarm</option>
-                    <option value="ARM_LOWER">Underarm/forarm</option>
-                    <option value="LEG_UPPER">Lår</option>
-                    <option value="LEG_LOWER">Læg/skindeben</option>
-                    <option value="CHEST">Bryst</option>
-                    <option value="BACK">Ryg</option>
-                    <option value="SHOULDER">Skulder</option>
-                    <option value="NECK">Hals</option>
-                    <option value="HAND">Hånd/fingre</option>
-                    <option value="FOOT">Fod/ankel</option>
-                    <option value="RIBS">Ribben/side</option>
-                    <option value="STOMACH">Mave</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="size"
-                    className="block text-white font-medium mb-2"
-                  >
-                    Størrelse*
-                  </label>
-                  <select
-                    id="size"
-                    name="size"
-                    value={formData.size}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  >
-                    <option value="SMALL">Lille (op til 5x5 cm)</option>
-                    <option value="MEDIUM">
-                      Medium (mellem 5x5 og 10x10 cm)
-                    </option>
-                    <option value="LARGE">Stor (større end 10x10 cm)</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <label className="block text-white font-medium mb-2">
-                  Farver*
-                </label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <label
-                    className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all ${
-                      formData.colorOption === "BLACK"
-                        ? "bg-red-900/30 border-2 border-red-500/50"
-                        : "bg-slate-800/50 border border-slate-700 hover:bg-slate-700/50"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="colorOption"
-                      value="BLACK"
-                      checked={formData.colorOption === "BLACK"}
-                      onChange={handleInputChange}
-                      className="sr-only"
-                    />
-                    <div
-                      className={`w-5 h-5 rounded-full flex items-center justify-center border ${
-                        formData.colorOption === "BLACK"
-                          ? "border-red-500"
-                          : "border-slate-500"
-                      }`}
-                    >
-                      {formData.colorOption === "BLACK" && (
-                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                      )}
-                    </div>
-                    <div>
-                      <h3 className="text-white font-medium">Sort</h3>
-                      <p className="text-slate-400 text-sm">
-                        Klassisk tatovering med sort blæk
-                      </p>
-                    </div>
-                  </label>
-
-                  <label
-                    className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all ${
-                      formData.colorOption === "COLORED"
-                        ? "bg-red-900/30 border-2 border-red-500/50"
-                        : "bg-slate-800/50 border border-slate-700 hover:bg-slate-700/50"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="colorOption"
-                      value="COLORED"
-                      checked={formData.colorOption === "COLORED"}
-                      onChange={handleInputChange}
-                      className="sr-only"
-                    />
-                    <div
-                      className={`w-5 h-5 rounded-full flex items-center justify-center border ${
-                        formData.colorOption === "COLORED"
-                          ? "border-red-500"
-                          : "border-slate-500"
-                      }`}
-                    >
-                      {formData.colorOption === "COLORED" && (
-                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                      )}
-                    </div>
-                    <div>
-                      <h3 className="text-white font-medium">Farver</h3>
-                      <p className="text-slate-400 text-sm">Med farvet blæk</p>
-                    </div>
-                  </label>
-                </div>
-
-                {formData.colorOption === "COLORED" && (
-                  <div className="mt-4">
-                    <label
-                      htmlFor="colorDescription"
-                      className="block text-white font-medium mb-2"
-                    >
-                      Farve beskrivelse*
-                    </label>
-                    <textarea
-                      id="colorDescription"
-                      name="colorDescription"
-                      value={formData.colorDescription || ""}
-                      onChange={handleInputChange}
-                      rows={2}
-                      required
-                      className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                      placeholder="Beskriv de farver, du gerne vil have, og hvor de skal være..."
-                    ></textarea>
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-6">
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    name="isFirstTattoo"
-                    checked={formData.isFirstTattoo}
-                    onChange={handleInputChange}
-                    className="w-5 h-5 rounded border-slate-500 text-red-600 focus:ring-red-500"
-                  />
-                  <span className="text-white">
-                    Det er min første tatovering. (bruges kun til at tage ekstra
-                    hensyn til dig)
-                  </span>
-                </label>
-              </div>
-            </div>
+            <General
+              formData={formData}
+              handleInputChange={handleInputChange}
+            />
 
             {/* Contact Information */}
             <div className="bg-black/30 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50">
