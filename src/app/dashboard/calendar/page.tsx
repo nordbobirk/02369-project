@@ -36,6 +36,27 @@ export default async function Page() {
           title: 'event B',
           color: 'blue',
         },
+        {
+          id: '3',
+          start: new Date('2025-10-26T15:30:00Z'),
+          end: new Date('2025-10-26T20:30:00Z'),
+          title: 'Tester 1',
+          color: 'blue',
+        },
+        {
+          id: '4',
+          start: new Date('2025-11-01T10:00:00Z'),
+          end: new Date('2025-11-01T18:30:00Z'),
+          title: 'event B',
+          color: 'blue',
+        },
+        {
+          id: '5',
+          start: new Date('2025-11-01T15:30:00Z'),
+          end: new Date('2025-11-01T20:30:00Z'),
+          title: 'Tester 1',
+          color: 'green',
+        },
       ]}
     >
       <div className="h-dvh py-3 sm:py-6 flex flex-col">
