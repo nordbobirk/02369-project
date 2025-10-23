@@ -38,7 +38,8 @@ export async function updateFAQ(id: number, question: string, answer: string) {
         .eq('id', id)
 
     if (error) throw error
-    revalidatePath('/faq')
+    revalidatePath('/dashboard/settings/edit_faq')
+
 }
 
 /**
@@ -64,7 +65,8 @@ export async function createFAQ(question: string, answer: string, index: number)
         .single()
 
     if (error) throw error
-    revalidatePath('/faq')
+    revalidatePath('/dashboard/settings/edit_faq')
+
     return data
 }
 
@@ -84,7 +86,8 @@ export async function deleteFAQ(id: number) {
         .eq('id', id)
 
     if (error) throw error
-    revalidatePath('/faq')
+    revalidatePath('/dashboard/settings/edit_faq')
+
 }
 
 /**
@@ -152,5 +155,6 @@ export async function reorderFAQ(id: number, newIndex: number) {
     const results = await Promise.all(updates)
     console.log('Updated affected indexes:', results)
 
-    revalidatePath('/faq')
+    revalidatePath('/dashboard/settings/edit_faq')
+
 }

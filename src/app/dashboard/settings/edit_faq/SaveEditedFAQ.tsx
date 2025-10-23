@@ -2,7 +2,6 @@
 
 import { Button } from '@/components/ui/button'
 import { updateFAQ } from './actions'
-import { useRouter } from 'next/navigation'
 
 /**
  * SaveEditedFAQ Component
@@ -31,14 +30,13 @@ export default function SaveEditedFAQ({
     onCancelAction: () => void
     onSavedAction: (updated: { id: number, question: string, answer: string }) => void
 }) {
-    const router = useRouter()
 
     return (
         <form action={async () => {
             await updateFAQ(id, question, answer)
             onSavedAction({ id, question, answer })
             onCancelAction()
-            router.refresh()
+            // router.refresh()
         }} className="inline mr-2">
             <Button type="submit" variant="default">
                 Save

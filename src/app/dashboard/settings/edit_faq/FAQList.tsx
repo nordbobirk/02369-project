@@ -10,6 +10,7 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, v
 import { CSS } from '@dnd-kit/utilities'
 import { reorderFAQ } from './actions'
 import type { DragEndEvent } from '@dnd-kit/core'
+import Image from "next/image";
 
 /**
  * FAQ data structure
@@ -74,16 +75,9 @@ function SortableFAQItem({ faq, isEditing, onEdit, editQuestion, editAnswer, onQ
             ) : (
                 <>
                     <div className="flex items-start gap-3">
-                        <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing mt-1 text-gray-400 hover:text-gray-600">
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                                <circle cx="7" cy="5" r="1.5"/>
-                                <circle cx="13" cy="5" r="1.5"/>
-                                <circle cx="7" cy="10" r="1.5"/>
-                                <circle cx="13" cy="10" r="1.5"/>
-                                <circle cx="7" cy="15" r="1.5"/>
-                                <circle cx="13" cy="15" r="1.5"/>
-                            </svg>
-                        </button>
+                        <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing mt-1 text-gray-400 hover:text-gray-600">
+                            <Image src="/icons/drag_indicator.svg" alt="Drag handle" width={20} height={20} />
+                        </div>
                         <div className="flex-1">
                             <h3 className="font-bold text-lg mb-2">{faq.question}</h3>
                             <p className="text-gray-700 mb-2">{faq.answer}</p>
