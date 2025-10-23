@@ -7,6 +7,7 @@ import { PlusIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { initServerClient } from "@/lib/supabase/server"
 
 // TODO get events from database
 const events = [
@@ -28,9 +29,11 @@ const events = [
 ]
 
 export default function Calendar31() {
-  const [date, setDate] = React.useState<Date | undefined>(
-    new Date(2025, 5, 12)
-  )
+  const [date, setDate] = React.useState<Date | undefined>()
+
+  React.useEffect(() => {
+    setDate(date)
+  }, [])
 
   return (
     <Card className="w-fit py-4">
@@ -52,18 +55,10 @@ export default function Calendar31() {
               year: "numeric",
             })}
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="size-6"
-            title="Add Event"
-          >
-            <PlusIcon />
-            <span className="sr-only">Add Event</span>
-          </Button>
+
         </div>
         <div className="flex w-full flex-col gap-2">
-          {events.map((event) => (
+          {events?.map((event) => (
             <div
               key={event.title}
               className="bg-muted after:bg-primary/70 relative rounded-md p-2 pl-6 text-sm after:absolute after:inset-y-2 after:left-2 after:w-1 after:rounded-full"
