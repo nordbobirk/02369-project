@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import * as React from "react"
 import { ExternalLink, ExternalLinkIcon, LinkIcon } from "lucide-react";
 import { initServerClient } from "@/lib/supabase/server";
-import { ModeToggle } from '@/components/ui/theme-toggle';
+
 import {
   Calendar,
   CalendarCurrentDate,
@@ -79,7 +79,6 @@ export default async function Page() {
                 <ChevronRight size={16} className="sm:w-5 sm:h-5" />
                 <span className="sr-only">Next</span>
               </CalendarNextTrigger>
-              <ModeToggle />
             </div>
           </div>
         </div>
