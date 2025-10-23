@@ -21,7 +21,7 @@ export const anton = Anton({
 });
 
 export const spartan = League_Spartan({
-  weight: ['800','900'],           // prøv 900 for maksimal tyngde
+  weight: ['800','900'],
   subsets: ['latin'],
   variable: '--font-spartan',
 });
