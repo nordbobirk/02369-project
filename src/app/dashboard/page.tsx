@@ -18,7 +18,7 @@ function getTimeUntilBooking(date_and_time: string): string {
   const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
   const minutes = totalMinutes % 60;
 
-  return `${days} Days, ${hours} Hours, ${minutes} Minutes until booking`;
+  return `${days} Dage, ${hours} Timer, ${minutes} Minuter indtil bookingen`;
 }
 
 async function getTodaysBookings() {
