@@ -17,21 +17,21 @@ export default function PublicLayout({
                         <Button variant="secondary" asChild>
                             <Link href="/dashboard" className="flex items-center gap-1">
                                 <HomeIcon className="h-4 w-4" />
-                                <span className="hidden sm:inline">Home</span>
+                                <span className="hidden sm:inline">Hjem</span>
                             </Link>
                         </Button>
 
                         <Button variant="secondary" asChild>
                             <Link href="/calendar" className="flex items-center gap-1">
                                 <CalendarIcon className="h-4 w-4" />
-                                <span className="hidden sm:inline">Calendar</span>
+                                <span className="hidden sm:inline">Kalender</span>
                             </Link>
                         </Button>
 
                         <Button variant="secondary" asChild>
                             <Link href="/dashboard/settings" className="flex items-center gap-1">
                                 <SettingsIcon className="h-4 w-4" />
-                                <span className="hidden sm:inline">Settings</span>
+                                <span className="hidden sm:inline">Indstillinger</span>
                             </Link>
                         </Button>
                     </div>

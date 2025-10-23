@@ -52,7 +52,7 @@ export default async function Home() {
         <div
           className=" lg:m-4 rounded-xl border shadow-sm w-full lg:w-[45%]">
           <div>
-            <p className="border-b p-6 font-medium">Pending booking requests</p>
+            <p className="border-b p-6 font-medium">Ubesvarede anmodninger</p>
           </div>
           <div className="p-4">
             {bookings?.map((booking) => (
@@ -61,13 +61,13 @@ export default async function Home() {
                 className="mb-3 bg-muted after:bg-primary/70 relative rounded-md p-2 pl-6 text-sm after:absolute after:inset-y-2 after:left-2 after:w-1 after:rounded-full flex justify-between"
               >
                 <div>
-                  <div className="font-medium">Booking for {booking.name}</div>
+                  <div className="font-medium">Booking til {booking.name}</div>
                   <div className="text-muted-foreground text-xs">
                     {getTimeUntilBooking(booking.date_and_time)}
                   </div>
                 </div>
                 <Button>
-                  View
+                  Se
                   <ExternalLinkIcon />
                 </Button>
               </div>
@@ -77,7 +77,7 @@ export default async function Home() {
 
         <div className=" lg:m-4 rounded-xl border shadow-sm w-full lg:w-[45%]  ">
           <div>
-            <p className="border-b p-6 font-medium">Today's bookings</p>
+            <p className="border-b p-6 font-medium">Bookinger i dag</p>
           </div>
           <div className="p-4">
             {(todaysBookings?.length) ? todaysBookings?.map((booking) => (
@@ -85,13 +85,13 @@ export default async function Home() {
                 key={booking.id}
                 className="mb-3 bg-muted after:bg-primary/70 relative rounded-md p-2 pl-6 text-sm after:absolute after:inset-y-2 after:left-2 after:w-1 after:rounded-full flex justify-between">
                 <div>
-                  <div className="font-medium">Booking for {booking.name}</div>
+                  <div className="font-medium">Booking til {booking.name}</div>
                   <div className="text-muted-foreground text-xs">
                     {getTimeUntilBooking(booking.date_and_time)}
                   </div>
                 </div>
               </div>
-            )) : <p>No bookings today</p>
+            )) : <p>Ingen bookinger i dag</p>
             }
 
           </div>
