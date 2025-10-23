@@ -2,8 +2,6 @@
 
 import { Button } from '@/components/ui/button'
 import { createFAQ } from './actions'
-import { useRouter } from 'next/navigation'
-
 
 /**
  * AddFAQ Component
@@ -20,7 +18,6 @@ export default function AddFAQ({ maxIndex, onFAQAddedAction }: {
     maxIndex: number
     onFAQAddedAction: (faq: Awaited<ReturnType<typeof createFAQ>>) => void
 }) {
-    const router = useRouter()
 
     return (
         <form action={async (formData: FormData) => {
@@ -28,7 +25,7 @@ export default function AddFAQ({ maxIndex, onFAQAddedAction }: {
             const answer = formData.get('answer') as string
             const newFAQ = await createFAQ(question, answer, maxIndex + 1)
             onFAQAddedAction(newFAQ)
-            router.refresh()
+            // router.refresh()
         }} className="border p-4 rounded-lg bg-gray-50">
             <h3 className="font-bold mb-2">Add New FAQ</h3>
             <input
