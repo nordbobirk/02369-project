@@ -61,8 +61,23 @@ export function ContactInfo({
           onChange={handleInputChange}
           required
           className="w-full px-4 py-3 border rounded-lg"
-          placeholder="Your phone number"
+          placeholder="Telefonnummer"
         />
+      </div>
+      <div className="mt-6">
+        <label className="flex items-center gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            name="isFirstTattoo"
+            checked={formData.isFirstTattoo}
+            onChange={handleInputChange}
+            className="w-5 h-5 rounded"
+          />
+          <span>
+            Det er min første tatovering. (bruges kun til at tage ekstra hensyn
+            til dig)
+          </span>
+        </label>
       </div>
     </div>
   );
