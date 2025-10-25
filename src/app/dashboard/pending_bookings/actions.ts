@@ -3,10 +3,11 @@
 import { initServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from 'next/cache'
 
-export async function getPendingBookings() {
+export async function getPendingBookingById( params : string ) {
     const supabase = await initServerClient()
 
     const { data, error } = await supabase
+        // TODO: fix such that fields are specified and not everything (*).
         .from('bookings')
         .select(`
             *,
@@ -19,6 +20,7 @@ export async function getPendingBookings() {
             )
         `)
         // .eq('status', 'pending')
+        .eq('id', params)
         .in('status', ['pending', 'edited'])
         .order('created_at', { ascending: false })
 
