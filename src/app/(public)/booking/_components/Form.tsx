@@ -2,9 +2,8 @@
 
 import type React from "react";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Upload, Clock, DollarSign } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import {
   DetailLevel,
@@ -14,12 +13,10 @@ import {
   TattooType,
 } from "@/lib/types";
 import { FormTitle } from "./FormTitle";
-import { TypeSelect } from "./TypeSelect";
-import { TypeDetails } from "./TypeDetails";
-import { General } from "./General";
 import { ContactInfo } from "./ContactInfo";
 import { Estimates } from "./Estimates";
 import { inspect } from "util";
+import { TattooForm } from "./TattooForm";
 
 // Placeholder functions for price and time estimates
 const estimatePrice = (formData: BookingFormData): number => {
@@ -30,54 +27,71 @@ const estimateTime = (formData: BookingFormData): number => {
   return 120;
 };
 
-// Type for the form data
+/**
+ * Form data for the booking form
+ */
 export type BookingFormData = {
-  tattooType: TattooType;
-  flashImage?: File | null;
-  customReferenceImages?: File[] | null;
-  flashComments?: string;
-  customDescription?: string;
-  detailLevel: DetailLevel;
-  placement: Placement;
-  size: Size;
-  colorOption: TattooColor;
-  colorDescription?: string;
+  tattoos: TattooData[];
   isFirstTattoo: boolean;
   customerName: string;
   customerEmail: string;
   customerPhone: string;
 };
 
+/**
+ * Data object representing a single tattoo
+ */
+export type TattooData = {
+  tattooType: TattooType;
+  flashImage?: File | null;
+  customReferenceImages?: File[] | null;
+  flashComments?: string;
+  customDescription?: string;
+  detailLevel?: DetailLevel;
+  placement: Placement;
+  size: Size;
+  colorOption: TattooColor;
+  colorDescription?: string;
+};
+
+/**
+ * The default tattoo in the form, ie. the default values for the forms tattoo section
+ */
+const DEFAULT_TATTOO: TattooData = {
+  colorOption: "BLACK",
+  placement: "ARM_LOWER",
+  size: "MEDIUM",
+  tattooType: "FLASH",
+};
+
 export default function BookingForm() {
   const [formData, setFormData] = useState<BookingFormData>({
-    tattooType: "FLASH",
-    flashImage: null,
-    customReferenceImages: null,
-    detailLevel: "LOW",
-    placement: "ARM_LOWER",
-    size: "SMALL",
-    colorOption: "BLACK",
     isFirstTattoo: false,
+    tattoos: [DEFAULT_TATTOO],
     customerName: "",
     customerEmail: "",
     customerPhone: "",
   });
 
-  const [customReferenceFiles, setCustomReferenceFiles] = useState<File[]>([]);
-  const [flashImageFile, setFlashImageFile] = useState<File | null>(null);
   const [priceEstimate, setPriceEstimate] = useState<number>(0);
   const [timeEstimate, setTimeEstimate] = useState<number>(0);
-  const flashFileInputRef = useRef<HTMLInputElement>(null);
-  const customFileInputRef = useRef<HTMLInputElement>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSubmissionLoading, setIsSubmissionLoading] =
+    useState<boolean>(false);
 
-  // Update estimates when form changes
+  /**
+   * Update the pricing and duration estimates in state based on mutated {@link BookingFormData}
+   * @param data booking form data, see {@link BookingFormData}
+   */
   const updateEstimates = (data: BookingFormData) => {
     setPriceEstimate(estimatePrice(data));
     setTimeEstimate(estimateTime(data));
   };
 
-  const handleInputChange = (
+  /**
+   * Handle input changes to global form values, ie. values not tied to a specific tattoo (e.g. customer info).
+   * @param e change event
+   */
+  const handleGlobalInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
@@ -95,33 +109,45 @@ export default function BookingForm() {
     updateEstimates(newFormData);
   };
 
-  const handleFlashFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFlashImageFile(e.target.files[0]);
-      setFormData({
-        ...formData,
-        flashImage: e.target.files[0],
-      });
-    }
+  /**
+   * Handle input changes to a tattoo based on the change event and the tattoos index.
+   * @param tattooIndex index of the tattoo
+   * @param e change event
+   */
+  const handleTattooInputChange = (
+    tattooIndex: number,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value, type } = e.target;
+    const checked =
+      type === "checkbox" ? (e.target as HTMLInputElement).checked : undefined;
+
+    const newTattooData = {
+      ...formData.tattoos[tattooIndex],
+      [name]: type === "checkbox" ? checked : value,
+    };
+
+    const newFormData = {
+      ...formData,
+    };
+    newFormData.tattoos[tattooIndex] = newTattooData;
+
+    setFormData(newFormData);
+    updateEstimates(newFormData);
   };
 
-  const handleCustomFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const filesArray = Array.from(e.target.files);
-      setCustomReferenceFiles(filesArray);
-      setFormData({
-        ...formData,
-        customReferenceImages: filesArray,
-      });
-    }
-  };
-
+  /**
+   * Handle form submission
+   * @param e form event
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("submitting ", inspect(formData));
-    setIsLoading(true);
+    setIsSubmissionLoading(true);
     new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
-      setIsLoading(false);
+      setIsSubmissionLoading(false);
     });
   };
 
@@ -131,30 +157,38 @@ export default function BookingForm() {
         <div className="max-w-4xl mx-auto">
           <FormTitle />
           <form onSubmit={handleSubmit} className="space-y-8">
-            <TypeSelect
-              formData={formData}
-              handleInputChange={handleInputChange}
-            />
+            {/* map tattoo array */}
+            {formData.tattoos.map((tattoo, index) => (
+              <TattooForm
+                handleTattooInputChange={(e) =>
+                  handleTattooInputChange(index, e)
+                }
+                setTattooData={(tattooData: TattooData) => {
+                  const newFormData = formData;
+                  newFormData.tattoos[index] = tattooData;
+                  setFormData(newFormData);
+                }}
+                tattooData={tattoo}
+                key={index}
+              />
+            ))}
 
-            <TypeDetails
-              formData={formData}
-              customFileInputRef={customFileInputRef}
-              flashFileInputRef={flashFileInputRef}
-              customReferenceFiles={customReferenceFiles}
-              flashImageFile={flashImageFile}
-              handleCustomFilesChange={handleCustomFilesChange}
-              handleFlashFileChange={handleFlashFileChange}
-              handleInputChange={handleInputChange}
-            />
-
-            <General
-              formData={formData}
-              handleInputChange={handleInputChange}
-            />
+            <div className="flex justify-center">
+              <div className="flex flex-col justify-center w-1/2">
+                <Button className="bg-orange-500 lg-rounded hover:bg-orange-600 text-white">
+                  Ønsker du at booke mere end en tatovering til samme tid?
+                </Button>
+                <p className="text-xs text-center">
+                  Du kan tilføje andre tatoveringer til samme booking. Det kan
+                  du eksempelvis gøre, hvis du vil have lavet to små
+                  tatoveringer.
+                </p>
+              </div>
+            </div>
 
             <ContactInfo
               formData={formData}
-              handleInputChange={handleInputChange}
+              handleInputChange={handleGlobalInputChange}
             />
 
             <Estimates
@@ -168,7 +202,7 @@ export default function BookingForm() {
                 type="submit"
                 className="bg-red-600 hover:bg-red-700 text-white px-12 py-6 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
               >
-                {isLoading ? (
+                {isSubmissionLoading ? (
                   <Spinner className="mr-2" />
                 ) : (
                   "Indsend bookinganmodning"

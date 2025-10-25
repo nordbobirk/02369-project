@@ -1,11 +1,11 @@
-import { BookingFormData } from "./Form";
+import { BookingFormData, TattooData } from "./Form";
 
 export function General({
-  formData,
-  handleInputChange,
+  tattooData,
+  handleTattooInputChange,
 }: {
-  formData: BookingFormData;
-  handleInputChange: (
+  tattooData: TattooData;
+  handleTattooInputChange: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
@@ -23,8 +23,8 @@ export function General({
           <select
             id="placement"
             name="placement"
-            value={formData.placement}
-            onChange={handleInputChange}
+            value={tattooData.placement}
+            onChange={handleTattooInputChange}
             required
             className="w-full px-4 py-3 border rounded-lg"
           >
@@ -50,8 +50,8 @@ export function General({
           <select
             id="size"
             name="size"
-            value={formData.size}
-            onChange={handleInputChange}
+            value={tattooData.size}
+            onChange={handleTattooInputChange}
             required
             className="w-full px-4 py-3 border rounded-lg"
           >
@@ -67,7 +67,7 @@ export function General({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <label
             className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all ${
-              formData.colorOption === "BLACK"
+              tattooData.colorOption === "BLACK"
                 ? "border-2 border-blue-500/50"
                 : "border hover:bg-slate-100/50"
             }`}
@@ -76,18 +76,16 @@ export function General({
               type="radio"
               name="colorOption"
               value="BLACK"
-              checked={formData.colorOption === "BLACK"}
-              onChange={handleInputChange}
+              checked={tattooData.colorOption === "BLACK"}
+              onChange={handleTattooInputChange}
               className="sr-only"
             />
             <div
               className={`w-5 h-5 rounded-full flex items-center justify-center border ${
-                formData.colorOption === "BLACK"
-                  ? "border-blue-500"
-                  : ""
+                tattooData.colorOption === "BLACK" ? "border-blue-500" : ""
               }`}
             >
-              {formData.colorOption === "BLACK" && (
+              {tattooData.colorOption === "BLACK" && (
                 <div className="w-3 h-3 rounded-full bg-blue-500"></div>
               )}
             </div>
@@ -99,7 +97,7 @@ export function General({
 
           <label
             className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all ${
-              formData.colorOption === "COLORED"
+              tattooData.colorOption === "COLORED"
                 ? "border-2 border-blue-500/50"
                 : "border hover:bg-slate-100/50"
             }`}
@@ -108,18 +106,16 @@ export function General({
               type="radio"
               name="colorOption"
               value="COLORED"
-              checked={formData.colorOption === "COLORED"}
-              onChange={handleInputChange}
+              checked={tattooData.colorOption === "COLORED"}
+              onChange={handleTattooInputChange}
               className="sr-only"
             />
             <div
               className={`w-5 h-5 rounded-full flex items-center justify-center border ${
-                formData.colorOption === "COLORED"
-                  ? "border-blue-500"
-                  : ""
+                tattooData.colorOption === "COLORED" ? "border-blue-500" : ""
               }`}
             >
-              {formData.colorOption === "COLORED" && (
+              {tattooData.colorOption === "COLORED" && (
                 <div className="w-3 h-3 rounded-full bg-blue-500"></div>
               )}
             </div>
@@ -130,7 +126,7 @@ export function General({
           </label>
         </div>
 
-        {formData.colorOption === "COLORED" && (
+        {tattooData.colorOption === "COLORED" && (
           <div className="mt-4">
             <label
               htmlFor="colorDescription"
@@ -141,8 +137,8 @@ export function General({
             <textarea
               id="colorDescription"
               name="colorDescription"
-              value={formData.colorDescription || ""}
-              onChange={handleInputChange}
+              value={tattooData.colorDescription || ""}
+              onChange={handleTattooInputChange}
               rows={2}
               required
               className="w-full px-4 py-3 border rounded-lg"

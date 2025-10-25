@@ -1,12 +1,12 @@
 import { InstagramTextLink } from "@/components/common/Socials";
-import { BookingFormData } from "./Form";
+import { TattooData } from "../Form";
 
 export function TypeSelect({
-  formData,
-  handleInputChange,
+  tattooData,
+  handleTattooInputChange,
 }: {
-  formData: BookingFormData;
-  handleInputChange: (
+  tattooData: TattooData;
+  handleTattooInputChange: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
@@ -22,7 +22,7 @@ export function TypeSelect({
         {/* flash */}
         <label
           className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all ${
-            formData.tattooType === "FLASH"
+            tattooData.tattooType === "FLASH"
               ? "border-2 border-blue-500/50"
               : "border border-slate-700 hover:bg-slate-100/50"
           }`}
@@ -31,18 +31,16 @@ export function TypeSelect({
             type="radio"
             name="tattooType"
             value="FLASH"
-            checked={formData.tattooType === "FLASH"}
-            onChange={handleInputChange}
+            checked={tattooData.tattooType === "FLASH"}
+            onChange={handleTattooInputChange}
             className="sr-only"
           />
           <div
             className={`w-5 h-5 rounded-full flex items-center justify-center border ${
-              formData.tattooType === "FLASH"
-                ? "border-blue-500"
-                : ""
+              tattooData.tattooType === "FLASH" ? "border-blue-500" : ""
             }`}
           >
-            {formData.tattooType === "FLASH" && (
+            {tattooData.tattooType === "FLASH" && (
               <div className="w-3 h-3 rounded-full bg-blue-500"></div>
             )}
           </div>
@@ -55,7 +53,7 @@ export function TypeSelect({
         {/* custom */}
         <label
           className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all ${
-            formData.tattooType === "CUSTOM"
+            tattooData.tattooType === "CUSTOM"
               ? "border-2 border-blue-500/50 hover:bg-slate-100/50"
               : "border border-slate-700 hover:bg-slate-100/50"
           }`}
@@ -64,18 +62,18 @@ export function TypeSelect({
             type="radio"
             name="tattooType"
             value="CUSTOM"
-            checked={formData.tattooType === "CUSTOM"}
-            onChange={handleInputChange}
+            checked={tattooData.tattooType === "CUSTOM"}
+            onChange={handleTattooInputChange}
             className="sr-only"
           />
           <div
             className={`w-5 h-5 rounded-full flex items-center justify-center border ${
-              formData.tattooType === "CUSTOM"
+              tattooData.tattooType === "CUSTOM"
                 ? "border-blue-500"
                 : "border-slate-500"
             }`}
           >
-            {formData.tattooType === "CUSTOM" && (
+            {tattooData.tattooType === "CUSTOM" && (
               <div className="w-3 h-3 rounded-full bg-blue-500"></div>
             )}
           </div>
@@ -87,7 +85,7 @@ export function TypeSelect({
           </div>
         </label>
       </div>
-      {formData.tattooType === "FLASH" && (
+      {tattooData.tattooType === "FLASH" && (
         <p className="text-sm pt-4">
           Du kan se alle mine flashes på min{" "}
           <InstagramTextLink text={"Instagram"} />. Hvert flash er unikt, og jeg

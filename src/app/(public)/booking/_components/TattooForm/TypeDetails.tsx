@@ -1,24 +1,24 @@
-import { BookingFormData } from "./Form";
+import { BookingFormData, TattooData } from "./Form";
 import { Upload } from "lucide-react";
 
 export function TypeDetails({
-  formData,
+  tattooData,
   flashFileInputRef,
   customFileInputRef,
   handleFlashFileChange,
   handleCustomFilesChange,
   flashImageFile,
   customReferenceFiles,
-  handleInputChange,
+  handleTattooInputChange,
 }: {
-  formData: BookingFormData;
+  tattooData: TattooData;
   flashFileInputRef: React.RefObject<HTMLInputElement | null>;
   customFileInputRef: React.RefObject<HTMLInputElement | null>;
   handleFlashFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleCustomFilesChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   flashImageFile: File | null;
   customReferenceFiles: File[];
-  handleInputChange: (
+  handleTattooInputChange: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
@@ -28,7 +28,7 @@ export function TypeDetails({
     <div className="backdrop-blur-sm rounded-xl p-8 border">
       <h2 className="text-2xl font-bold mb-6">2. Detaljer</h2>
 
-      {formData.tattooType === "FLASH" ? (
+      {tattooData.tattooType === "FLASH" ? (
         <div className="space-y-6">
           <div>
             <label className="block font-medium mb-2">
@@ -70,8 +70,8 @@ export function TypeDetails({
             <textarea
               id="flashComments"
               name="flashComments"
-              value={formData.flashComments}
-              onChange={handleInputChange}
+              value={tattooData.flashComments}
+              onChange={handleTattooInputChange}
               rows={3}
               className="w-full px-4 py-3 border rounded-lg"
               placeholder="Eventuelle små ændringer til flashet..."
@@ -90,8 +90,8 @@ export function TypeDetails({
             <textarea
               id="customDescription"
               name="customDescription"
-              value={formData.customDescription || ""}
-              onChange={handleInputChange}
+              value={tattooData.customDescription || ""}
+              onChange={handleTattooInputChange}
               rows={4}
               required
               className="w-full px-4 py-3 rounded-lg border"
@@ -154,8 +154,8 @@ export function TypeDetails({
             <select
               id="detailLevel"
               name="detailLevel"
-              value={formData.detailLevel || ""}
-              onChange={handleInputChange}
+              value={tattooData.detailLevel || ""}
+              onChange={handleTattooInputChange}
               required
               className="w-full px-4 py-3 border rounded-lg"
             >
