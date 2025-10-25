@@ -1,4 +1,4 @@
-import { BookingFormData, TattooData } from "./Form";
+import { TattooData } from "../Form";
 
 export function General({
   tattooData,
@@ -12,7 +12,7 @@ export function General({
   ) => void;
 }) {
   return (
-    <div className="rounded-xl p-8 border">
+    <div className="rounded-xl px-8">
       <h2 className="text-2xl font-bold mb-6">3. Generel information</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

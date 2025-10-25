@@ -13,7 +13,7 @@ export function TypeSelect({
   ) => void;
 }) {
   return (
-    <div className="backdrop-blur-sm rounded-xl p-8 border">
+    <div className="backdrop-blur-sm rounded-xl px-8">
       <h2 className="text-2xl font-bold mb-6">
         1. Hvilken type tatovering ønsker du?
       </h2>

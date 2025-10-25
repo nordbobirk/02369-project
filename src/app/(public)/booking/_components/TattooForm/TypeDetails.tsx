@@ -1,4 +1,4 @@
-import { BookingFormData, TattooData } from "./Form";
+import { BookingFormData, TattooData } from "../Form";
 import { Upload } from "lucide-react";
 
 export function TypeDetails({
@@ -25,7 +25,7 @@ export function TypeDetails({
   ) => void;
 }) {
   return (
-    <div className="backdrop-blur-sm rounded-xl p-8 border">
+    <div className="backdrop-blur-sm rounded-xl px-8">
       <h2 className="text-2xl font-bold mb-6">2. Detaljer</h2>
 
       {tattooData.tattooType === "FLASH" ? (

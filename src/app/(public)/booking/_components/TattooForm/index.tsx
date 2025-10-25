@@ -3,11 +3,21 @@ import { TattooData } from "../Form";
 import { General } from "./General";
 import { TypeDetails } from "./TypeDetails";
 import { TypeSelect } from "./TypeSelect";
+import { TrashIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+type TattooFormOptions = {
+  title: string;
+  showTitle: boolean;
+  showDelete: boolean;
+};
 
 export function TattooForm({
   tattooData,
   handleTattooInputChange,
   setTattooData,
+  options,
+  deleteTattoo,
 }: {
   tattooData: TattooData;
   handleTattooInputChange: (
@@ -15,7 +25,9 @@ export function TattooForm({
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => void;
-  setTattooData: (tattooData: TattooData) => void
+  setTattooData: (tattooData: TattooData) => void;
+  options: TattooFormOptions;
+  deleteTattoo: () => void;
 }) {
   const [customReferenceFiles, setCustomReferenceFiles] = useState<File[]>([]);
   const [flashImageFile, setFlashImageFile] = useState<File | null>(null);
@@ -44,7 +56,20 @@ export function TattooForm({
   };
 
   return (
-    <div>
+    <div className="flex flex-col gap-4 border rounded-lg py-8 relative">
+      {options.showDelete ? (
+        <Button
+          className="absolute top-0 right-0 m-4 hover:cursor-pointer"
+          variant={"ghost"}
+          onClick={deleteTattoo}
+        >
+          <TrashIcon />
+        </Button>
+      ) : null}
+      <h2 className="text-3xl font-bold text-center">
+        {options.showTitle ? options.title : ""}
+      </h2>
+
       <TypeSelect
         tattooData={tattooData}
         handleTattooInputChange={handleTattooInputChange}
@@ -61,7 +86,10 @@ export function TattooForm({
         handleTattooInputChange={handleTattooInputChange}
       />
 
-      <General tattooData={tattooData} handleTattooInputChange={handleTattooInputChange} />
+      <General
+        tattooData={tattooData}
+        handleTattooInputChange={handleTattooInputChange}
+      />
     </div>
   );
 }

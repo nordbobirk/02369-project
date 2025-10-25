@@ -17,6 +17,7 @@ import { ContactInfo } from "./ContactInfo";
 import { Estimates } from "./Estimates";
 import { inspect } from "util";
 import { TattooForm } from "./TattooForm";
+import { AddTattooControls } from "./AddTattoo";
 
 // Placeholder functions for price and time estimates
 const estimatePrice = (formData: BookingFormData): number => {
@@ -139,6 +140,25 @@ export default function BookingForm() {
   };
 
   /**
+   * Add another tattoo to the booking
+   */
+  const addTattoo = () => {
+    const tattoos = formData.tattoos;
+    tattoos.push(DEFAULT_TATTOO);
+    setFormData({ ...formData, tattoos });
+  };
+
+  /**
+   * Delete a tattoo from the form
+   * @param deleteIndex index of the tattoo to delete
+   */
+  const deleteTattoo = (deleteIndex: number) => {
+    const tattoos = [...formData.tattoos];
+    tattoos.splice(deleteIndex, 1);
+    setFormData({ ...formData, tattoos });
+  };
+
+  /**
    * Handle form submission
    * @param e form event
    */
@@ -170,21 +190,19 @@ export default function BookingForm() {
                 }}
                 tattooData={tattoo}
                 key={index}
+                options={{
+                  title: `Tatovering #${index + 1} (${
+                    tattoo.tattooType.substring(0, 1).toUpperCase() +
+                    tattoo.tattooType.substring(1).toLowerCase()
+                  })`,
+                  showTitle: formData.tattoos.length > 1,
+                  showDelete: formData.tattoos.length > 1,
+                }}
+                deleteTattoo={() => deleteTattoo(index)}
               />
             ))}
 
-            <div className="flex justify-center">
-              <div className="flex flex-col justify-center w-1/2">
-                <Button className="bg-orange-500 lg-rounded hover:bg-orange-600 text-white">
-                  Ønsker du at booke mere end en tatovering til samme tid?
-                </Button>
-                <p className="text-xs text-center">
-                  Du kan tilføje andre tatoveringer til samme booking. Det kan
-                  du eksempelvis gøre, hvis du vil have lavet to små
-                  tatoveringer.
-                </p>
-              </div>
-            </div>
+            <AddTattooControls addTattoo={addTattoo} />
 
             <ContactInfo
               formData={formData}
