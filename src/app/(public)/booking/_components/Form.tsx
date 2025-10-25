@@ -78,6 +78,7 @@ export default function BookingForm() {
   const [timeEstimate, setTimeEstimate] = useState<number>(0);
   const [isSubmissionLoading, setIsSubmissionLoading] =
     useState<boolean>(false);
+  const [selectedTattooIndex, setSelectedTattooIndex] = useState<number>(0);
 
   /**
    * Update the pricing and duration estimates in state based on mutated {@link BookingFormData}
@@ -146,6 +147,14 @@ export default function BookingForm() {
     const tattoos = formData.tattoos;
     tattoos.push(DEFAULT_TATTOO);
     setFormData({ ...formData, tattoos });
+    setSelectedTattooIndex(
+      formData.tattoos.length > 0 ? formData.tattoos.length - 1 : 0
+    );
+    const selectedTattooElement = document.getElementById(
+      `tattoo-${selectedTattooIndex}`
+    );
+    if (selectedTattooElement)
+      selectedTattooElement.scrollIntoView({ behavior: "smooth" });
   };
 
   /**
@@ -156,6 +165,14 @@ export default function BookingForm() {
     const tattoos = [...formData.tattoos];
     tattoos.splice(deleteIndex, 1);
     setFormData({ ...formData, tattoos });
+    setSelectedTattooIndex(
+      selectedTattooIndex > 0 ? selectedTattooIndex - 1 : 0
+    );
+    const selectedTattooElement = document.getElementById(
+      `tattoo-${selectedTattooIndex}`
+    );
+    if (selectedTattooElement)
+      selectedTattooElement.scrollIntoView({ behavior: "smooth" });
   };
 
   /**
@@ -197,8 +214,11 @@ export default function BookingForm() {
                   })`,
                   showTitle: formData.tattoos.length > 1,
                   showDelete: formData.tattoos.length > 1,
+                  hidden: selectedTattooIndex != index,
+                  id: `tattoo-${index}`,
                 }}
                 deleteTattoo={() => deleteTattoo(index)}
+                selectTattoo={() => setSelectedTattooIndex(index)}
               />
             ))}
 

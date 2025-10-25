@@ -7,6 +7,7 @@ export function AddTattooControls({ addTattoo }: { addTattoo: () => void }) {
         <Button
           className="bg-orange-500 lg-rounded hover:bg-orange-600 text-white text-xl hover:cursor-pointer"
           onClick={addTattoo}
+          type="button"
         >
           Tilføj tatovering
         </Button>
