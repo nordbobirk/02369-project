@@ -36,7 +36,6 @@ export default function SaveEditedFAQ({
             await updateFAQ(id, question, answer)
             onSavedAction({ id, question, answer })
             onCancelAction()
-            // router.refresh()
         }} className="inline mr-2">
             <Button type="submit" variant="default">
                 Save
