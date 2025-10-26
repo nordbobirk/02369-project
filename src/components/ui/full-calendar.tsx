@@ -1,6 +1,5 @@
 'use client';
 
-import { initServerClient } from "@/lib/supabase/server";
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { VariantProps, cva } from 'class-variance-authority';
@@ -164,12 +163,12 @@ const Calendar = ({
 export const useCalendar = () => useContext(Context);
 
 const CalendarViewTrigger = ({
-    children,
-    view,
-    ...props
+  children,
+  view,
+  ...props
 }: React.HTMLAttributes<HTMLButtonElement> & {
-    view: View;
-    ref?: React.Ref<HTMLButtonElement>;
+  view: View;
+  ref?: React.Ref<HTMLButtonElement>;
 }) => {
   const { view: currentView, setView, onChangeView } = useCalendar();
 
@@ -291,7 +290,7 @@ const CalendarWeekView = () => {
               className={cn(
                 'h-5 w-5 sm:h-6 sm:w-6 grid place-content-center text-xs sm:text-sm',
                 isToday(date) &&
-                  'bg-primary text-primary-foreground rounded-full'
+                'bg-primary text-primary-foreground rounded-full'
               )}
             >
               {format(date, 'd')}
@@ -449,8 +448,8 @@ const CalendarYearView = () => {
                     className={cn(
                       'aspect-square grid place-content-center size-full tabular-nums',
                       isSameDay(today, _date) &&
-                        getMonth(_date) === i &&
-                        'bg-primary text-primary-foreground rounded-full'
+                      getMonth(_date) === i &&
+                      'bg-primary text-primary-foreground rounded-full'
                     )}
                   >
                     {format(_date, 'd')}
@@ -580,7 +579,7 @@ const CalendarCurrentDate = () => {
   const { date, view } = useCalendar();
 
   return (
-    <time dateTime={date.toUTCString()} className="tabular-nums text-sm sm:text-base"> 
+    <time dateTime={date.toUTCString()} className="tabular-nums text-sm sm:text-base">
       {format(date, view === 'day' ? 'dd MMMM yyyy' : 'MMMM yyyy')}
     </time>
   );

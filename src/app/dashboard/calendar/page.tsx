@@ -1,8 +1,5 @@
-import { Button } from "@/components/ui/button"
 import * as React from "react"
-import { ExternalLink, ExternalLinkIcon, LinkIcon } from "lucide-react";
 import { initServerClient } from "@/lib/supabase/server";
-
 import {
   Calendar,
   CalendarCurrentDate,
@@ -15,9 +12,7 @@ import {
   CalendarWeekView,
   CalendarYearView,
 } from '@/components/ui/full-calendar';
-import { addHours } from 'date-fns';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-
 
 
 async function getAllBookings() {
@@ -31,7 +26,7 @@ async function getAllBookings() {
     const startDate = new Date(booking.date_and_time);
     // Calculate end time based on duration
     const endDate = new Date(startDate.getTime() + booking.duration * 60000);
-    
+
     return {
       id: booking.id.toString(),
       start: startDate,
@@ -39,19 +34,19 @@ async function getAllBookings() {
       title: booking.name,
       // This is janky, but because of how EventVariants 
       // are defined in full-calendar.tsx, this is how it is for now
-      color: booking.status === 'confirmed' ? 'green' as const : 
-         booking.status === 'pending' ? 'orange' as const : 
-         'blue' as const,
+      color: booking.status === 'confirmed' ? 'green' as const :
+        booking.status === 'pending' ? 'orange' as const :
+          'blue' as const,
     };
   }) || [];
 }
 
 export default async function Page() {
   const events = await getAllBookings();
+
   return (
-    <Calendar 
-    events={events}>
-   
+    <Calendar
+      events={events}>
       <div className="h-dvh py-3 sm:py-6 flex flex-col">
         <div className="flex flex-col sm:flex-row px-3 sm:px-6 items-stretch sm:items-center gap-2 sm:gap-2 mb-3 sm:mb-6">
           <div className="flex items-center gap-1 sm:gap-2">
@@ -82,7 +77,7 @@ export default async function Page() {
 
           <div className="flex items-center gap-2 justify-between sm:justify-end">
             <CalendarCurrentDate />
-            
+
             <div className="flex items-center gap-1 sm:gap-2">
               <CalendarPrevTrigger>
                 <ChevronLeft size={16} className="sm:w-5 sm:h-5" />
