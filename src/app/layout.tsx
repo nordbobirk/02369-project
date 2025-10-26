@@ -18,19 +18,19 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const anton = Anton({
+const anton = Anton({
   weight: "400",
   subsets: ["latin"],
   variable: "--font-anton",
 });
 
-export const spartan = League_Spartan({
-  weight: ["800", "900"], // prøv 900 for maksimal tyngde
+const spartan = League_Spartan({
+  weight: ["800", "900"],
   subsets: ["latin"],
   variable: "--font-spartan",
 });
 
-export const archivoBlack = Archivo_Black({
+const archivoBlack = Archivo_Black({
   weight: "400",
   subsets: ["latin"],
   variable: "--font-archivo-black",
