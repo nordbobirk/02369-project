@@ -18,47 +18,40 @@ import {
 import { addHours } from 'date-fns';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
+
+
+async function getAllBookings() {
+  const supabase = await initServerClient();
+  const { data: bookings, error } = await supabase.from("bookings").select();
+
+  // Right now, we use the "CalendarEvent" type from full-calendar.tsx
+  // We might need to change this, or how the CalendarEvent is defined
+  // If we need more information when the events are shown in calendar
+  return bookings?.map((booking) => {
+    const startDate = new Date(booking.date_and_time);
+    // Calculate end time based on duration
+    const endDate = new Date(startDate.getTime() + booking.duration * 60000);
+    
+    return {
+      id: booking.id.toString(),
+      start: startDate,
+      end: endDate,
+      title: booking.name,
+      // This is janky, but because of how EventVariants 
+      // are defined in full-calendar.tsx, this is how it is for now
+      color: booking.status === 'confirmed' ? 'green' as const : 
+         booking.status === 'pending' ? 'orange' as const : 
+         'blue' as const,
+    };
+  }) || [];
+}
+
 export default async function Page() {
+  const events = await getAllBookings();
   return (
-    <Calendar
-      events={[
-        {
-          id: '1',
-          start: new Date('2025-10-26T09:30:00Z'),
-          end: new Date('2025-10-26T14:30:00Z'),
-          title: 'event A',
-          color: 'pink',
-        },
-        {
-          id: '2',
-          start: new Date('2025-10-30T10:00:00Z'),
-          end: new Date('2025-10-30T18:30:00Z'),
-          title: 'event B',
-          color: 'blue',
-        },
-        {
-          id: '3',
-          start: new Date('2025-10-26T15:30:00Z'),
-          end: new Date('2025-10-26T20:30:00Z'),
-          title: 'Tester 1',
-          color: 'blue',
-        },
-        {
-          id: '4',
-          start: new Date('2025-11-01T10:00:00Z'),
-          end: new Date('2025-11-01T18:30:00Z'),
-          title: 'event B',
-          color: 'blue',
-        },
-        {
-          id: '5',
-          start: new Date('2025-11-01T15:30:00Z'),
-          end: new Date('2025-11-01T20:30:00Z'),
-          title: 'Tester 1',
-          color: 'green',
-        },
-      ]}
-    >
+    <Calendar 
+    events={events}>
+   
       <div className="h-dvh py-3 sm:py-6 flex flex-col">
         <div className="flex flex-col sm:flex-row px-3 sm:px-6 items-stretch sm:items-center gap-2 sm:gap-2 mb-3 sm:mb-6">
           <div className="flex items-center gap-1 sm:gap-2">

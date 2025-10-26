@@ -1,5 +1,6 @@
 'use client';
 
+import { initServerClient } from "@/lib/supabase/server";
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { VariantProps, cva } from 'class-variance-authority';
@@ -43,7 +44,7 @@ const monthEventVariants = cva('size-2 rounded-full', {
       default: 'bg-primary',
       blue: 'bg-blue-500',
       green: 'bg-green-500',
-      pink: 'bg-pink-500',
+      orange: 'bg-orange-500',
       purple: 'bg-purple-500',
     },
   },
@@ -58,7 +59,7 @@ const dayEventVariants = cva('font-bold border-l-4 rounded p-2 text-xs', {
       default: 'bg-muted/30 text-muted-foreground border-muted',
       blue: 'bg-blue-500/30 text-blue-600 border-blue-500',
       green: 'bg-green-500/30 text-green-600 border-green-500',
-      pink: 'bg-pink-500/30 text-pink-600 border-pink-500',
+      orange: 'bg-orange-500/30 text-orange-600 border-orange-500',
       purple: 'bg-purple-500/30 text-purple-600 border-purple-500',
     },
   },
