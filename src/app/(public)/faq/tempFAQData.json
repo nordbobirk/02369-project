@@ -1,0 +1,52 @@
+[
+  {
+    "category": "Generelle spørgsmål om tatoveringer",
+    "items": [
+      {
+        "question": "Gør det ondt at få en tatovering?",
+        "answer": "Ja, men graden af smerte varierer fra person til person og afhænger af tatoveringens placering. De fleste beskriver det som en brændende eller prikkende fornemmelse."
+      },
+      {
+        "question": "Hvor lang tid tager en tatovering?",
+        "answer": "Det afhænger af designets størrelse og detaljer. En lille tatovering kan tage 30 minutter, mens et stort projekt kan kræve flere sessioner."
+      },
+      {
+        "question": "Skal jeg medbringe noget til min aftale?",
+        "answer": "Bare sørg for at være udhvilet, have spist, og medbring gyldig ID. Undgå alkohol og blodfortyndende medicin før din aftale."
+      },
+      {
+        "question": "Hvad skal jeg gøre for at pleje min tatovering efterfølgende?",
+        "answer": "Du får detaljerede efterbehandlingsinstruktioner efter tatoveringen. Generelt skal du holde området rent, fugtigt og undgå sol, bad og stramtsiddende tøj de første dage."
+      },
+      {
+        "question": "Kan jeg få dækket en gammel tatovering?",
+        "answer": "Ja, det er ofte muligt at lave et cover-up, men det afhænger af farven, størrelsen og placeringen på den gamle tatovering. Book en konsultation, så vi kan vurdere det."
+      }
+    ]
+  },
+  {
+    "category": "Spørgsmål om booking",
+    "items": [
+      {
+        "question": "Hvordan booker jeg en tid?",
+        "answer": "Du kan booke via vores hjemmeside, Instagram, telefon eller ved at komme forbi studiet. Ved større projekter anbefaler vi en personlig konsultation først."
+      },
+      {
+        "question": "Skal jeg betale et depositum?",
+        "answer": "Ja, vi tager normalt et depositum for at reservere din tid. Beløbet trækkes fra den samlede pris på tatoveringen. Depositum refunderes ikke ved aflysning med kort varsel."
+      },
+      {
+        "question": "Kan jeg ændre eller aflyse min tid?",
+        "answer": "Ja, men ændringer skal ske senest 48 timer før din aftale. Ved senere aflysning mister du dit depositum."
+      },
+      {
+        "question": "Hvor gammel skal man være for at få en tatovering?",
+        "answer": "Du skal være fyldt 18 år. Vi tatoverer ikke personer under 18 – heller ikke med forældresamtykke."
+      },
+      {
+        "question": "Kan jeg få et prisoverslag før jeg booker?",
+        "answer": "Ja, send os en besked med dit designidé, størrelse og placering – så giver vi et uforpligtende estimat."
+      }
+    ]
+  }
+]
