@@ -14,7 +14,7 @@ export function DropdownMenuDemo() {
             <DropdownMenuTrigger asChild>
                 <Button variant={"secondary"} asChild>
                     <div>
-                        User
+                        Andrea {/* In the future get user from auth here */}
                         <UserIcon />
                     </div>
                 </Button>
@@ -22,7 +22,7 @@ export function DropdownMenuDemo() {
             <DropdownMenuContent>
                 <Link href={"/"}>
                     <DropdownMenuItem>
-                        Log out
+                        Log ud
                     </DropdownMenuItem>
                 </Link>
             </DropdownMenuContent>
