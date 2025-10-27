@@ -4,7 +4,7 @@ import { DeleteAll } from "./DeleteAll";
 
 export default async function Page() {
   const supabase = await initServerClient();
-  const response = await supabase.from("motd").select();
+  const response = await supabase.from("settings").select();
 
   return <div>
     <pre>{JSON.stringify(response.data)}</pre>
