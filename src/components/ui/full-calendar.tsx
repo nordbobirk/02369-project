@@ -25,7 +25,7 @@ import {
   subWeeks,
   subYears,
 } from 'date-fns';
-import { enUS } from 'date-fns/locale/en-US';
+import { da } from 'date-fns/locale/da';
 import {
   ReactNode,
   createContext,
@@ -107,7 +107,7 @@ type CalendarProps = {
 const Calendar = ({
   children,
   defaultDate = new Date(),
-  locale = enUS,
+  locale = da,
   enableHotkeys = true,
   view: _defaultMode = 'month',
   onEventClick,
