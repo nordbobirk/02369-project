@@ -51,25 +51,25 @@ export default async function Page() {
         <div className="flex flex-col sm:flex-row px-3 sm:px-6 items-stretch sm:items-center gap-2 sm:gap-2 mb-3 sm:mb-6">
           <div className="flex items-center gap-1 sm:gap-2">
             <CalendarViewTrigger className="aria-[current=true]:bg-accent flex-1 sm:flex-none" view="day">
-              Day
+              Dag
             </CalendarViewTrigger>
             <CalendarViewTrigger
               view="week"
               className="aria-[current=true]:bg-accent flex-1 sm:flex-none"
             >
-              Week
+              Uge
             </CalendarViewTrigger>
             <CalendarViewTrigger
               view="month"
               className="aria-[current=true]:bg-accent flex-1 sm:flex-none"
             >
-              Month
+              Måned
             </CalendarViewTrigger>
             <CalendarViewTrigger
               view="year"
               className="aria-[current=true]:bg-accent flex-1 sm:flex-none"
             >
-              Year
+              År
             </CalendarViewTrigger>
           </div>
 
@@ -81,12 +81,12 @@ export default async function Page() {
             <div className="flex items-center gap-1 sm:gap-2">
               <CalendarPrevTrigger>
                 <ChevronLeft size={16} className="sm:w-5 sm:h-5" />
-                <span className="sr-only">Previous</span>
+                <span className="sr-only">Forrige</span>
               </CalendarPrevTrigger>
-              <CalendarTodayTrigger>Today</CalendarTodayTrigger>
+              <CalendarTodayTrigger>I dag</CalendarTodayTrigger>
               <CalendarNextTrigger>
                 <ChevronRight size={16} className="sm:w-5 sm:h-5" />
-                <span className="sr-only">Next</span>
+                <span className="sr-only">Næste</span>
               </CalendarNextTrigger>
             </div>
           </div>

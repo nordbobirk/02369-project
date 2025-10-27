@@ -580,7 +580,7 @@ const CalendarCurrentDate = () => {
 
   return (
     <time dateTime={date.toUTCString()} className="tabular-nums text-sm sm:text-base">
-      {format(date, view === 'day' ? 'dd MMMM yyyy' : 'MMMM yyyy')}
+      {format(date, view === 'day' ? 'dd MMMM yyyy' : 'MMMM yyyy', {locale: da})}
     </time>
   );
 };
