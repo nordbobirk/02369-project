@@ -22,7 +22,7 @@ export default function PublicLayout({
                         </Button>
 
                         <Button variant="secondary" asChild>
-                            <Link href="/calendar" className="flex items-center gap-1">
+                            <Link href="/dashboard/calendar" className="flex items-center gap-1">
                                 <CalendarIcon className="h-4 w-4" />
                                 <span className="hidden sm:inline">Kalender</span>
                             </Link>

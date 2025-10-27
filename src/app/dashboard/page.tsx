@@ -39,7 +39,7 @@ async function getTodaysBookings() {
 
 export default async function Home() {
   const supabase = await initServerClient();
-  const { data: bookings, error } = await supabase.from("bookings").select("*");
+  const { data: bookings, error } = await supabase.from("bookings").select("*").eq("status", "pending");
   
   const todaysBookings = await getTodaysBookings()
   return (
