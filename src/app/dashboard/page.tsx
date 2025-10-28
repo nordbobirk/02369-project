@@ -4,6 +4,7 @@ import * as React from "react"
 import Calendar from "./Calendar";
 import { ExternalLink, ExternalLinkIcon, LinkIcon } from "lucide-react";
 import { initServerClient } from "@/lib/supabase/server";
+import ViewBooking from "@/app/dashboard/ViewBooking";
 
 function getTimeUntilBooking(date_and_time: string): string {
   const now = new Date();
@@ -66,10 +67,11 @@ export default async function Home() {
                     {getTimeUntilBooking(booking.date_and_time)}
                   </div>
                 </div>
-                <Button>
-                  Se
-                  <ExternalLinkIcon />
-                </Button>
+                  <ViewBooking bookingId={booking.id} />
+                {/*<Button>*/}
+                {/*  Se*/}
+                {/*  <ExternalLinkIcon />*/}
+                {/*</Button>*/}
               </div>
             ))}
           </div>
