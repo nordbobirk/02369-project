@@ -4,38 +4,7 @@ import * as React from "react"
 import Calendar from "./Calendar";
 import { ExternalLink, ExternalLinkIcon, LinkIcon } from "lucide-react";
 import { initServerClient } from "@/lib/supabase/server";
-
-function getTimeUntilBooking(date_and_time: string): string {
-  const now = new Date();
-  const bookingDate = new Date(date_and_time);
-
-  const diffMs = bookingDate.getTime() - now.getTime();
-
-  if (diffMs <= 0) return "Booking time has passed";
-
-  const totalMinutes = Math.floor(diffMs / (1000 * 60));
-  const days = Math.floor(totalMinutes / (60 * 24));
-  const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
-  const minutes = totalMinutes % 60;
-
-  return `${days} Dage, ${hours} Timer, ${minutes} Minuter indtil bookingen`;
-}
-
-async function getTodaysBookings() {
-  const supabase = await initServerClient();
-  const today = new Date();
-  const targetDay = today.toISOString().split("T")[0]; 
-  const start = `${targetDay}T00:00:00Z`;
-  const end = `${targetDay}T23:59:59Z`;
-
-  const { data: bookings, error } = await supabase
-    .from("bookings")
-    .select("*")
-    .gte("date_and_time", start)
-    .lte("date_and_time", end);
-
-  return bookings;
-}
+import { getTodaysBookings, getTimeUntilBooking } from "./actions"
 
 export default async function Home() {
   const supabase = await initServerClient();
