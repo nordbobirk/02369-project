@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { acceptPendingBooking } from "@/app/dashboard/pending_bookings/[id]/actions";
 import { useParams } from 'next/navigation'
+import Link from 'next/link';
 
 export default function AcceptButton() {
 
@@ -15,8 +16,10 @@ export default function AcceptButton() {
     }
 
     return (
-        <Button onClick={onClick} variant="secondary">
-            Accept
-        </Button>
+        <Link href="/dashboard/">
+            <Button onClick={onClick} variant="secondary">
+                Accept
+            </Button>
+        </Link>
     )
 }
