@@ -21,6 +21,10 @@ interface TattooInfoProps {
     tattoos: Tattoo[];
 }
 
+// TODO: lav boksen mindre høj (ifht. BookingInfo boxen) og mere bred (så der er plads til billeder).
+//      min idé er at Andreas notes skal kunne stå under tattoo info boksen.
+// TODO: Lav tilføj billeder - lige nu er det kun placeringen og det er lavet forkert..
+
 export function TattooInfo({ tattoos }: TattooInfoProps) {
     const [index, setIndex] = useState(0);
 

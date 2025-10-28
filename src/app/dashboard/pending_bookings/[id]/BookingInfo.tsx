@@ -21,6 +21,9 @@ interface BookingInfoProps {
     booking: Booking;
 }
 
+// TODO: fix så den ikke brækker sig ved Reject...
+// TODO: flyt knapperne ind i BookingInfoCard
+
 export default function BookingInfoCard({ booking }: BookingInfoProps) {
     return (
         <Card className="mb-4 min-w-[700px]">
@@ -75,8 +78,12 @@ export default function BookingInfoCard({ booking }: BookingInfoProps) {
     );
 }
 
-
-
+/**
+ * Formats a phone number string into a more readable format.
+ * Example: "+4512345678" -> "+45 12 34 56 78"
+ *
+ * @param phoneNumber - The phone number string to format.
+ */
 function formatPhoneNumber(phoneNumber: string): string {
     const match = phoneNumber.match(/^(\+\d{2})\s?(\d{2})(\d{2})(\d{2})(\d{2})$/);
     if (!match) return phoneNumber;
