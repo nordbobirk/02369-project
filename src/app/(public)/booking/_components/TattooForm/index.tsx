@@ -37,6 +37,7 @@ export function TattooForm({
   const [flashImageFile, setFlashImageFile] = useState<File | null>(null);
   const flashFileInputRef = useRef<HTMLInputElement>(null);
   const customFileInputRef = useRef<HTMLInputElement>(null);
+  const [saving, setSaving] = useState<boolean>(false);
 
   const handleFlashFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -59,9 +60,26 @@ export function TattooForm({
     }
   };
 
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    setSaving(true);
+    handleTattooInputChange(e);
+    new Promise((resolve) =>
+      setTimeout(resolve, 500 + Math.random() * 500)
+    ).then(() => {
+      setSaving(false);
+    });
+  };
+
   if (options.hidden) {
     return (
-      <div className="border rounded-lg py-8 hover:cursor-pointer" onClick={selectTattoo}>
+      <div
+        className="border rounded-lg py-8 hover:cursor-pointer"
+        onClick={selectTattoo}
+      >
         <h2 className="text-3xl font-bold text-center">{options.title}</h2>
       </div>
     );
@@ -87,7 +105,7 @@ export function TattooForm({
 
       <TypeSelect
         tattooData={tattooData}
-        handleTattooInputChange={handleTattooInputChange}
+        handleTattooInputChange={handleInputChange}
       />
 
       <TypeDetails
@@ -98,13 +116,17 @@ export function TattooForm({
         flashImageFile={flashImageFile}
         handleCustomFilesChange={handleCustomFilesChange}
         handleFlashFileChange={handleFlashFileChange}
-        handleTattooInputChange={handleTattooInputChange}
+        handleTattooInputChange={handleInputChange}
       />
 
       <General
         tattooData={tattooData}
-        handleTattooInputChange={handleTattooInputChange}
+        handleTattooInputChange={handleInputChange}
       />
+
+      <div className="flex justify-center text-slate-500/50 text-m">
+        {saving ? "Gemmer..." : "Informationerne om din tatovering er gemt"}
+      </div>
     </div>
   );
 }
