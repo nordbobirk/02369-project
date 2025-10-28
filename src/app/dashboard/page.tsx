@@ -1,8 +1,6 @@
 
-import { Button } from "@/components/ui/button"
 import * as React from "react"
 import Calendar from "./Calendar";
-import { ExternalLink, ExternalLinkIcon, LinkIcon } from "lucide-react";
 import { initServerClient } from "@/lib/supabase/server";
 import ViewBooking from "@/app/dashboard/ViewBooking";
 
@@ -68,10 +66,6 @@ export default async function Home() {
                   </div>
                 </div>
                   <ViewBooking bookingId={booking.id} />
-                {/*<Button>*/}
-                {/*  Se*/}
-                {/*  <ExternalLinkIcon />*/}
-                {/*</Button>*/}
               </div>
             ))}
           </div>
