@@ -77,7 +77,7 @@ export function TattooForm({
   if (options.hidden) {
     return (
       <div
-        className="border rounded-lg py-8 hover:cursor-pointer"
+        className="border-2 border-black rounded-lg py-8 hover:cursor-pointer"
         onClick={selectTattoo}
       >
         <h2 className="text-3xl font-bold text-center">{options.title}</h2>
@@ -87,7 +87,7 @@ export function TattooForm({
 
   return (
     <div
-      className="flex flex-col gap-4 border rounded-lg py-8 relative"
+      className="flex flex-col gap-4 border-2 border-black rounded-lg py-8 relative"
       id={options.id}
     >
       {options.showDelete ? (

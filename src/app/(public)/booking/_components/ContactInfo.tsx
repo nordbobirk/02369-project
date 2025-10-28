@@ -12,7 +12,7 @@ export function ContactInfo({
   ) => void;
 }) {
   return (
-    <div className="rounded-xl p-8 border">
+    <div className="rounded-xl p-8 border-2 border-black">
       <h2 className="text-2xl font-bold mb-6">4. Dine kontaktoplysninger</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
