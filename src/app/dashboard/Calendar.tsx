@@ -4,19 +4,17 @@ import * as React from "react"
 
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { getBookingsAtDate } from "./actions"
+import { getBookingsAtDate, Booking, Tattoo, Tattoo_images } from "./actions"
 import { da } from "date-fns/locale"
+import {
+  DetailLevel,
+  Placement,
+  Size,
+  TattooColor,
+  TattooType,
+} from "@/lib/types";
 
 
-type Booking = {
-    id: string,
-    name: string,
-    date_and_time: string,
-    placement: string,
-    height: number,
-    width: number,
-    notes: string,
-}
 
 export default function Calendar31() {
   const [date, setDate] = React.useState<Date>(new Date())
@@ -69,7 +67,16 @@ export default function Calendar31() {
             >
               <div className="font-medium">{booking.name}</div>
               <div className="text-muted-foreground text-xs">
-                {booking.notes}
+                {booking.tattoos.length == 0 ? <p>Ingen tatovering med booking</p> :
+                  booking.tattoos.length > 1 ? <p>Flere tatoveringer i booking</p> :
+                    <div>
+                      <div>
+                        Varighed: {booking.tattoos.at(0)?.estimated_duration?.toString()} minutter 
+                      </div>
+                      <div>
+                        Kompleksitet: {booking.tattoos.at(0)?.detail_level?.toString()} 
+                      </div>
+                    </div>}
               </div>
             </div>
           )) : <p>Ingen bookinger i dag</p>

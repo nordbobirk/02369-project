@@ -1,39 +1,121 @@
 "use server";
 
 import { initServerClient } from "@/lib/supabase/server";
+import {
+  DetailLevel,
+  Placement,
+  Size,
+  TattooColor,
+  TattooType,
+} from "@/lib/types";
 
-type Booking = {
-    id: string,
-    name: string,
-    date_and_time: string,
-    placement: string,
-    height: number,
-    width: number,
-    notes: string,
+export type Tattoo_images = {
+  id: string,
+  tattoo_id: string,
+  image_url: string
+}
+
+export type Tattoo = {
+  id: string,
+  notes: string,
+  booking_id: string,
+  estimated_price: number,
+  estimated_duration: number,
+  detail_level: DetailLevel,
+  images: Tattoo_images[],
+}
+
+export type Booking = {
+  id: string,
+  email: string,
+  phone: string,
+  name: string,
+  date_and_time: string,
+  created_at: string,
+  status: string,
+  is_first_tattoo: boolean,
+  internal_notes: string,
+  edited_time_and_date: string,
+  tattoos: Tattoo[],
 }
 
 export async function getBookingsAtDate(date: Date) {
-    const supabase = await initServerClient();
+  const supabase = await initServerClient();
 
-    const targetDay = date.toISOString().split("T")[0];
+  const targetDay = date.toISOString().split("T")[0];
 
-    const startOfDay = new Date(date);
-    startOfDay.setHours(0, 0, 0, 0);
+  const startOfDay = new Date(date);
+  startOfDay.setHours(0, 0, 0, 0);
 
-    const endOfDay = new Date(date);
-    endOfDay.setHours(23, 59, 59, 999);
+  const endOfDay = new Date(date);
+  endOfDay.setHours(23, 59, 59, 999);
 
-    // Convert them to ISO strings (which are UTC)
-    const start = startOfDay.toISOString();
-    const end = endOfDay.toISOString();
+  // Convert them to ISO strings (which are UTC)
+  const start = startOfDay.toISOString();
+  const end = endOfDay.toISOString();
 
-    const { data: bookings, error } = await supabase
-        .from("bookings")
-        .select("id, name, date_and_time")
-        .gte("date_and_time", start)
-        .lte("date_and_time", end);
+  const { data: bookings, error } = await supabase
+    .from("bookings")
+    .select(`
+            *,
+            tattoos (
+                *,
+                booking_images (
+                    id,
+                    image_url
+                )
+            )
+        `)
+    .gte("date_and_time", start)
+    .lte("date_and_time", end);
 
-    return bookings as Booking[];
+  console.log(bookings)
+  return bookings as Booking[];
+}
+
+export async function getTodaysBookings() {
+  const supabase = await initServerClient();
+  const today = new Date();
+  const targetDay = today.toISOString().split("T")[0];
+  const start = `${targetDay}T00:00:00Z`;
+  const end = `${targetDay}T23:59:59Z`;
+
+  const { data: bookings, error } = await supabase
+    .from("bookings")
+    .select(`
+            *,
+            tattoos (
+                *,
+                booking_images (
+                    id,
+                    image_url
+                )
+            )
+        `)
+    .gte("date_and_time", start)
+    .lte("date_and_time", end);
+
+  console.log(bookings)
+  return bookings;
+}
+
+export async function getPendingBookings() {
+  const supabase = await initServerClient();
+  const { data: bookings, error } = await supabase
+    .from("bookings")
+    .select(`
+            *,
+            tattoos (
+                *,
+                booking_images (
+                    id,
+                    image_url
+                )
+            )
+        `)
+    .in("status", ["pending", "edited"])
+    console.log(bookings)
+  return bookings;
 }
 
 export async function getTimeUntilBooking(date_and_time: string): Promise<string> {
@@ -52,21 +134,7 @@ export async function getTimeUntilBooking(date_and_time: string): Promise<string
   return `${days} Dage, ${hours} Timer, ${minutes} Minuter indtil bookingen`;
 }
 
-export async function getTodaysBookings() {
-  const supabase = await initServerClient();
-  const today = new Date();
-  const targetDay = today.toISOString().split("T")[0]; 
-  const start = `${targetDay}T00:00:00Z`;
-  const end = `${targetDay}T23:59:59Z`;
 
-  const { data: bookings, error } = await supabase
-    .from("bookings")
-    .select("*, tattoos(*)")
-    .gte("date_and_time", start)
-    .lte("date_and_time", end);
-
-  return bookings;
-}
 
 
 
