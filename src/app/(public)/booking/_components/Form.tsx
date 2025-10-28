@@ -18,6 +18,7 @@ import { Estimates } from "./Estimates";
 import { inspect } from "util";
 import { TattooForm } from "./TattooForm";
 import { AddTattooControls } from "./AddTattoo";
+import { bookingDataValidationSchema } from "../validation";
 
 // Placeholder functions for price and time estimates
 const estimatePrice = (formData: BookingFormData): number => {
@@ -176,6 +177,13 @@ export default function BookingForm() {
   };
 
   /**
+   * Check if the form is filled out and ready for submission
+   */
+  const isFormFilledOut = (): boolean => {
+    return bookingDataValidationSchema.safeParse(formData).success;
+  };
+
+  /**
    * Handle form submission
    * @param e form event
    */
@@ -236,9 +244,11 @@ export default function BookingForm() {
 
             {/* Submit Button */}
             <div className="flex flex-col items-center">
+              {!isFormFilledOut() ? <p className="pb-4 text-red-500 font-bold">Udfyld hele formularen før du kan indsende din bookinganmodning</p> : null}
               <Button
                 type="submit"
-                className="bg-red-600 hover:bg-red-700 text-white px-12 py-6 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                disabled={!isFormFilledOut()}
+                className="bg-red-600 disabled:bg-slate-500 hover:bg-red-700 text-white px-12 py-6 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
               >
                 {isSubmissionLoading ? (
                   <Spinner className="mr-2" />

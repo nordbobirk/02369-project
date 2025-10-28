@@ -13,5 +13,5 @@ export type Placement =
   | "FOOT"
   | "RIBS"
   | "STOMACH";
-export type Size = "SMALL" | "MEDIUM" | "SIZE";
+export type Size = "SMALL" | "MEDIUM" | "LARGE";
 export type TattooColor = "BLACK" | "COLORED";
