@@ -29,7 +29,7 @@ export async function getBookingsAtDate(date: Date) {
 
     const { data: bookings, error } = await supabase
         .from("bookings")
-        .select("id, name, date_and_time, tattoos(*)")
+        .select("id, name, date_and_time")
         .gte("date_and_time", start)
         .lte("date_and_time", end);
 
