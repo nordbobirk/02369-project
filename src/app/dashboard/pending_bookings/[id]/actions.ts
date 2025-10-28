@@ -62,10 +62,10 @@ export async function getPendingBookingById( params : string ) {
 
 /**
  * TODO: implement:
- *      accept booking and redirect to dashboard
- *      decline booking and redirect to dashboard
+ *     ~~accept booking~~ and redirect to dashboard
+ *      ~~decline booking~~ and redirect to dashboard
  *      ...
- *      Imoprtant. add security. right now one can edit status of any booking by knowing the id.
+ *      Important. add security. right now one can edit status of any booking by knowing the id.
  *          this can lead to stupid situations...
  *      add docstrings
  */

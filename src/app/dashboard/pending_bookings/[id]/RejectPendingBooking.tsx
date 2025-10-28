@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import {rejectPendingBooking} from "@/app/dashboard/pending_bookings/actions";
+import {rejectPendingBooking} from "@/app/dashboard/pending_bookings/[id]/actions";
 import { useParams } from 'next/navigation'
 
 export default function RejectButton() {
