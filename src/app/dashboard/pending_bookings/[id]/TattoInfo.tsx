@@ -35,8 +35,29 @@ export function TattooInfo({ tattoos }: TattooInfoProps) {
                     Tattoo {index + 1} ({tattoo.tattoo_type})
                 </div>
                 <div>{tattoo.notes}</div>
-                <div>Est. tid: {tattoo.estimated_duration} minutter</div>
-                <div>Est. pris: {tattoo.estimated_price} kr</div>
+                <div>
+                    <span className="font-medium">Størrelse:</span> {tattoo.width} x {tattoo.height} cm
+                </div>
+                <div>
+                    <span className="font-medium">Placering:</span> {tattoo.placement}
+                </div>
+                <div>
+                    <span className="font-medium">Detaljeniveau:</span> {tattoo.detail_level}
+                </div>
+                <div>
+                    <span className="font-medium">Farvevalg:</span> {tattoo.colored_option}
+                </div>
+                {tattoo.color_description && (
+                    <div>
+                        <span className="font-medium">Farvebeskrivelse:</span> {tattoo.color_description}
+                    </div>
+                )}
+                <div>
+                    Est. tid: {tattoo.estimated_duration} minutter
+                </div>
+                <div>
+                    Est. pris: {tattoo.estimated_price} kr
+                </div>
             </div>
             {tattoo.booking_images[0] && (
                 <div className="absolute top-4 right-4">
