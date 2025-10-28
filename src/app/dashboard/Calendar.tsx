@@ -4,25 +4,25 @@ import * as React from "react"
 
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { getBookingsAtDate, Booking, Tattoo, Tattoo_images } from "./actions"
+import { getBookingsAtDate, getAllBookings, Booking, Tattoo, Tattoo_images } from "./actions"
 import { da } from "date-fns/locale"
-import {
-  DetailLevel,
-  Placement,
-  Size,
-  TattooColor,
-  TattooType,
-} from "@/lib/types";
-
-
 
 export default function Calendar31() {
   const [date, setDate] = React.useState<Date>(new Date())
   const [bookings, setBookings] = React.useState<Booking[]>([])
+  const [allBookings, setAllBookings] = React.useState<Booking[]>([])
   const [loading, setLoading] = React.useState<boolean>(true)
 
   React.useEffect(() => {
     setDate(date)
+  }, [])
+
+
+  // Get all bookings for the dots on the calendar preview
+  React.useEffect(() => {
+    getAllBookings().then((response) => {
+      setAllBookings(response || [])
+    })
   }, [])
 
   React.useEffect(() => {
@@ -33,7 +33,24 @@ export default function Calendar31() {
     })
   }, [date])
 
+  // Converting the bookings into dates that the calendar can render
+  const statusModifiers = React.useMemo(() => {
+    const modifiers: Record<string, Date[]> = {
+      pending: [],
+      edited: [],
+      confirmed: [],
+    }
 
+    allBookings.forEach((b) => {
+      const d = new Date(b.date_and_time)
+      d.setHours(0, 0, 0, 0)
+      if (b.status && modifiers[b.status]) {
+        modifiers[b.status].push(d)
+      }
+    })
+
+    return modifiers
+  }, [allBookings])
 
   return (
     <Card className="w-fit py-4">
@@ -43,6 +60,15 @@ export default function Calendar31() {
           selected={date}
           onSelect={setDate}
           locale={da}
+          modifiers={statusModifiers}
+          modifiersClassNames={{
+            pending:
+              "relative after:absolute after:bottom-1 after:left-1/2 after:h-2 after:w-2 after:-translate-x-1/2 after:rounded-full after:bg-yellow-400",
+            edited:
+              "relative after:absolute after:bottom-1 after:left-1/2 after:h-2 after:w-2 after:-translate-x-1/2 after:rounded-full after:bg-yellow-400",
+            confirmed:
+              "relative after:absolute after:bottom-1 after:left-1/2 after:h-2 after:w-2 after:-translate-x-1/2 after:rounded-full after:bg-green-500",
+          }}
           className="bg-transparent p-0 [--cell-size:--spacing(11)] md:[--cell-size:--spacing(12)]"
           required
         />
@@ -71,10 +97,10 @@ export default function Calendar31() {
                   booking.tattoos.length > 1 ? <p>Flere tatoveringer i booking</p> :
                     <div>
                       <div>
-                        Varighed: {booking.tattoos.at(0)?.estimated_duration?.toString()} minutter 
+                        Varighed: {booking.tattoos.at(0)?.estimated_duration?.toString()} minutter
                       </div>
                       <div>
-                        Kompleksitet: {booking.tattoos.at(0)?.detail_level?.toString()} 
+                        Kompleksitet: {booking.tattoos.at(0)?.detail_level?.toString()}
                       </div>
                     </div>}
               </div>

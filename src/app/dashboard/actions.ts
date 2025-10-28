@@ -118,6 +118,24 @@ export async function getPendingBookings() {
   return bookings;
 }
 
+export async function getAllBookings() {
+  const supabase = await initServerClient();
+  const { data: bookings, error } = await supabase
+    .from("bookings")
+    .select(`
+            *,
+            tattoos (
+                *,
+                booking_images (
+                    id,
+                    image_url
+                )
+            )
+        `)
+    console.log(bookings)
+  return bookings;
+}
+
 export async function getTimeUntilBooking(date_and_time: string): Promise<string> {
   const now = new Date();
   const bookingDate = new Date(date_and_time);
