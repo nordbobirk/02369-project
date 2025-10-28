@@ -32,7 +32,7 @@ export async function getBookingsAtDate(date: Date) {
     return bookings as Booking[];
 }
 
-export function getTimeUntilBooking(date_and_time: string): string {
+export async function getTimeUntilBooking(date_and_time: string): Promise<string> {
   const now = new Date();
   const bookingDate = new Date(date_and_time);
 
