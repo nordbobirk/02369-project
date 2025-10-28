@@ -4,13 +4,18 @@ import * as React from "react"
 
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { getBookingsAtDate } from "./getBookings"
+import { getBookingsAtDate } from "./actions"
 import { da } from "date-fns/locale"
+
 
 type Booking = {
     id: string,
     name: string,
     date_and_time: string,
+    placement: string,
+    height: number,
+    width: number,
+    notes: string,
 }
 
 export default function Calendar31() {
@@ -64,7 +69,7 @@ export default function Calendar31() {
             >
               <div className="font-medium">{booking.name}</div>
               <div className="text-muted-foreground text-xs">
-                {"Important info"}
+                {booking.notes}
               </div>
             </div>
           )) : <p>Ingen bookinger i dag</p>
