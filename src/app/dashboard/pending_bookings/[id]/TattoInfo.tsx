@@ -23,12 +23,13 @@ interface TattooInfoProps {
 
 // TODO: lav boksen mindre høj (ifht. BookingInfo boxen) og mere bred (så der er plads til billeder).
 //      min idé er at Andreas notes skal kunne stå under tattoo info boksen.
+//      den skal nok også være som et card - ellers bliver det nok ved at se mærkeligt ud.
 // TODO: Lav tilføj billeder - lige nu er det kun placeringen og det er lavet forkert..
 
 export function TattooInfo({ tattoos }: TattooInfoProps) {
     const [index, setIndex] = useState(0);
 
-    if (!tattoos.length) return <div>No tattoos</div>;
+    if (!tattoos.length) return <div>Ingen tattoveringer</div>;
 
     const tattoo = tattoos[index];
 
@@ -73,6 +74,7 @@ export function TattooInfo({ tattoos }: TattooInfoProps) {
                 </div>
             )}
             <div className="flex justify-between w-full mb-2 mt-32">
+                {/*TODO: fix os vi (← →) er ugly as fuck... */}
                 <button
                     onClick={() => setIndex(i => Math.max(i - 1, 0))}
                     disabled={index === 0}
