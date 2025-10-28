@@ -43,7 +43,7 @@ export default function Calendar31() {
           selected={date}
           onSelect={setDate}
           locale={da}
-          className="bg-transparent p-0"
+          className="bg-transparent p-0 [--cell-size:--spacing(11)] md:[--cell-size:--spacing(12)]"
           required
         />
       </CardContent>
