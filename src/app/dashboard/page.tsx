@@ -31,9 +31,21 @@ export default async function Home() {
                 <div>
                   <div className="font-medium">Booking til {booking.name}</div>
                   <div className="text-muted-foreground text-xs">
-                    {(booking.tattoos == null || booking.tattoos.length == 0) ? <p>Ingen tatovering med booking</p> :
+                    {(booking.tattoos == null || booking.tattoos.length == 0) ?
+                      <div>
+                        <p>Ingen tatovering med booking</p>
+                        <div>
+                          {getTimeUntilBooking(booking.date_and_time)}
+                        </div>
+                      </div> :
                       // TODO: Implement en samlet varighed for flere tatoveringer.
-                      booking.tattoos.length > 1 ? <p>Flere tatoveringer i booking</p> :
+                      booking.tattoos.length > 1 ?
+                        <div>
+                          <p>Flere tatoveringer i booking</p>
+                          <div>
+                            {getTimeUntilBooking(booking.date_and_time)}
+                          </div>
+                        </div> :
                         <div>
                           <div>
                             Varighed: {booking.tattoos.at(0)?.estimated_duration?.toString()} minutter
