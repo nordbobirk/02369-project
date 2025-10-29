@@ -3,12 +3,14 @@ import { TattooData } from "../Form";
 import { General } from "./General";
 import { TypeDetails } from "./TypeDetails";
 import { TypeSelect } from "./TypeSelect";
-import { TrashIcon } from "lucide-react";
+import { ChevronUp, TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CollapsedTattoo } from "./CollapsedTattoo";
+import { DeleteTattooButton } from "./DeleteTattooButton";
+import { TattooTitle } from "./TattooTitle";
 
-type TattooFormOptions = {
+export type TattooFormOptions = {
   title: string;
-  showTitle: boolean;
   showDelete: boolean;
   hidden: boolean;
   id: string;
@@ -21,6 +23,7 @@ export function TattooForm({
   options,
   deleteTattoo,
   selectTattoo,
+  deselectTattoo,
 }: {
   tattooData: TattooData;
   handleTattooInputChange: (
@@ -32,6 +35,7 @@ export function TattooForm({
   options: TattooFormOptions;
   deleteTattoo: () => void;
   selectTattoo: () => void;
+  deselectTattoo: () => void;
 }) {
   const [customReferenceFiles, setCustomReferenceFiles] = useState<File[]>([]);
   const [flashImageFile, setFlashImageFile] = useState<File | null>(null);
@@ -76,12 +80,11 @@ export function TattooForm({
 
   if (options.hidden) {
     return (
-      <div
-        className="border-2 border-black rounded-lg py-8 hover:cursor-pointer"
-        onClick={selectTattoo}
-      >
-        <h2 className="text-3xl font-bold text-center">{options.title}</h2>
-      </div>
+      <CollapsedTattoo
+        options={options}
+        selectTattoo={selectTattoo}
+        deleteTattoo={deleteTattoo}
+      />
     );
   }
 
@@ -90,18 +93,21 @@ export function TattooForm({
       className="flex flex-col gap-4 border-2 border-black rounded-lg py-8 relative"
       id={options.id}
     >
-      {options.showDelete ? (
+      <div className="absolute top-0 right-0 py-2">
+        {options.showDelete ? (
+          <DeleteTattooButton deleteTattoo={deleteTattoo} />
+        ) : (
+          <DeleteTattooButton deleteTattoo={deleteTattoo} disabled />
+        )}
         <Button
-          className="absolute top-0 right-0 m-4 px-4 hover:cursor-pointer"
-          variant={"ghost"}
-          onClick={deleteTattoo}
+          className="cursor-pointer"
+          variant="ghost"
+          onClick={deselectTattoo}
         >
-          <TrashIcon className="size-6" />
+          <ChevronUp className="size-6" />
         </Button>
-      ) : null}
-      <h2 className="text-3xl font-bold text-center">
-        {options.showTitle ? options.title : ""}
-      </h2>
+      </div>
+      <TattooTitle title={options.title} />
 
       <TypeSelect
         tattooData={tattooData}

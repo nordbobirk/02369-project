@@ -79,7 +79,9 @@ export default function BookingForm() {
   const [timeEstimate, setTimeEstimate] = useState<number>(0);
   const [isSubmissionLoading, setIsSubmissionLoading] =
     useState<boolean>(false);
-  const [selectedTattooIndex, setSelectedTattooIndex] = useState<number>(0);
+  const [selectedTattooIndex, setSelectedTattooIndex] = useState<number | null>(
+    0
+  );
 
   /**
    * Update the pricing and duration estimates in state based on mutated {@link BookingFormData}
@@ -149,7 +151,7 @@ export default function BookingForm() {
     tattoos.push(DEFAULT_TATTOO);
     setFormData({ ...formData, tattoos });
     setSelectedTattooIndex(
-      formData.tattoos.length > 0 ? formData.tattoos.length - 1 : 0
+      formData.tattoos.length > 0 ? formData.tattoos.length - 1 : null
     );
     const selectedTattooElement = document.getElementById(
       `tattoo-${selectedTattooIndex}`
@@ -167,7 +169,11 @@ export default function BookingForm() {
     tattoos.splice(deleteIndex, 1);
     setFormData({ ...formData, tattoos });
     setSelectedTattooIndex(
-      selectedTattooIndex > 0 ? selectedTattooIndex - 1 : 0
+      selectedTattooIndex === null
+        ? null
+        : selectedTattooIndex > 0
+        ? selectedTattooIndex - 1
+        : 0
     );
     const selectedTattooElement = document.getElementById(
       `tattoo-${selectedTattooIndex}`
@@ -220,13 +226,13 @@ export default function BookingForm() {
                     tattoo.tattooType.substring(0, 1).toUpperCase() +
                     tattoo.tattooType.substring(1).toLowerCase()
                   })`,
-                  showTitle: formData.tattoos.length > 1,
                   showDelete: formData.tattoos.length > 1,
                   hidden: selectedTattooIndex != index,
                   id: `tattoo-${index}`,
                 }}
                 deleteTattoo={() => deleteTattoo(index)}
                 selectTattoo={() => setSelectedTattooIndex(index)}
+                deselectTattoo={() => setSelectedTattooIndex(null)}
               />
             ))}
 
@@ -244,7 +250,12 @@ export default function BookingForm() {
 
             {/* Submit Button */}
             <div className="flex flex-col items-center">
-              {!isFormFilledOut() ? <p className="pb-4 text-red-500 font-bold">Udfyld hele formularen før du kan indsende din bookinganmodning</p> : null}
+              {!isFormFilledOut() ? (
+                <p className="pb-4 text-red-500 font-bold">
+                  Udfyld hele formularen før du kan indsende din
+                  bookinganmodning
+                </p>
+              ) : null}
               <Button
                 type="submit"
                 disabled={!isFormFilledOut()}
