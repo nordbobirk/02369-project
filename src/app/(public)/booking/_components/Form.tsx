@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -83,6 +83,22 @@ export default function BookingForm() {
     0
   );
 
+  useEffect(() => {
+    if (selectedTattooIndex !== null) {
+      const selectedTattooElement = document.getElementById(
+        `tattoo-${selectedTattooIndex}`
+      );
+      if (selectedTattooElement) {
+        setTimeout(() => {
+          selectedTattooElement.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }, 25);
+      }
+    }
+  }, [selectedTattooIndex]);
+
   /**
    * Update the pricing and duration estimates in state based on mutated {@link BookingFormData}
    * @param data booking form data, see {@link BookingFormData}
@@ -150,14 +166,9 @@ export default function BookingForm() {
     const tattoos = formData.tattoos;
     tattoos.push(DEFAULT_TATTOO);
     setFormData({ ...formData, tattoos });
-    setSelectedTattooIndex(
-      formData.tattoos.length > 0 ? formData.tattoos.length - 1 : null
-    );
-    const selectedTattooElement = document.getElementById(
-      `tattoo-${selectedTattooIndex}`
-    );
-    if (selectedTattooElement)
-      selectedTattooElement.scrollIntoView({ behavior: "smooth" });
+    const newSelectedTattooIndex =
+      formData.tattoos.length > 0 ? formData.tattoos.length - 1 : null;
+    selectTattoo(newSelectedTattooIndex);
   };
 
   /**
@@ -168,18 +179,13 @@ export default function BookingForm() {
     const tattoos = [...formData.tattoos];
     tattoos.splice(deleteIndex, 1);
     setFormData({ ...formData, tattoos });
-    setSelectedTattooIndex(
+    const newSelectedTattooIndex =
       selectedTattooIndex === null
         ? null
         : selectedTattooIndex > 0
         ? selectedTattooIndex - 1
-        : 0
-    );
-    const selectedTattooElement = document.getElementById(
-      `tattoo-${selectedTattooIndex}`
-    );
-    if (selectedTattooElement)
-      selectedTattooElement.scrollIntoView({ behavior: "smooth" });
+        : 0;
+    selectTattoo(newSelectedTattooIndex);
   };
 
   /**
@@ -187,6 +193,14 @@ export default function BookingForm() {
    */
   const isFormFilledOut = (): boolean => {
     return bookingDataValidationSchema.safeParse(formData).success;
+  };
+
+  /**
+   * Set the selected tattoo
+   * @param tattooIndex new selected index
+   */
+  const selectTattoo = (tattooIndex: number | null) => {
+    setSelectedTattooIndex(tattooIndex);
   };
 
   /**
@@ -231,8 +245,8 @@ export default function BookingForm() {
                   id: `tattoo-${index}`,
                 }}
                 deleteTattoo={() => deleteTattoo(index)}
-                selectTattoo={() => setSelectedTattooIndex(index)}
-                deselectTattoo={() => setSelectedTattooIndex(null)}
+                selectTattoo={() => selectTattoo(index)}
+                deselectTattoo={() => selectTattoo(null)}
               />
             ))}
 
