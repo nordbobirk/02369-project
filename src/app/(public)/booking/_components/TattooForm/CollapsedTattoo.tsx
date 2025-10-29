@@ -3,6 +3,7 @@ import { ChevronDown, TrashIcon } from "lucide-react";
 import { TattooFormOptions } from ".";
 import { DeleteTattooButton } from "./DeleteTattooButton";
 import { TattooTitle } from "./TattooTitle";
+import { useRef } from "react";
 
 export function CollapsedTattoo({
   options,
@@ -15,11 +16,19 @@ export function CollapsedTattoo({
   selectTattoo: () => void;
   deleteTattoo: () => void;
 }) {
+  const isFirstMount = useRef<boolean>(true);
+  const handleClickOnDiv = () => {
+    if (isFirstMount.current === true) {
+      isFirstMount.current = false;
+      return;
+    }
+    selectTattoo();
+  }
   return (
     <div
       className="border-2 border-black rounded-lg py-8 relative cursor-pointer"
       id={options.id}
-      onClick={selectTattoo}
+      onClick={handleClickOnDiv}
     >
       <div className="absolute top-0 right-0 py-2">
         {options.showDelete ? (

@@ -111,8 +111,7 @@ export default function BookingForm() {
         }, 25);
       }
     }
-    if (isFirstView)
-      setIsFirstView(false);
+    if (isFirstView) setIsFirstView(false);
   }, [selectedTattooIndex]);
 
   /**
@@ -179,12 +178,12 @@ export default function BookingForm() {
    * Add another tattoo to the booking
    */
   const addTattoo = () => {
-    const tattoos = formData.tattoos;
+    const tattoos = [...formData.tattoos];
     tattoos.push(getDefaultTattoo(nextTattooTitleIndex));
     setNextTattooTitleIndex(nextTattooTitleIndex + 1);
     setFormData({ ...formData, tattoos });
-    const newSelectedTattooIndex =
-      formData.tattoos.length > 0 ? formData.tattoos.length - 1 : null;
+    const newSelectedTattooIndex = tattoos.length - 1;
+    console.log("addTattoo select", newSelectedTattooIndex);
     selectTattoo(newSelectedTattooIndex);
   };
 
@@ -196,6 +195,7 @@ export default function BookingForm() {
     const tattoos = [...formData.tattoos];
     tattoos.splice(deleteIndex, 1);
     setFormData({ ...formData, tattoos });
+    console.log("deleteTattoo select", null);
     selectTattoo(null);
   };
 
@@ -240,12 +240,12 @@ export default function BookingForm() {
                   handleTattooInputChange(index, e)
                 }
                 setTattooData={(tattooData: TattooData) => {
-                  const newFormData = formData;
+                  const newFormData = { ...formData };
                   newFormData.tattoos[index] = tattooData;
                   setFormData(newFormData);
                 }}
                 tattooData={tattoo}
-                key={index}
+                key={tattoo.title}
                 options={{
                   showDelete: formData.tattoos.length > 1,
                   hidden: selectedTattooIndex != index,
