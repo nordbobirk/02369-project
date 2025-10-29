@@ -18,7 +18,7 @@ export function ContactInfo({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label htmlFor="name" className="block font-medium mb-2">
-            Dit fulde navn*
+            Dit fulde navn<span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -34,7 +34,7 @@ export function ContactInfo({
 
         <div>
           <label htmlFor="email" className="block font-medium mb-2">
-            Din emailadresse*
+            Din emailadresse<span className="text-red-500">*</span>
           </label>
           <input
             type="email"
@@ -51,7 +51,7 @@ export function ContactInfo({
 
       <div className="mt-6">
         <label htmlFor="phone" className="block font-medium mb-2">
-          Telefonnummer*
+          Telefonnummer<span className="text-red-500">*</span>
         </label>
         <input
           type="tel"
