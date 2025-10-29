@@ -54,22 +54,34 @@ export type TattooData = {
   size: Size;
   colorOption: TattooColor;
   colorDescription?: string;
+  title: string;
 };
 
 /**
  * The default tattoo in the form, ie. the default values for the forms tattoo section
  */
-const DEFAULT_TATTOO: TattooData = {
-  colorOption: "BLACK",
-  placement: "ARM_LOWER",
-  size: "MEDIUM",
-  tattooType: "FLASH",
+const getDefaultTattoo = (index: number) =>
+  ({
+    colorOption: "BLACK",
+    placement: "ARM_LOWER",
+    size: "MEDIUM",
+    tattooType: "FLASH",
+    title: getTattooTitle(index),
+  } as TattooData);
+
+/**
+ * Get the title for a tattoo
+ * @param index the tattoos index
+ * @returns the tattoos title
+ */
+const getTattooTitle = (index: number) => {
+  return `Tatovering #${index + 1} `;
 };
 
 export default function BookingForm() {
   const [formData, setFormData] = useState<BookingFormData>({
     isFirstTattoo: false,
-    tattoos: [DEFAULT_TATTOO],
+    tattoos: [getDefaultTattoo(0)],
     customerName: "",
     customerEmail: "",
     customerPhone: "",
@@ -82,9 +94,11 @@ export default function BookingForm() {
   const [selectedTattooIndex, setSelectedTattooIndex] = useState<number | null>(
     0
   );
+  const [nextTattooTitleIndex, setNextTattooTitleIndex] = useState<number>(1);
+  const [isFirstView, setIsFirstView] = useState<boolean>(true);
 
   useEffect(() => {
-    if (selectedTattooIndex !== null) {
+    if (selectedTattooIndex !== null && !isFirstView) {
       const selectedTattooElement = document.getElementById(
         `tattoo-${selectedTattooIndex}`
       );
@@ -97,6 +111,8 @@ export default function BookingForm() {
         }, 25);
       }
     }
+    if (isFirstView)
+      setIsFirstView(false);
   }, [selectedTattooIndex]);
 
   /**
@@ -164,7 +180,8 @@ export default function BookingForm() {
    */
   const addTattoo = () => {
     const tattoos = formData.tattoos;
-    tattoos.push(DEFAULT_TATTOO);
+    tattoos.push(getDefaultTattoo(nextTattooTitleIndex));
+    setNextTattooTitleIndex(nextTattooTitleIndex + 1);
     setFormData({ ...formData, tattoos });
     const newSelectedTattooIndex =
       formData.tattoos.length > 0 ? formData.tattoos.length - 1 : null;
@@ -179,13 +196,7 @@ export default function BookingForm() {
     const tattoos = [...formData.tattoos];
     tattoos.splice(deleteIndex, 1);
     setFormData({ ...formData, tattoos });
-    const newSelectedTattooIndex =
-      selectedTattooIndex === null
-        ? null
-        : selectedTattooIndex > 0
-        ? selectedTattooIndex - 1
-        : 0;
-    selectTattoo(newSelectedTattooIndex);
+    selectTattoo(null);
   };
 
   /**
@@ -236,10 +247,6 @@ export default function BookingForm() {
                 tattooData={tattoo}
                 key={index}
                 options={{
-                  title: `Tatovering #${index + 1} (${
-                    tattoo.tattooType.substring(0, 1).toUpperCase() +
-                    tattoo.tattooType.substring(1).toLowerCase()
-                  })`,
                   showDelete: formData.tattoos.length > 1,
                   hidden: selectedTattooIndex != index,
                   id: `tattoo-${index}`,

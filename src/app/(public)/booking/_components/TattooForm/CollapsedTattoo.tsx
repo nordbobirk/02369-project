@@ -6,10 +6,12 @@ import { TattooTitle } from "./TattooTitle";
 
 export function CollapsedTattoo({
   options,
+  title,
   selectTattoo,
   deleteTattoo,
 }: {
   options: TattooFormOptions;
+  title: string;
   selectTattoo: () => void;
   deleteTattoo: () => void;
 }) {
@@ -33,7 +35,7 @@ export function CollapsedTattoo({
           <ChevronDown className="size-6" />
         </Button>
       </div>
-      <TattooTitle title={options.title} />
+      <TattooTitle title={title} />
     </div>
   );
 }

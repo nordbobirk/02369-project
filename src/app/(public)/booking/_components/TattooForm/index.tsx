@@ -10,7 +10,6 @@ import { DeleteTattooButton } from "./DeleteTattooButton";
 import { TattooTitle } from "./TattooTitle";
 
 export type TattooFormOptions = {
-  title: string;
   showDelete: boolean;
   hidden: boolean;
   id: string;
@@ -81,6 +80,7 @@ export function TattooForm({
   if (options.hidden) {
     return (
       <CollapsedTattoo
+        title={tattooData.title}
         options={options}
         selectTattoo={selectTattoo}
         deleteTattoo={deleteTattoo}
@@ -107,7 +107,7 @@ export function TattooForm({
           <ChevronUp className="size-6" />
         </Button>
       </div>
-      <TattooTitle title={options.title} />
+      <TattooTitle title={tattooData.title} />
 
       <TypeSelect
         tattooData={tattooData}
