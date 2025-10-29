@@ -27,7 +27,7 @@ interface BookingInfoProps {
 export default function BookingInfoCard({ booking }: BookingInfoProps) {
     return (
         <Card className="mb-4 min-w-[700px]">
-            <div className="flex flex-row items-start gap-8 p-4">
+            <div className="flex flex-row items-stretch gap-8 p-4 relative h-100">
                 <div className="flex-1">
                     <CardHeader>
                         <span className="font-semibold text-lg">{booking.name}</span>
@@ -58,19 +58,24 @@ export default function BookingInfoCard({ booking }: BookingInfoProps) {
                                 {new Date(booking.created_at).toLocaleString()}
                             </div>
                             <div>
-                                <span className="font-medium">Interne Notes:</span>{" "}
-                                {booking.internal_notes || "—"}
-                            </div>
-                            <div>
                                 <span className="font-medium">Ændret:</span>{" "}
                                 {booking.edited_date_and_time
                                     ? new Date(booking.edited_date_and_time).toLocaleString()
                                     : "—"}
                             </div>
+                            <div>
+                                <span className="font-medium">Interne Notes:</span>
+                                <div className="max-h-[4.5rem] overflow-y-auto break-words pr-2">
+                                en meget lang noget om et eller andet som er interessant for mig.en meget lang noget om et eller andet som er interessant for mig. en meget lang noget om et eller andet som er interessant for mig.en meget lang noget om et eller andet som er interessant for mig.
+                                </div>
+                                {/*TODO: lav en edit knap til interne notes der efterfølgende viser en cancel og save knap*/}
+                                {/*{" "}*/}
+                                {/*{booking.internal_notes || "—"}*/}
+                            </div>
                         </div>
                     </CardContent>
                 </div>
-                <div className="min-w-[340px] flex-shrink-0">
+                <div className=" w-1/2 h-5/6  flex-shrink-0 overflow-auto"> {/*min-w-[340px] max-h-[75%]*/}
                     <TattooInfo tattoos={booking.tattoos} />
                 </div>
             </div>

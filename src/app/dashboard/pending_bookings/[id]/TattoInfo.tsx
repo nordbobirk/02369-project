@@ -73,7 +73,7 @@ export function TattooInfo({ tattoos }: TattooInfoProps) {
                     />
                 </div>
             )}
-            <div className="flex justify-between w-full mb-2 mt-32">
+            <div className="flex justify-between w-full mb-2 mt-4">
                 {/*TODO: fix os vi (← →) er ugly as fuck... */}
                 <button
                     onClick={() => setIndex(i => Math.max(i - 1, 0))}
