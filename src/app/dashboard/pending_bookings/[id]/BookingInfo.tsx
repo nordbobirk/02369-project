@@ -1,6 +1,5 @@
 "use client"
 
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { TattooInfo } from "@/app/dashboard/pending_bookings/[id]/TattoInfo";
 
 type Booking = {

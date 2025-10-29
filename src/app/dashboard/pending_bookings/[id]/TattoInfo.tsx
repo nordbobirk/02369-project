@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { TattooImages } from "@/app/dashboard/pending_bookings/[id]/TattooImages";
 
 type Tattoo = {
