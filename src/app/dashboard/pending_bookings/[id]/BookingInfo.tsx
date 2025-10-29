@@ -21,7 +21,7 @@ interface BookingInfoProps {
 }
 
 // TODO: fix så den ikke brækker sig ved Reject...
-// TODO: flyt knapperne ind i BookingInfoCard
+// TODO: flyt accept/reject knapperne ind i BookingInfoCard
 
 export default function BookingInfo({ booking }: BookingInfoProps) {
     return (

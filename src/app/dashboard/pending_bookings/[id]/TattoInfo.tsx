@@ -27,14 +27,13 @@ export function TattooInfo({ tattoos }: TattooInfoProps) {
 
     if (!tattoos.length) {
         return (
-                <p>Ingen tattoveringer</p>
+                <p>Ingen tatoveringer</p>
         );
     }
 
     const tattoo = tattoos[index];
 
     return (
-        // TODO: find ud af hvordan fanden man slipper af med det skide eskalerende margin lort men stadig kan bruge tw.
         <>
             <div className="p-2 border border-black rounded-lg">
                 <div>
