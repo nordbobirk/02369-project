@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import {TattooInfo} from "@/app/dashboard/pending_bookings/[id]/TattoInfo";
+import { TattooInfo } from "@/app/dashboard/pending_bookings/[id]/TattoInfo";
 
 type Booking = {
     id: string,
@@ -24,62 +24,57 @@ interface BookingInfoProps {
 // TODO: fix så den ikke brækker sig ved Reject...
 // TODO: flyt knapperne ind i BookingInfoCard
 
-export default function BookingInfoCard({ booking }: BookingInfoProps) {
+export default function BookingInfo({ booking }: BookingInfoProps) {
     return (
-        <Card className="mb-4 min-w-[700px]">
-            <div className="flex flex-row items-stretch gap-8 p-4 relative h-100">
+            <div className="flex flex-row items-stretch relative h-100 p-2 border border-black rounded-lg">
                 <div className="flex-1">
-                    <CardHeader>
-                        <span className="font-semibold text-lg">{booking.name}</span>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-sm space-y-1">
-                            <div>
-                                <span className="font-medium">Tid og dato:</span>{" "}
-                                {new Date(booking.date_and_time).toLocaleString()}
-                            </div>
-                            <div><span className="font-medium">Status: {booking.status}</span></div>
-                            <div><span className="font-medium">Email:</span> {booking.email}</div>
-                            <div><span className="font-medium">Telefon:</span> {formatPhoneNumber(booking.phone_number)}</div>
-                            <div>
-                                <span className="font-medium">Første Tattoo:</span>{" "}
-                                {booking.is_FirstTattoo ? "Ja" : "Nope"}
-                            </div>
-                            <div>
-                                {/*TODO: add time estimate here. */}
-                                <span className="font-medium">summeret tid her!:</span>
-                            </div>
-                            <div>
-                                {/*TODO: add price estimate here. */}
-                                <span className="font-medium">summeret pris her!:</span>
-                            </div>
-                            <div>
-                                <span className="font-medium">Oprettet:</span>{" "}
-                                {new Date(booking.created_at).toLocaleString()}
-                            </div>
-                            <div>
-                                <span className="font-medium">Ændret:</span>{" "}
-                                {booking.edited_date_and_time
-                                    ? new Date(booking.edited_date_and_time).toLocaleString()
-                                    : "—"}
-                            </div>
-                            <div>
-                                <span className="font-medium">Interne Notes:</span>
-                                <div className="max-h-[4.5rem] overflow-y-auto break-words pr-2">
-                                en meget lang noget om et eller andet som er interessant for mig.en meget lang noget om et eller andet som er interessant for mig. en meget lang noget om et eller andet som er interessant for mig.en meget lang noget om et eller andet som er interessant for mig.
-                                </div>
-                                {/*TODO: lav en edit knap til interne notes der efterfølgende viser en cancel og save knap*/}
-                                {/*{" "}*/}
-                                {/*{booking.internal_notes || "—"}*/}
-                            </div>
+                    <span className="font-semibold text-lg">{booking.name}</span>
+                    <div className="text-sm space-y-1">
+                        <div>
+                            <span className="font-medium">Tid og dato:</span>{" "}
+                            {new Date(booking.date_and_time).toLocaleString()}
                         </div>
-                    </CardContent>
+                        <div><span className="font-medium">Status: {booking.status}</span></div>
+                        <div><span className="font-medium">Email:</span> {booking.email}</div>
+                        <div><span className="font-medium">Telefon:</span> {formatPhoneNumber(booking.phone_number)}</div>
+                        <div>
+                            <span className="font-medium">Første Tattoo:</span>{" "}
+                            {booking.is_FirstTattoo ? "Ja" : "Nope"}
+                        </div>
+                        <div>
+                            {/*TODO: add time estimate here. */}
+                            <span className="font-medium">summeret tid her!:</span>
+                        </div>
+                        <div>
+                            {/*TODO: add price estimate here. */}
+                            <span className="font-medium">summeret pris her!:</span>
+                        </div>
+                        <div>
+                            <span className="font-medium">Oprettet:</span>{" "}
+                            {new Date(booking.created_at).toLocaleString()}
+                        </div>
+                        <div>
+                            <span className="font-medium">Interne Notes:</span>
+                            <div className="max-h-[4.5rem] overflow-y-auto break-words p-1 m-1 border border-black rounded-lg">
+                                {" "}
+                                {booking.internal_notes || "—"}
+                                en meget lang noget om et eller andet som er interessant for mig.en meget lang noget om et eller andet som er interessant for mig. en meget lang noget om et eller andet som er interessant for mig.en meget lang noget om et eller andet som er interessant for mig.
+                            </div>
+                            {/*TODO: lav en edit knap til interne notes der efterfølgende viser en cancel og save knap*/}
+                        </div>
+
+                        <div>
+                            <span className="font-medium">Ændret:</span>{" "}
+                            {booking.edited_date_and_time
+                                ? new Date(booking.edited_date_and_time).toLocaleString()
+                                : "—"}
+                        </div>
+                    </div>
                 </div>
                 <div className=" w-1/2 h-5/6  flex-shrink-0 overflow-auto"> {/*min-w-[340px] max-h-[75%]*/}
                     <TattooInfo tattoos={booking.tattoos} />
                 </div>
             </div>
-        </Card>
     );
 }
 

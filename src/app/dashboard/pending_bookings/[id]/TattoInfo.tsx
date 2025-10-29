@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { TattooImages } from "@/app/dashboard/pending_bookings/[id]/TattooImages";
 
 type Tattoo = {
     id: number;
@@ -21,77 +23,75 @@ interface TattooInfoProps {
     tattoos: Tattoo[];
 }
 
-// TODO: lav boksen mindre høj (ifht. BookingInfo boxen) og mere bred (så der er plads til billeder).
-//      min idé er at Andreas notes skal kunne stå under tattoo info boksen.
-//      den skal nok også være som et card - ellers bliver det nok ved at se mærkeligt ud.
-// TODO: Lav tilføj billeder - lige nu er det kun placeringen og det er lavet forkert..
-
 export function TattooInfo({ tattoos }: TattooInfoProps) {
     const [index, setIndex] = useState(0);
 
-    if (!tattoos.length) return <div>Ingen tattoveringer</div>;
+    if (!tattoos.length) {
+        return (
+                <p>Ingen tattoveringer</p>
+        );
+    }
 
     const tattoo = tattoos[index];
 
     return (
-        <div className="border rounded p-4 flex flex-col min-w-[300px] relative">
-            <div className="flex flex-col">
+        // TODO: find ud af hvordan fanden man slipper af med det skide eskalerende margin lort men stadig kan bruge tw.
+        <>
+            <div className="p-2 border border-black rounded-lg">
                 <div>
-                    Tattoo {index + 1} ({tattoo.tattoo_type})
-                </div>
-                <div>{tattoo.notes}</div>
-                <div>
-                    <span className="font-medium">Størrelse:</span> {tattoo.width} x {tattoo.height} cm
-                </div>
-                <div>
-                    <span className="font-medium">Placering:</span> {tattoo.placement}
-                </div>
-                <div>
-                    <span className="font-medium">Detaljeniveau:</span> {tattoo.detail_level}
-                </div>
-                <div>
-                    <span className="font-medium">Farvevalg:</span> {tattoo.colored_option}
-                </div>
-                {tattoo.color_description && (
-                    <div>
-                        <span className="font-medium">Farvebeskrivelse:</span> {tattoo.color_description}
+                    <div className="flex items-center justify-between w-full">
+                        <div className="font-medium">
+                            Tattoo {index + 1} <span className="text-sm text-muted-foreground">({tattoo.tattoo_type})</span>
+                        </div>
                     </div>
-                )}
-                <div>
-                    Est. tid: {tattoo.estimated_duration} minutter
+                    <div className="absolute p-2 top-2 right-2 ">
+                        <TattooImages/>
+                    </div>
                 </div>
-                <div>
-                    Est. pris: {tattoo.estimated_price} kr
+                    <div className="text-sm ">
+                        <div className="flex flex-col space-y-1">
+                            <div className="whitespace-pre-wrap break-words">{tattoo.notes}</div>
+                            <div>
+                                <span className="font-medium">Størrelse:</span> {tattoo.width} x {tattoo.height} cm
+                            </div>
+                            <div>
+                                <span className="font-medium">Placering:</span> {tattoo.placement}
+                            </div>
+                            <div>
+                                <span className="font-medium">Detaljeniveau:</span> {tattoo.detail_level}
+                            </div>
+                            <div>
+                                <span className="font-medium">Farvevalg:</span> {tattoo.colored_option}
+                            </div>
+                            {tattoo.color_description && (
+                                <div>
+                                    <span className="font-medium">Farvebeskrivelse:</span> {tattoo.color_description}
+                                </div>
+                            )}
+                            <div>Est. tid: {tattoo.estimated_duration} minutter</div>
+                            <div>Est. pris: {tattoo.estimated_price} kr</div>
+                        </div>
+                    </div>
+                <div className="px-4 pb-4 flex justify-between items-center">
+                    <button
+                        onClick={() => setIndex(i => Math.max(i - 1, 0))}
+                        disabled={index === 0}
+                        className="btn-ghost"
+                    >
+                        ←
+                    </button>
+                    <div className="text-sm text-muted-foreground">
+                        {index + 1} / {tattoos.length}
+                    </div>
+                    <button
+                        onClick={() => setIndex(i => Math.min(i + 1, tattoos.length - 1))}
+                        disabled={index === tattoos.length - 1}
+                        className="btn-ghost"
+                    >
+                        →
+                    </button>
                 </div>
-            </div>
-            {tattoo.booking_images[0] && (
-                <div className="absolute top-4 right-4">
-                    <img
-                        src={tattoo.booking_images[0].image_url}
-                        alt={`Tattoo ${index + 1}`}
-                        style={{ maxWidth: 200, borderRadius: 12 }}
-                    />
-                </div>
-            )}
-            <div className="flex justify-between w-full mb-2 mt-4">
-                {/*TODO: fix os vi (← →) er ugly as fuck... */}
-                <button
-                    onClick={() => setIndex(i => Math.max(i - 1, 0))}
-                    disabled={index === 0}
-                >
-                    ←
-                </button>
-                <span>
-                    {index + 1} / {tattoos.length}
-                </span>
-                <button
-                    onClick={() => setIndex(i => Math.min(i + 1, tattoos.length - 1))}
-                    disabled={index === tattoos.length - 1}
-                >
-                    →
-                </button>
-            </div>
         </div>
+    </>
     );
 }
-
