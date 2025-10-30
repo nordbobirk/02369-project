@@ -33,7 +33,8 @@ export async function getFAQs(): Promise<FAQSection[]> {
 
   const faqs = data as FAQRow[];
 
-  // Group by category
+  // Groups the rows by category so it has the format: 
+  // { temp: { category: 'temp', items: [ {...}, {...} ] }, otherCategory: { category: 'otherCategory', items: [ ... ] } }
   const grouped = Object.values(
     faqs.reduce((acc, { category, question, answer }) => {
       if (!acc[category]) {
