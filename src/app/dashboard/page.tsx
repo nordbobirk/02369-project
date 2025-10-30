@@ -20,7 +20,7 @@ export default async function Home() {
         <div
           className=" lg:m-4 rounded-xl border shadow-sm w-full lg:w-[45%]">
           <div>
-            <p className="border-b p-6 font-medium">Ubesvarede anmodninger</p>
+            <p className="border-b p-6 font-medium">Der er {pendingBookings?.length} ubesvarede anmodninger</p>
           </div>
           <div className="p-4">
             {pendingBookings?.map((booking) => (
