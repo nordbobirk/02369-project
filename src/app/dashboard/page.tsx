@@ -3,7 +3,7 @@ import * as React from "react"
 import Calendar from "./Calendar";
 import { initServerClient } from "@/lib/supabase/server";
 import ViewBooking from "@/app/dashboard/ViewBooking";
-import { getTodaysBookings, getTimeUntilBooking, getPendingBookings } from "./actions"
+import { getTodaysBookings, getTimeUntilBooking, getPendingBookings, Tattoo } from "./actions"
 
 export default async function Home() {
   const supabase = await initServerClient();
@@ -26,7 +26,7 @@ export default async function Home() {
             {pendingBookings?.map((booking) => (
               <div
                 key={booking.id}
-                className="mb-3 bg-muted after:bg-primary/70 relative rounded-md p-2 pl-6 text-sm after:absolute after:inset-y-2 after:left-2 after:w-1 after:rounded-full flex justify-between"
+                className="mb-3 bg-muted after:bg-primary/70 relative rounded-md p-2 pl-6 text-sm after:absolute after:inset-y-2 after:left-2 after:w-1 after:rounded-full flex justify-between "
               >
                 <div>
                   <div className="font-medium">Booking til {booking.name}</div>
@@ -34,14 +34,13 @@ export default async function Home() {
                     {(booking.tattoos == null || booking.tattoos.length == 0) ?
                       <div>
                         <p>Ingen tatovering med booking</p>
-                        <div>
-                          {getTimeUntilBooking(booking.date_and_time)}
-                        </div>
                       </div> :
-                      // TODO: Implement en samlet varighed for flere tatoveringer.
                       booking.tattoos.length > 1 ?
                         <div>
                           <p>Flere tatoveringer i booking</p>
+                          <div>
+                            Samlet varighed: {booking.tattoos?.reduce((acc: number, tattoo: Tattoo) => acc + tattoo.estimated_duration, 0) ?? 0} min
+                          </div>
                           <div>
                             {getTimeUntilBooking(booking.date_and_time)}
                           </div>
@@ -78,7 +77,17 @@ export default async function Home() {
                   <div className="font-medium">Booking til {booking.name}</div>
                   <div className="text-muted-foreground text-xs">
                     {booking.tattoos.length == 0 ? <p>Ingen tatovering med booking</p> :
-                      booking.tattoos.length > 1 ? <p>Flere tatoveringer i booking</p> :
+                      booking.tattoos.length > 1 ?
+                        <div>
+                          <p>Flere tatoveringer i booking</p>
+                          <div>
+                            Samlet varighed: {booking.tattoos?.reduce((acc: number, tattoo: Tattoo) => acc + tattoo.estimated_duration, 0) ?? 0} min
+                          </div>
+                          <div>
+                            {getTimeUntilBooking(booking.date_and_time)}
+                          </div>
+                        </div>
+                        :
                         <div>
                           <div>
                             {getTimeUntilBooking(booking.date_and_time)}
@@ -92,6 +101,7 @@ export default async function Home() {
                         </div>}
                   </div>
                 </div>
+                {/* TODO: Implement link til booking details here. */}
               </div>
             )) : <p>Ingen bookinger i dag</p>
             }

@@ -13,7 +13,7 @@ import Link from "next/link";
 export default function ViewBooking({ bookingId }: { bookingId: string }) {
 
     return (
-        <Link href="/dashboard/pending_bookings/[id]" as={`/dashboard/pending_bookings/${bookingId}`}>
+        <Link href="/dashboard/pending_bookings/[id]" as={`/dashboard/pending_bookings/${bookingId}`} className="content-center">
             <Button>
                 Se
                 <ExternalLinkIcon />

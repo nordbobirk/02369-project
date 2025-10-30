@@ -13,8 +13,8 @@ type Tattoo = {
     id: string,
     notes: string,
     booking_id: string,
-    est_price: number,
-    est_duration: number,
+    estimated_price: number,
+    estimated_duration: number,
     images: Tattoo_images[],
 }
 

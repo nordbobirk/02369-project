@@ -16,6 +16,14 @@ type Booking = {
     tattoos: never[],
 };
 
+type Tattoo = {
+    id: string,
+    notes: string,
+    booking_id: string,
+    estimated_price: number,
+    estimated_duration: number,
+}
+
 interface BookingInfoProps {
     booking: Booking;
 }
@@ -42,11 +50,11 @@ export default function BookingInfo({ booking }: BookingInfoProps) {
                         </div>
                         <div>
                             {/*TODO: add time estimate here. */}
-                            <span className="font-medium">summeret tid her!:</span>
+                            <span className="font-medium">Samlet tid for tatoveringer: {booking.tattoos?.reduce((acc: number, tattoo: Tattoo) => acc + tattoo.estimated_duration, 0) ?? 0} min</span>
                         </div>
                         <div>
                             {/*TODO: add price estimate here. */}
-                            <span className="font-medium">summeret pris her!:</span>
+                            <span className="font-medium">Samlet pris for tatoveringer: {booking.tattoos?.reduce((acc: number, tattoo: Tattoo) => acc + tattoo.estimated_price, 0) ?? 0} kr</span>
                         </div>
                         <div>
                             <span className="font-medium">Oprettet:</span>{" "}
