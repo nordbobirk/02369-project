@@ -21,6 +21,17 @@ export async function getFAQs() {
     return data
 }
 
+export async function getCategories() {
+    const supabase = await initServerClient()
+    const { data, error } = await supabase
+        .from('faq_contents')
+        .select('category')
+        .order('index', { ascending: true })
+
+    if (error) throw error
+    return data
+}
+
 /**
  * Updates an existing FAQ entry with new question and answer text.
  * Revalidates the FAQ page cache after successful update.

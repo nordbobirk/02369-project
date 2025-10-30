@@ -2,6 +2,9 @@
 
 import { Button } from '@/components/ui/button'
 import { createFAQ } from './actions'
+import { DropSelectMenu } from "@/app/dashboard/settings/edit_faq/DropSelect"
+
+
 
 /**
  * AddFAQ Component
@@ -18,7 +21,6 @@ export default function AddFAQ({ maxIndex, onFAQAddedAction }: {
     maxIndex: number
     onFAQAddedAction: (faq: Awaited<ReturnType<typeof createFAQ>>) => void
 }) {
-
     return (
         <form action={async (formData: FormData) => {
             const question = formData.get('question') as string
@@ -28,6 +30,7 @@ export default function AddFAQ({ maxIndex, onFAQAddedAction }: {
             // router.refresh()
         }} className="border p-4 rounded-lg bg-gray-50">
             <h3 className="font-bold mb-2">Add New FAQ</h3>
+            <DropSelectMenu />
             <input
                 name="question"
                 placeholder="Question"
