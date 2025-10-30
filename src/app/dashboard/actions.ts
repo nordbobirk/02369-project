@@ -9,12 +9,6 @@ import {
   TattooType,
 } from "@/lib/types";
 
-export type Tattoo_images = {
-  id: string,
-  tattoo_id: string,
-  image_url: string
-}
-
 export type Tattoo = {
   id: string,
   notes: string,
@@ -22,7 +16,6 @@ export type Tattoo = {
   estimated_price: number,
   estimated_duration: number,
   detail_level: DetailLevel,
-  images: Tattoo_images[],
 }
 
 export type Booking = {
@@ -58,13 +51,7 @@ export async function getBookingsAtDate(date: Date) {
     .from("bookings")
     .select(`
             *,
-            tattoos (
-                *,
-                booking_images (
-                    id,
-                    image_url
-                )
-            )
+            tattoos(*)
         `)
     .gte("date_and_time", start)
     .lte("date_and_time", end);
@@ -85,12 +72,7 @@ export async function getTodaysBookings() {
     .select(`
             *,
             tattoos (
-                *,
-                booking_images (
-                    id,
-                    image_url
-                )
-            )
+                *)
         `)
     .gte("date_and_time", start)
     .lte("date_and_time", end);
@@ -105,13 +87,7 @@ export async function getPendingBookings() {
     .from("bookings")
     .select(`
             *,
-            tattoos (
-                *,
-                booking_images (
-                    id,
-                    image_url
-                )
-            )
+            tattoos(*)
         `)
     .in("status", ["pending", "edited"])
     console.log(bookings)
@@ -124,13 +100,7 @@ export async function getAllBookings() {
     .from("bookings")
     .select(`
             *,
-            tattoos (
-                *,
-                booking_images (
-                    id,
-                    image_url
-                )
-            )
+            tattoos(*)
         `)
     console.log(bookings)
   return bookings;

@@ -4,7 +4,7 @@ import * as React from "react"
 
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { getBookingsAtDate, getAllBookings, Booking, Tattoo, Tattoo_images } from "./actions"
+import { getBookingsAtDate, getAllBookings, Booking, Tattoo } from "./actions"
 import { da } from "date-fns/locale"
 import ViewBooking from "./ViewBooking"
 
