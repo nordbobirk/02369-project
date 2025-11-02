@@ -11,7 +11,6 @@ export default function RejectButton() {
     const id = params.id;
 
     const onClick = async () => {
-        console.log("rejecting booking with id: " + id);
 
         await rejectPendingBooking(id);
     }

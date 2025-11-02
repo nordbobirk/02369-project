@@ -55,7 +55,7 @@ export async function getPendingBookingById( params : string ) {
         .order('created_at', { ascending: false })
 
     if (error) throw error
-    console.log(data)
+
     return data
 }
 
@@ -66,8 +66,13 @@ export async function getPendingBookingById( params : string ) {
  *      add docstrings
  */
 
+/**
+ * Accepts a pending booking with the given id.
+ * @param params - The id of the pending booking to accept.
+ * @throws {Error} If there is an error updating the booking status.
+ */
 export async function acceptPendingBooking(params: string | Array<string> | undefined) {
-    console.log('acceptPendingBooking called:', params)
+
     const supabase = await initServerClient()
     const { error } = await supabase
         .from('bookings')
@@ -79,8 +84,13 @@ export async function acceptPendingBooking(params: string | Array<string> | unde
     return
 }
 
+/**
+ * Rejects a pending booking with the given id.
+ * @param params - The id of the pending booking to reject.
+ * @throws {Error} If there is an error updating the booking status.
+ */
 export async function rejectPendingBooking(params: string | Array<string> | undefined) {
-    console.log('rejectPendingBooking called:', params)
+
     const supabase = await initServerClient()
     const { error } = await supabase
         .from('bookings')

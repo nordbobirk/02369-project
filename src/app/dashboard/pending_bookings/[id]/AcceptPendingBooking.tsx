@@ -11,7 +11,6 @@ export default function AcceptButton() {
     const id = params.id as string;
 
     const onClick = async () => {
-        console.log("accepting booking with id: " + id);
         await acceptPendingBooking(id);
     }
 
