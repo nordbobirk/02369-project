@@ -3,6 +3,7 @@ import { TattooInfo } from "@/app/dashboard/pending_bookings/[id]/TattoInfo";
 import type { Tattoo } from "@/app/dashboard/pending_bookings/[id]/TattoInfo";
 import AcceptButton from "@/app/dashboard/pending_bookings/[id]/AcceptPendingBooking";
 import RejectButton from "@/app/dashboard/pending_bookings/[id]/RejectPendingBooking";
+import { formatMinutesHrsMins } from "@/app/dashboard/utils/formatMinutes";
 
 type Booking = {
     id: string;
@@ -48,7 +49,7 @@ export default function BookingInfo({ booking }: BookingInfoProps) {
                     </div>
                     <div>
                         <span className="font-medium">Samlet tid for tatoveringer:</span>{" "}
-                        {booking.tattoos?.reduce((acc, t) => acc + (t.estimated_duration ?? 0), 0) ?? 0} min
+                        {formatMinutesHrsMins(booking.tattoos?.reduce((acc, t) => acc + (t.estimated_duration ?? 0), 0) ?? 0)}
                     </div>
                     <div>
                         <span className="font-medium">Samlet pris for tatoveringer:</span>{" "}

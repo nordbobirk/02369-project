@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { TattooImages } from "@/app/dashboard/pending_bookings/[id]/TattooImages";
+import {formatMinutesHrsMins} from "@/app/dashboard/utils/formatMinutes";
 
 export type Tattoo = {
     id: number;
@@ -67,7 +68,7 @@ export function TattooInfo({ tattoos }: TattooInfoProps) {
                                 <span className="font-medium">Farvebeskrivelse:</span> {tattoo.color_description}
                             </div>
                         )}
-                        <div>Est. tid: {tattoo.estimated_duration ?? "—"} minutter</div>
+                        <div>Est. tid: {formatMinutesHrsMins(tattoo.estimated_duration)} </div>
                         <div>Est. pris: {tattoo.estimated_price ?? "—"} kr</div>
                     </div>
                 </div>
