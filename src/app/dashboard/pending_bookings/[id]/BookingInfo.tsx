@@ -4,6 +4,8 @@ import type { Tattoo } from "@/app/dashboard/pending_bookings/[id]/TattoInfo";
 import AcceptButton from "@/app/dashboard/pending_bookings/[id]/AcceptPendingBooking";
 import RejectButton from "@/app/dashboard/pending_bookings/[id]/RejectPendingBooking";
 import { formatMinutesHrsMins } from "@/app/dashboard/utils/formatMinutes";
+import {formatPhoneNumber} from "@/app/dashboard/utils/formatPhoneNumber";
+import {formatDateToDanish} from "@/app/dashboard/utils/formatDateTime";
 
 type Booking = {
     id: string;
@@ -31,7 +33,7 @@ export default function BookingInfo({ booking }: BookingInfoProps) {
                 <div className="text-sm space-y-1 mt-2">
                     <div>
                         <span className="font-medium">Tid og dato:</span>{" "}
-                        {new Date(booking.date_and_time).toLocaleString()}
+                        {formatDateToDanish(new Date(booking.date_and_time).toLocaleString())}
                     </div>
                     <div>
                         <span className="font-medium">Status:</span> {booking.status}
@@ -92,8 +94,8 @@ export default function BookingInfo({ booking }: BookingInfoProps) {
     );
 }
 
-function formatPhoneNumber(phoneNumber: string): string {
-    const match = phoneNumber.match(/^(\+\d{2})\s?(\d{2})(\d{2})(\d{2})(\d{2})$/);
-    if (!match) return phoneNumber;
-    return `${match[1]} ${match[2]} ${match[3]} ${match[4]} ${match[5]}`;
-}
+// function formatPhoneNumber(phoneNumber: string): string {
+//     const match = phoneNumber.match(/^(\+\d{2})\s?(\d{2})(\d{2})(\d{2})(\d{2})$/);
+//     if (!match) return phoneNumber;
+//     return `${match[1]} ${match[2]} ${match[3]} ${match[4]} ${match[5]}`;
+// }
