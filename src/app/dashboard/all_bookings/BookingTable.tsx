@@ -44,7 +44,7 @@ export const columns: ColumnDef<Booking>[] = [
             <div className="capitalize">{row.getValue("status")}</div>
         ),
         sortingFn: (a, b) => {
-            // optional custom logic if you want specific order
+            // Order logic
             const order = ["pending", "edited","confirmed", "customer_cancelled", "artist_cancelled", "done"]
             const aVal = (a.getValue("status") as string)?.toLowerCase() ?? ""
             const bVal = (b.getValue("status") as string)?.toLowerCase() ?? ""
@@ -58,6 +58,13 @@ export const columns: ColumnDef<Booking>[] = [
             // fallback to normal ASCII comparison
             return aVal.localeCompare(bVal)
         },
+    },
+    {
+        accessorKey: "name",
+        header: "Navn",
+        cell: ({ row }) => (
+            <div>{row.getValue("name")}</div>
+        ),
     },
     {
         accessorKey: "email",
@@ -143,6 +150,7 @@ export default function BookingTable({ data }: { data: Booking[] }) {
         data,
         columns,
         onSortingChange: setSorting,
+        onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
