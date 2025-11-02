@@ -4,7 +4,7 @@ export default function Page() {
     return (
         <>
             <Confirm />
-            <p>dmfgdjf</p>
+
         </>
     );
 }
