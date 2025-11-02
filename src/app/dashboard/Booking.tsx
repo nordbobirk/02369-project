@@ -34,27 +34,16 @@ export default function BookingCard({ booking }: { booking: Booking }) {
                         <div>
                             <p>Ingen tatovering med booking</p>
                         </div> :
-                        booking.tattoos.length > 1 ?
+                        <div>
+
                             <div>
-                                <p>Flere tatoveringer i booking</p>
-                                <div>
-                                    Samlet varighed: {booking.tattoos?.reduce((acc: number, tattoo: Tattoo) => acc + tattoo.estimated_duration, 0) ?? 0} min
-                                </div>
-                                <div>
-                                    {getTimeUntilBooking(booking.date_and_time)}
-                                </div>
-                            </div> :
+                                Samlet varighed: {booking.tattoos?.reduce((acc: number, tattoo: Tattoo) => acc + tattoo.estimated_duration / 60, 0) ?? 0} timer
+                            </div>
                             <div>
-                                <div>
-                                    Varighed: {booking.tattoos.at(0)?.estimated_duration?.toString()} minutter
-                                </div>
-                                <div>
-                                    Kompleksitet: {booking.tattoos.at(0)?.detail_level?.toString()}
-                                </div>
-                                <div>
-                                    {getTimeUntilBooking(booking.date_and_time)}
-                                </div>
-                            </div>}
+                                {getTimeUntilBooking(booking.date_and_time)}
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
             <ViewBooking bookingId={booking.id} />
