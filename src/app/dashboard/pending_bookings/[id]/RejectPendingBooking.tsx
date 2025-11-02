@@ -18,8 +18,8 @@ export default function RejectButton() {
 
     return (
         <Link href="/dashboard/">
-            <Button onClick={onClick} variant="secondary">
-                Reject
+            <Button onClick={onClick} variant="destructive">
+                Afvis
             </Button>
         </Link>
     )

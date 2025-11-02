@@ -18,7 +18,7 @@ export default function AcceptButton() {
     return (
         <Link href="/dashboard/">
             <Button onClick={onClick} variant="secondary">
-                Accept
+                Accepter
             </Button>
         </Link>
     )
