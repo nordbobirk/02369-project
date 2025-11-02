@@ -26,6 +26,7 @@ import {
 import { Booking } from "../actions"
 import ViewBooking from "../ViewBooking"
 import { ArrowUpDown } from "lucide-react"
+import {formatMinutesHrsMins} from "@/app/dashboard/utils/formatMinutes";
 
 
 export const columns: ColumnDef<Booking>[] = [
@@ -107,10 +108,11 @@ export const columns: ColumnDef<Booking>[] = [
                 0
             )
 
-            const hrs = Math.floor(totalDuration / 60)
-            const mins = totalDuration % 60
-
-            return <div className=" font-medium">{hrs} timer, {mins} min</div>
+            // const hrs = Math.floor(totalDuration / 60)
+            // const mins = totalDuration % 60
+            //
+            // return <div className=" font-medium">{hrs} timer, {mins} min</div>
+            return <div className=" font-medium">{formatMinutesHrsMins(totalDuration)}</div>
         },
     },
     {
