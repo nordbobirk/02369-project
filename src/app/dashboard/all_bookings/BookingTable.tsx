@@ -108,10 +108,6 @@ export const columns: ColumnDef<Booking>[] = [
                 0
             )
 
-            // const hrs = Math.floor(totalDuration / 60)
-            // const mins = totalDuration % 60
-            //
-            // return <div className=" font-medium">{hrs} timer, {mins} min</div>
             return <div className=" font-medium">{formatMinutesHrsMins(totalDuration)}</div>
         },
     },
