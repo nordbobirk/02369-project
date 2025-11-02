@@ -33,6 +33,13 @@ type Booking = {
 }
 
 
+/**
+ * Fetches a booking by its id. The booking includes all its tattoos and their images.
+ *
+ * @param params - The id of the booking to fetch.
+ * @returns {Promise<Booking>} The booking data.
+ * @throws {Error} If there is an error fetching the booking.
+ */
 export async function getPendingBookingById( params : string ) {
     const supabase = await initServerClient()
 
@@ -59,15 +66,10 @@ export async function getPendingBookingById( params : string ) {
     return data
 }
 
-/**
- * TODO: implement:
- *      Important. add security. right now one can edit status of any booking by knowing the id.
- *          this can lead to stupid situations...
- *      add docstrings
- */
 
 /**
  * Accepts a pending booking with the given id.
+ *
  * @param params - The id of the pending booking to accept.
  * @throws {Error} If there is an error updating the booking status.
  */
@@ -86,6 +88,7 @@ export async function acceptPendingBooking(params: string | Array<string> | unde
 
 /**
  * Rejects a pending booking with the given id.
+ *
  * @param params - The id of the pending booking to reject.
  * @throws {Error} If there is an error updating the booking status.
  */
