@@ -1,6 +1,6 @@
 
 
-export function formatDateToDanish(dateInput?: string | Date): string {
+export function formatDateTime(dateInput?: string | Date): string {
     if (!dateInput) return "—";
 
     const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;

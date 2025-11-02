@@ -5,7 +5,7 @@ import AcceptButton from "@/app/dashboard/pending_bookings/[id]/AcceptPendingBoo
 import RejectButton from "@/app/dashboard/pending_bookings/[id]/RejectPendingBooking";
 import { formatMinutesHrsMins } from "@/app/dashboard/utils/formatMinutes";
 import {formatPhoneNumber} from "@/app/dashboard/utils/formatPhoneNumber";
-import {formatDateToDanish} from "@/app/dashboard/utils/formatDateTime";
+import {formatDateTime } from "@/app/dashboard/utils/formatDateTime";
 
 type Booking = {
     id: string;
@@ -33,7 +33,7 @@ export default function BookingInfo({ booking }: BookingInfoProps) {
                 <div className="text-sm space-y-1 mt-2">
                     <div>
                         <span className="font-medium">Tid og dato:</span>{" "}
-                        {formatDateToDanish(new Date(booking.date_and_time).toLocaleString())}
+                        {formatDateTime(new Date(booking.date_and_time).toLocaleString())}
                     </div>
                     <div>
                         <span className="font-medium">Status:</span> {booking.status}
@@ -59,7 +59,7 @@ export default function BookingInfo({ booking }: BookingInfoProps) {
                     </div>
                     <div>
                         <span className="font-medium">Oprettet:</span>{" "}
-                        {new Date(booking.created_at).toLocaleString()}
+                        {formatDateTime(new Date(booking.created_at).toLocaleString())}
                     </div>
                     <div>
                         {/*TODO: fix - så denne kan redigeres*/}
@@ -70,9 +70,9 @@ export default function BookingInfo({ booking }: BookingInfoProps) {
                     </div>
                     <div>
                         <span className="font-medium">Ændret:</span>{" "}
-                        {booking.edited_date_and_time
+                        {formatDateTime(booking.edited_date_and_time
                             ? new Date(booking.edited_date_and_time).toLocaleString()
-                            : "—"}
+                            : "—")}
                     </div>
                 </div>
                 {/* tilføjer accept reject button hvis status er pending eller edited */}
