@@ -90,20 +90,21 @@ export async function getPendingBookings() {
             tattoos(*)
         `)
     .in("status", ["pending", "edited"])
-    console.log(bookings)
+  console.log(bookings)
   return bookings;
 }
 
-export async function getAllBookings() {
+export async function getAllBookings(): Promise<Booking[]> {
   const supabase = await initServerClient();
   const { data: bookings, error } = await supabase
     .from("bookings")
     .select(`
-            *,
-            tattoos(*)
-        `)
-    console.log(bookings)
-  return bookings;
+      *,
+      tattoos(*)
+    `);
+
+  if (error) throw error;
+  return bookings as Booking[];
 }
 
 export async function getTimeUntilBooking(date_and_time: string): Promise<string> {
