@@ -2,6 +2,7 @@ import * as React from "react"
 
 import ViewBooking from "@/app/dashboard/ViewBooking";
 import { Booking, Tattoo } from "./actions"
+import {formatMinutesHrsMins} from "@/app/dashboard/utils/formatMinutes";
 
 
 // Should create a new user-side component for this. Currently also used in actions which is serverside
@@ -37,7 +38,7 @@ export default function BookingCard({ booking }: { booking: Booking }) {
                         <div>
 
                             <div>
-                                Samlet varighed: {booking.tattoos?.reduce((acc: number, tattoo: Tattoo) => acc + tattoo.estimated_duration / 60, 0) ?? 0} timer
+                                Samlet varighed: {formatMinutesHrsMins(booking.tattoos?.reduce((acc: number, tattoo: Tattoo) => acc + tattoo.estimated_duration, 0))}
                             </div>
                             <div>
                                 {getTimeUntilBooking(booking.date_and_time)}
