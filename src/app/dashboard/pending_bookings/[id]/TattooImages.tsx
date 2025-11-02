@@ -17,7 +17,7 @@ export function TattooImages({ images }: { images?: { id: number; image_url: str
     const len = images.length;
     const safeIndex = ((index % len) + len) % len;
     const current = images[safeIndex];
-
+    // TODO: test with real images - maybe add some 'fullscreen' functionality for view of details or something.
     return (
         <div className="p-2 border border-black rounded-lg">
             <div className="flex flex-col md:flex-row gap-4">

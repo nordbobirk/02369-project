@@ -1,6 +1,8 @@
 // src/app/dashboard/pending_bookings/[id]/BookingInfo.tsx
 import { TattooInfo } from "@/app/dashboard/pending_bookings/[id]/TattoInfo";
 import type { Tattoo } from "@/app/dashboard/pending_bookings/[id]/TattoInfo";
+import AcceptButton from "@/app/dashboard/pending_bookings/[id]/AcceptPendingBooking";
+import RejectButton from "@/app/dashboard/pending_bookings/[id]/RejectPendingBooking";
 
 type Booking = {
     id: string;
@@ -57,6 +59,7 @@ export default function BookingInfo({ booking }: BookingInfoProps) {
                         {new Date(booking.created_at).toLocaleString()}
                     </div>
                     <div>
+                        {/*TODO: fix - så denne kan redigeres*/}
                         <span className="font-medium">Interne Notes:</span>
                         <div className="max-h-[6rem] overflow-y-auto break-words p-2 mt-1 border border-black rounded-lg">
                             {booking.internal_notes || "—"}
@@ -69,6 +72,14 @@ export default function BookingInfo({ booking }: BookingInfoProps) {
                             : "—"}
                     </div>
                 </div>
+                {/* tilføjer accept reject button hvis status er pending eller edited */}
+                { (booking.status === "pending" || booking.status === "edited") && (
+                    <div>
+                        <br/>
+                        <AcceptButton /> <span> </span>
+                        <RejectButton />
+                    </div>
+                )}
             </div>
 
             <div className="w-full md:w-1/2 flex-shrink-0">

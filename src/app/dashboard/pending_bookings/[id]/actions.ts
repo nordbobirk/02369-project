@@ -50,9 +50,8 @@ export async function getPendingBookingById( params : string ) {
                 )
             )
         `)
-        // .eq('status', 'pending')
         .eq('id', params)
-        .in('status', ['pending', 'edited'])
+        // .in('status', ['pending', 'edited'])
         .order('created_at', { ascending: false })
 
     if (error) throw error
@@ -62,9 +61,6 @@ export async function getPendingBookingById( params : string ) {
 
 /**
  * TODO: implement:
- *     ~~accept booking~~ and redirect to dashboard
- *      ~~decline booking~~ and redirect to dashboard
- *      ...
  *      Important. add security. right now one can edit status of any booking by knowing the id.
  *          this can lead to stupid situations...
  *      add docstrings
