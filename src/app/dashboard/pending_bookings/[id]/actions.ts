@@ -22,7 +22,7 @@ type Booking = {
     id: string,
     email: string,
     phone: string,
-    full_name: string,
+    name: string,
     date_and_time: string,
     created_at: string,
     status: string,
@@ -33,6 +33,13 @@ type Booking = {
 }
 
 
+/**
+ * Fetches a booking by its id. The booking includes all its tattoos and their images.
+ *
+ * @param params - The id of the booking to fetch.
+ * @returns {Promise<Booking>} The booking data.
+ * @throws {Error} If there is an error fetching the booking.
+ */
 export async function getPendingBookingById( params : string ) {
     const supabase = await initServerClient()
 
@@ -50,28 +57,24 @@ export async function getPendingBookingById( params : string ) {
                 )
             )
         `)
-        // .eq('status', 'pending')
         .eq('id', params)
-        .in('status', ['pending', 'edited'])
+        // .in('status', ['pending', 'edited'])
         .order('created_at', { ascending: false })
 
     if (error) throw error
-    console.log(data)
+
     return data
 }
 
-/**
- * TODO: implement:
- *      accept booking and redirect to dashboard
- *      decline booking and redirect to dashboard
- *      ...
- *      Imoprtant. add security. right now one can edit status of any booking by knowing the id.
- *          this can lead to stupid situations...
- *      add docstrings
- */
 
+/**
+ * Accepts a pending booking with the given id.
+ *
+ * @param params - The id of the pending booking to accept.
+ * @throws {Error} If there is an error updating the booking status.
+ */
 export async function acceptPendingBooking(params: string | Array<string> | undefined) {
-    console.log('acceptPendingBooking called:', params)
+
     const supabase = await initServerClient()
     const { error } = await supabase
         .from('bookings')
@@ -83,8 +86,14 @@ export async function acceptPendingBooking(params: string | Array<string> | unde
     return
 }
 
+/**
+ * Rejects a pending booking with the given id.
+ *
+ * @param params - The id of the pending booking to reject.
+ * @throws {Error} If there is an error updating the booking status.
+ */
 export async function rejectPendingBooking(params: string | Array<string> | undefined) {
-    console.log('rejectPendingBooking called:', params)
+
     const supabase = await initServerClient()
     const { error } = await supabase
         .from('bookings')

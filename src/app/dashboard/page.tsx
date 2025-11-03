@@ -1,15 +1,15 @@
 
-import { Button } from "@/components/ui/button"
 import * as React from "react"
 import Calendar from "./Calendar";
-import { ExternalLink, ExternalLinkIcon, LinkIcon } from "lucide-react";
 import { initServerClient } from "@/lib/supabase/server";
-import { getTodaysBookings, getTimeUntilBooking } from "./actions"
+import ViewBooking from "@/app/dashboard/ViewBooking";
+import { getTodaysBookings, getTimeUntilBooking, getPendingBookings, Tattoo } from "./actions"
+import BookingCard from "./Booking";
 
 export default async function Home() {
   const supabase = await initServerClient();
-  const { data: bookings, error } = await supabase.from("bookings").select("*").eq("status", "pending");
-  
+  const pendingBookings = await getPendingBookings();
+
   const todaysBookings = await getTodaysBookings()
   return (
     <>
@@ -21,25 +21,11 @@ export default async function Home() {
         <div
           className=" lg:m-4 rounded-xl border shadow-sm w-full lg:w-[45%]">
           <div>
-            <p className="border-b p-6 font-medium">Ubesvarede anmodninger</p>
+            <p className="border-b p-6 font-medium">Der er {pendingBookings?.length} ubesvarede anmodninger</p>
           </div>
           <div className="p-4">
-            {bookings?.map((booking) => (
-              <div
-                key={booking.id}
-                className="mb-3 bg-muted after:bg-primary/70 relative rounded-md p-2 pl-6 text-sm after:absolute after:inset-y-2 after:left-2 after:w-1 after:rounded-full flex justify-between"
-              >
-                <div>
-                  <div className="font-medium">Booking til {booking.name}</div>
-                  <div className="text-muted-foreground text-xs">
-                    {getTimeUntilBooking(booking.date_and_time)}
-                  </div>
-                </div>
-                <Button>
-                  Se
-                  <ExternalLinkIcon />
-                </Button>
-              </div>
+            {pendingBookings?.map((booking) => (
+              <BookingCard booking={booking} key={booking.id}></BookingCard>
             ))}
           </div>
         </div>
@@ -50,16 +36,7 @@ export default async function Home() {
           </div>
           <div className="p-4">
             {(todaysBookings?.length) ? todaysBookings?.map((booking) => (
-              <div
-                key={booking.id}
-                className="mb-3 bg-muted after:bg-primary/70 relative rounded-md p-2 pl-6 text-sm after:absolute after:inset-y-2 after:left-2 after:w-1 after:rounded-full flex justify-between">
-                <div>
-                  <div className="font-medium">Booking til {booking.name}</div>
-                  <div className="text-muted-foreground text-xs">
-                    {getTimeUntilBooking(booking.date_and_time)}
-                  </div>
-                </div>
-              </div>
+              <BookingCard booking={booking} key={booking.id}></BookingCard>
             )) : <p>Ingen bookinger i dag</p>
             }
 

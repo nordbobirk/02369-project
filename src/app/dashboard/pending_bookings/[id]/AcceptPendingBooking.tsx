@@ -1,8 +1,9 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { acceptPendingBooking } from "@/app/dashboard/pending_bookings/actions";
+import { acceptPendingBooking } from "@/app/dashboard/pending_bookings/[id]/actions";
 import { useParams } from 'next/navigation'
+import Link from 'next/link';
 
 export default function AcceptButton() {
 
@@ -10,13 +11,14 @@ export default function AcceptButton() {
     const id = params.id as string;
 
     const onClick = async () => {
-        console.log("accepting booking with id: " + id);
         await acceptPendingBooking(id);
     }
 
     return (
-        <Button onClick={onClick} variant="secondary">
-            Accept
-        </Button>
+        <Link href="/dashboard/">
+            <Button onClick={onClick} variant="secondary">
+                Accepter
+            </Button>
+        </Link>
     )
 }
