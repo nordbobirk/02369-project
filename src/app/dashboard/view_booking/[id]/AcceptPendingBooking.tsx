@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { acceptPendingBooking } from "@/app/dashboard/pending_bookings/[id]/actions";
+import { acceptPendingBooking } from "@/app/dashboard/view_booking/[id]/actions";
 import { useParams } from 'next/navigation'
 import Link from 'next/link';
 

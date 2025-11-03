@@ -82,7 +82,7 @@ export async function acceptPendingBooking(params: string | Array<string> | unde
         .eq('id', params)
 
     if (error) throw error
-    revalidatePath('/dashboard/pending_bookings' + params)
+    revalidatePath('/dashboard/view_booking' + params)
     return
 }
 
@@ -101,6 +101,6 @@ export async function rejectPendingBooking(params: string | Array<string> | unde
         .eq('id', params)
 
     if (error) throw error
-    revalidatePath('/dashboard/pending_bookings/' + params)
+    revalidatePath('/dashboard/view_booking/' + params)
     return
 }

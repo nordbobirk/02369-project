@@ -1,8 +1,8 @@
-// src/app/dashboard/pending_bookings/[id]/TattoInfo.tsx
+// src/app/dashboard/view_booking/[id]/TattoInfo.tsx
 "use client";
 
 import { useState } from "react";
-import { TattooImages } from "@/app/dashboard/pending_bookings/[id]/TattooImages";
+import { TattooImages } from "@/app/dashboard/view_booking/[id]/TattooImages";
 import {formatMinutesHrsMins} from "@/app/dashboard/utils/formatMinutes";
 
 export type Tattoo = {

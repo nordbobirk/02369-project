@@ -1,4 +1,4 @@
-// src/app/dashboard/pending_bookings/[id]/TattooImages.tsx
+// src/app/dashboard/view_booking/[id]/TattooImages.tsx
 "use client";
 
 import { useState } from "react";

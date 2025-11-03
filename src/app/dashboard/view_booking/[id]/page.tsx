@@ -1,7 +1,7 @@
 import { getPendingBookingById } from './actions';
-import BookingInfo from "@/app/dashboard/pending_bookings/[id]/BookingInfo";
+import BookingInfo from "@/app/dashboard/view_booking/[id]/BookingInfo";
 
-export default async function PendingBookingsPage({ params }: { params: {id: string } }) {
+export default async function ViewBookingsPage({ params }: { params: {id: string } }) {
     const bookings = await getPendingBookingById((await params).id);
 
     if (!bookings || bookings.length === 0) {

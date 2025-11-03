@@ -1,8 +1,8 @@
-// src/app/dashboard/pending_bookings/[id]/BookingInfo.tsx
-import { TattooInfo } from "@/app/dashboard/pending_bookings/[id]/TattoInfo";
-import type { Tattoo } from "@/app/dashboard/pending_bookings/[id]/TattoInfo";
-import AcceptButton from "@/app/dashboard/pending_bookings/[id]/AcceptPendingBooking";
-import RejectButton from "@/app/dashboard/pending_bookings/[id]/RejectPendingBooking";
+// src/app/dashboard/view_booking/[id]/BookingInfo.tsx
+import { TattooInfo } from "@/app/dashboard/view_booking/[id]/TattoInfo";
+import type { Tattoo } from "@/app/dashboard/view_booking/[id]/TattoInfo";
+import AcceptButton from "@/app/dashboard/view_booking/[id]/AcceptPendingBooking";
+import RejectButton from "@/app/dashboard/view_booking/[id]/RejectPendingBooking";
 import { formatMinutesHrsMins } from "@/app/dashboard/utils/formatMinutes";
 import {formatPhoneNumber} from "@/app/dashboard/utils/formatPhoneNumber";
 import {formatDateTime } from "@/app/dashboard/utils/formatDateTime";
