@@ -11,24 +11,28 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { getCategories } from "./actions"
 
-export function DropSelectMenu() {
-  const [category, setCategory] = React.useState("")
+export function DropSelectMenu({
+  value,
+  onChange,
+}: {
+  value: string
+  onChange: (val: string) => void
+}) {
   const [allCategories, setAllCategories] = React.useState<string[]>([])
 
   React.useEffect(() => {
     async function fetchCategories() {
-      const categories = await getCategories() // [{ Category: "common questionx" }, ...]
-      // Extract string and remove duplicates
+      const categories = await getCategories()
       const uniqueCategories = Array.from(
         new Set(categories.map((c: { category: string }) => c.category))
       )
       setAllCategories(uniqueCategories)
     }
     fetchCategories()
-  }, []) // empty dependency array ensures fetch runs only once
+  }, [])
 
-  const displayLabel = category
-    ? category.charAt(0).toUpperCase() + category.slice(1)
+  const displayLabel = value
+    ? value.charAt(0).toUpperCase() + value.slice(1)
     : "Choose category"
 
   return (
@@ -40,7 +44,7 @@ export function DropSelectMenu() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-full">
-          <DropdownMenuRadioGroup value={category} onValueChange={setCategory}>
+          <DropdownMenuRadioGroup value={value} onValueChange={onChange}>
             {allCategories.map((cat) => (
               <DropdownMenuRadioItem key={cat} value={cat}>
                 {cat.charAt(0).toUpperCase() + cat.slice(1)}

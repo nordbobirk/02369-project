@@ -62,8 +62,9 @@ export async function updateFAQ(id: number, question: string, answer: string) {
  * @param {number} index - The position where the new FAQ should be inserted
  * @throws {Error} If the creation fails
  */
-export async function createFAQ(question: string, answer: string, index: number): Promise<{
+export async function createFAQ(category: string, question: string, answer: string, index: number): Promise<{
     id: number
+    category: string
     question: string
     answer: string
     index: number
@@ -71,7 +72,7 @@ export async function createFAQ(question: string, answer: string, index: number)
     const supabase = await initServerClient()
     const { data, error } = await supabase
         .from('faq_contents')
-        .insert({ question, answer, index })
+        .insert({ category, question, answer, index })
         .select()
         .single()
 

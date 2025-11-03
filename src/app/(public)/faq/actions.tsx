@@ -45,5 +45,7 @@ export async function getFAQs(): Promise<FAQSection[]> {
     }, {} as Record<string, FAQSection>)
   );
 
+  console.log(grouped)
+
   return grouped;
 }
