@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -18,6 +18,7 @@ import { Estimates } from "./Estimates";
 import { inspect } from "util";
 import { TattooForm } from "./TattooForm";
 import { AddTattooControls } from "./AddTattoo";
+import { bookingDataValidationSchema } from "../validation";
 
 // Placeholder functions for price and time estimates
 const estimatePrice = (formData: BookingFormData): number => {
@@ -53,22 +54,34 @@ export type TattooData = {
   size: Size;
   colorOption: TattooColor;
   colorDescription?: string;
+  title: string;
 };
 
 /**
  * The default tattoo in the form, ie. the default values for the forms tattoo section
  */
-const DEFAULT_TATTOO: TattooData = {
-  colorOption: "BLACK",
-  placement: "ARM_LOWER",
-  size: "MEDIUM",
-  tattooType: "FLASH",
+const getDefaultTattoo = (index: number) =>
+  ({
+    colorOption: "BLACK",
+    placement: "ARM_LOWER",
+    size: "MEDIUM",
+    tattooType: "FLASH",
+    title: getTattooTitle(index),
+  } as TattooData);
+
+/**
+ * Get the title for a tattoo
+ * @param index the tattoos index
+ * @returns the tattoos title
+ */
+const getTattooTitle = (index: number) => {
+  return `Tatovering #${index + 1} `;
 };
 
 export default function BookingForm() {
   const [formData, setFormData] = useState<BookingFormData>({
     isFirstTattoo: false,
-    tattoos: [DEFAULT_TATTOO],
+    tattoos: [getDefaultTattoo(0)],
     customerName: "",
     customerEmail: "",
     customerPhone: "",
@@ -78,7 +91,28 @@ export default function BookingForm() {
   const [timeEstimate, setTimeEstimate] = useState<number>(0);
   const [isSubmissionLoading, setIsSubmissionLoading] =
     useState<boolean>(false);
-  const [selectedTattooIndex, setSelectedTattooIndex] = useState<number>(0);
+  const [selectedTattooIndex, setSelectedTattooIndex] = useState<number | null>(
+    0
+  );
+  const [nextTattooTitleIndex, setNextTattooTitleIndex] = useState<number>(1);
+  const [isFirstView, setIsFirstView] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (selectedTattooIndex !== null && !isFirstView) {
+      const selectedTattooElement = document.getElementById(
+        `tattoo-${selectedTattooIndex}`
+      );
+      if (selectedTattooElement) {
+        setTimeout(() => {
+          selectedTattooElement.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }, 25);
+      }
+    }
+    if (isFirstView) setIsFirstView(false);
+  }, [selectedTattooIndex]);
 
   /**
    * Update the pricing and duration estimates in state based on mutated {@link BookingFormData}
@@ -144,17 +178,13 @@ export default function BookingForm() {
    * Add another tattoo to the booking
    */
   const addTattoo = () => {
-    const tattoos = formData.tattoos;
-    tattoos.push(DEFAULT_TATTOO);
+    const tattoos = [...formData.tattoos];
+    tattoos.push(getDefaultTattoo(nextTattooTitleIndex));
+    setNextTattooTitleIndex(nextTattooTitleIndex + 1);
     setFormData({ ...formData, tattoos });
-    setSelectedTattooIndex(
-      formData.tattoos.length > 0 ? formData.tattoos.length - 1 : 0
-    );
-    const selectedTattooElement = document.getElementById(
-      `tattoo-${selectedTattooIndex}`
-    );
-    if (selectedTattooElement)
-      selectedTattooElement.scrollIntoView({ behavior: "smooth" });
+    const newSelectedTattooIndex = tattoos.length - 1;
+    console.log("addTattoo select", newSelectedTattooIndex);
+    selectTattoo(newSelectedTattooIndex);
   };
 
   /**
@@ -165,14 +195,23 @@ export default function BookingForm() {
     const tattoos = [...formData.tattoos];
     tattoos.splice(deleteIndex, 1);
     setFormData({ ...formData, tattoos });
-    setSelectedTattooIndex(
-      selectedTattooIndex > 0 ? selectedTattooIndex - 1 : 0
-    );
-    const selectedTattooElement = document.getElementById(
-      `tattoo-${selectedTattooIndex}`
-    );
-    if (selectedTattooElement)
-      selectedTattooElement.scrollIntoView({ behavior: "smooth" });
+    console.log("deleteTattoo select", null);
+    selectTattoo(null);
+  };
+
+  /**
+   * Check if the form is filled out and ready for submission
+   */
+  const isFormFilledOut = (): boolean => {
+    return bookingDataValidationSchema.safeParse(formData).success;
+  };
+
+  /**
+   * Set the selected tattoo
+   * @param tattooIndex new selected index
+   */
+  const selectTattoo = (tattooIndex: number | null) => {
+    setSelectedTattooIndex(tattooIndex);
   };
 
   /**
@@ -201,24 +240,20 @@ export default function BookingForm() {
                   handleTattooInputChange(index, e)
                 }
                 setTattooData={(tattooData: TattooData) => {
-                  const newFormData = formData;
+                  const newFormData = { ...formData };
                   newFormData.tattoos[index] = tattooData;
                   setFormData(newFormData);
                 }}
                 tattooData={tattoo}
-                key={index}
+                key={tattoo.title}
                 options={{
-                  title: `Tatovering #${index + 1} (${
-                    tattoo.tattooType.substring(0, 1).toUpperCase() +
-                    tattoo.tattooType.substring(1).toLowerCase()
-                  })`,
-                  showTitle: formData.tattoos.length > 1,
                   showDelete: formData.tattoos.length > 1,
                   hidden: selectedTattooIndex != index,
                   id: `tattoo-${index}`,
                 }}
                 deleteTattoo={() => deleteTattoo(index)}
-                selectTattoo={() => setSelectedTattooIndex(index)}
+                selectTattoo={() => selectTattoo(index)}
+                deselectTattoo={() => selectTattoo(null)}
               />
             ))}
 
@@ -236,9 +271,16 @@ export default function BookingForm() {
 
             {/* Submit Button */}
             <div className="flex flex-col items-center">
+              {!isFormFilledOut() ? (
+                <p className="pb-4 text-red-500 font-bold">
+                  Udfyld hele formularen før du kan indsende din
+                  bookinganmodning
+                </p>
+              ) : null}
               <Button
                 type="submit"
-                className="bg-red-600 hover:bg-red-700 text-white px-12 py-6 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                disabled={!isFormFilledOut()}
+                className="bg-red-600 disabled:bg-slate-500 hover:bg-red-700 text-white px-12 py-6 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
               >
                 {isSubmissionLoading ? (
                   <Spinner className="mr-2" />

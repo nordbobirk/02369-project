@@ -5,7 +5,7 @@ export function AddTattooControls({ addTattoo }: { addTattoo: () => void }) {
     <div className="flex justify-center">
       <div className="flex flex-col justify-center items-center">
         <Button
-          className="bg-orange-500 lg-rounded hover:bg-orange-600 text-white text-xl hover:cursor-pointer"
+          className="bg-orange-500 lg-rounded hover:bg-orange-600 text-white text-xl cursor-pointer"
           onClick={addTattoo}
           type="button"
         >

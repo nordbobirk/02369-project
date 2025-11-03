@@ -3,12 +3,13 @@ import { TattooData } from "../Form";
 import { General } from "./General";
 import { TypeDetails } from "./TypeDetails";
 import { TypeSelect } from "./TypeSelect";
-import { TrashIcon } from "lucide-react";
+import { ChevronUp, TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CollapsedTattoo } from "./CollapsedTattoo";
+import { DeleteTattooButton } from "./DeleteTattooButton";
+import { TattooTitle } from "./TattooTitle";
 
-type TattooFormOptions = {
-  title: string;
-  showTitle: boolean;
+export type TattooFormOptions = {
   showDelete: boolean;
   hidden: boolean;
   id: string;
@@ -21,6 +22,7 @@ export function TattooForm({
   options,
   deleteTattoo,
   selectTattoo,
+  deselectTattoo,
 }: {
   tattooData: TattooData;
   handleTattooInputChange: (
@@ -32,11 +34,13 @@ export function TattooForm({
   options: TattooFormOptions;
   deleteTattoo: () => void;
   selectTattoo: () => void;
+  deselectTattoo: () => void;
 }) {
   const [customReferenceFiles, setCustomReferenceFiles] = useState<File[]>([]);
   const [flashImageFile, setFlashImageFile] = useState<File | null>(null);
   const flashFileInputRef = useRef<HTMLInputElement>(null);
   const customFileInputRef = useRef<HTMLInputElement>(null);
+  const [saving, setSaving] = useState<boolean>(false);
 
   const handleFlashFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -59,35 +63,55 @@ export function TattooForm({
     }
   };
 
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    setSaving(true);
+    handleTattooInputChange(e);
+    new Promise((resolve) =>
+      setTimeout(resolve, 500 + Math.random() * 500)
+    ).then(() => {
+      setSaving(false);
+    });
+  };
+
   if (options.hidden) {
     return (
-      <div className="border rounded-lg py-8 hover:cursor-pointer" onClick={selectTattoo}>
-        <h2 className="text-3xl font-bold text-center">{options.title}</h2>
-      </div>
+      <CollapsedTattoo
+        title={tattooData.title}
+        options={options}
+        selectTattoo={selectTattoo}
+        deleteTattoo={deleteTattoo}
+      />
     );
   }
 
   return (
     <div
-      className="flex flex-col gap-4 border rounded-lg py-8 relative"
+      className="flex flex-col gap-4 border-2 border-black rounded-lg py-8 relative"
       id={options.id}
     >
-      {options.showDelete ? (
+      <div className="absolute top-0 right-0 py-2">
+        {options.showDelete ? (
+          <DeleteTattooButton deleteTattoo={deleteTattoo} />
+        ) : (
+          <DeleteTattooButton deleteTattoo={deleteTattoo} disabled />
+        )}
         <Button
-          className="absolute top-0 right-0 m-4 px-4 hover:cursor-pointer"
-          variant={"ghost"}
-          onClick={deleteTattoo}
+          className="cursor-pointer"
+          variant="ghost"
+          onClick={deselectTattoo}
         >
-          <TrashIcon className="size-6" />
+          <ChevronUp className="size-6" />
         </Button>
-      ) : null}
-      <h2 className="text-3xl font-bold text-center">
-        {options.showTitle ? options.title : ""}
-      </h2>
+      </div>
+      <TattooTitle title={tattooData.title} />
 
       <TypeSelect
         tattooData={tattooData}
-        handleTattooInputChange={handleTattooInputChange}
+        handleTattooInputChange={handleInputChange}
       />
 
       <TypeDetails
@@ -98,13 +122,17 @@ export function TattooForm({
         flashImageFile={flashImageFile}
         handleCustomFilesChange={handleCustomFilesChange}
         handleFlashFileChange={handleFlashFileChange}
-        handleTattooInputChange={handleTattooInputChange}
+        handleTattooInputChange={handleInputChange}
       />
 
       <General
         tattooData={tattooData}
-        handleTattooInputChange={handleTattooInputChange}
+        handleTattooInputChange={handleInputChange}
       />
+
+      <div className="flex justify-center text-slate-500/50 text-m">
+        {saving ? "Gemmer..." : "Informationerne om din tatovering er gemt"}
+      </div>
     </div>
   );
 }

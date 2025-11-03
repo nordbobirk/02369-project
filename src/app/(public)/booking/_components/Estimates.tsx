@@ -8,7 +8,7 @@ export function Estimates({
   timeEstimate: number;
 }) {
   return (
-    <div className="rounded-xl p-8 border">
+    <div className="rounded-xl p-8 border-2 border-black">
       <h2 className="text-2xl font-bold mb-6">Estimater</h2>
       <p className="text-slate-400 mb-6">
         Nedenstående er grove estimater baseret på dine valg. Den endelige tid
