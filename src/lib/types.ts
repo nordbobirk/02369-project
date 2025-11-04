@@ -1,17 +1,17 @@
-export type TattooType = "FLASH" | "CUSTOM";
-export type DetailLevel = "LOW" | "MEDIUM" | "HIGH";
+export type TattooType = "flash" | "custom";
+export type DetailLevel = "low" | "medium" | "high";
 export type Placement =
-  | "ARM_UPPER"
-  | "ARM_LOWER"
-  | "LEG_UPPER"
-  | "LEG_LOWER"
-  | "CHEST"
-  | "BACK"
-  | "SHOULDER"
-  | "NECK"
-  | "HAND"
-  | "FOOT"
-  | "RIBS"
-  | "STOMACH";
-export type Size = "SMALL" | "MEDIUM" | "LARGE";
-export type TattooColor = "BLACK" | "COLORED";
+  | "arm_upper"
+  | "arm_lower"
+  | "leg_upper"
+  | "leg_lower"
+  | "chest"
+  | "back"
+  | "shoulder"
+  | "neck"
+  | "hand"
+  | "foot"
+  | "ribs"
+  | "stomach";
+export type Size = "small" | "medium" | "large";
+export type TattooColor = "black" | "colored";

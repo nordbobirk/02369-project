@@ -28,18 +28,18 @@ export function General({
             required
             className="w-full px-4 py-3 border rounded-lg"
           >
-            <option value="ARM_UPPER">Overarm</option>
-            <option value="ARM_LOWER">Underarm/forarm</option>
-            <option value="LEG_UPPER">Lår</option>
-            <option value="LEG_LOWER">Læg/skindeben</option>
-            <option value="CHEST">Bryst</option>
-            <option value="BACK">Ryg</option>
-            <option value="SHOULDER">Skulder</option>
-            <option value="NECK">Hals</option>
-            <option value="HAND">Hånd/fingre</option>
-            <option value="FOOT">Fod/ankel</option>
-            <option value="RIBS">Ribben/side</option>
-            <option value="STOMACH">Mave</option>
+            <option value="arm_upper">Overarm</option>
+            <option value="arm_lower">Underarm/forarm</option>
+            <option value="leg_upper">Lår</option>
+            <option value="leg_lower">Læg/skindeben</option>
+            <option value="chest">Bryst</option>
+            <option value="back">Ryg</option>
+            <option value="shoulder">Skulder</option>
+            <option value="neck">Hals</option>
+            <option value="hand">Hånd/fingre</option>
+            <option value="foot">Fod/ankel</option>
+            <option value="ribs">Ribben/side</option>
+            <option value="stomach">Mave</option>
           </select>
         </div>
 
@@ -55,9 +55,9 @@ export function General({
             required
             className="w-full px-4 py-3 border rounded-lg"
           >
-            <option value="SMALL">Lille (op til 5x5 cm)</option>
-            <option value="MEDIUM">Medium (mellem 5x5 og 10x10 cm)</option>
-            <option value="LARGE">Stor (større end 10x10 cm)</option>
+            <option value="small">Lille (op til 5x5 cm)</option>
+            <option value="medium">Medium (mellem 5x5 og 10x10 cm)</option>
+            <option value="large">Stor (større end 10x10 cm)</option>
           </select>
         </div>
       </div>
@@ -67,7 +67,7 @@ export function General({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <label
             className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all ${
-              tattooData.colorOption === "BLACK"
+              tattooData.colorOption === "black"
                 ? "border-2 border-blue-500/50"
                 : "border hover:bg-slate-100/50"
             }`}
@@ -75,17 +75,17 @@ export function General({
             <input
               type="radio"
               name="colorOption"
-              value="BLACK"
-              checked={tattooData.colorOption === "BLACK"}
+              value="black"
+              checked={tattooData.colorOption === "black"}
               onChange={handleTattooInputChange}
               className="sr-only"
             />
             <div
               className={`w-5 h-5 rounded-full flex items-center justify-center border ${
-                tattooData.colorOption === "BLACK" ? "border-blue-500" : ""
+                tattooData.colorOption === "black" ? "border-blue-500" : ""
               }`}
             >
-              {tattooData.colorOption === "BLACK" && (
+              {tattooData.colorOption === "black" && (
                 <div className="w-3 h-3 rounded-full bg-blue-500"></div>
               )}
             </div>
@@ -97,7 +97,7 @@ export function General({
 
           <label
             className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all ${
-              tattooData.colorOption === "COLORED"
+              tattooData.colorOption === "colored"
                 ? "border-2 border-blue-500/50"
                 : "border hover:bg-slate-100/50"
             }`}
@@ -105,17 +105,17 @@ export function General({
             <input
               type="radio"
               name="colorOption"
-              value="COLORED"
-              checked={tattooData.colorOption === "COLORED"}
+              value="colored"
+              checked={tattooData.colorOption === "colored"}
               onChange={handleTattooInputChange}
               className="sr-only"
             />
             <div
               className={`w-5 h-5 rounded-full flex items-center justify-center border ${
-                tattooData.colorOption === "COLORED" ? "border-blue-500" : ""
+                tattooData.colorOption === "colored" ? "border-blue-500" : ""
               }`}
             >
-              {tattooData.colorOption === "COLORED" && (
+              {tattooData.colorOption === "colored" && (
                 <div className="w-3 h-3 rounded-full bg-blue-500"></div>
               )}
             </div>
@@ -126,7 +126,7 @@ export function General({
           </label>
         </div>
 
-        {tattooData.colorOption === "COLORED" && (
+        {tattooData.colorOption === "colored" && (
           <div className="mt-4">
             <label
               htmlFor="colorDescription"

@@ -28,7 +28,7 @@ export function TypeDetails({
     <div className="backdrop-blur-sm rounded-xl px-8">
       <h2 className="text-2xl font-bold mb-6">2. Detaljer</h2>
 
-      {tattooData.tattooType === "FLASH" ? (
+      {tattooData.tattooType === "flash" ? (
         <div className="space-y-6">
           <div>
             <label className="block font-medium mb-2">
@@ -162,11 +162,11 @@ export function TypeDetails({
               <option value="" disabled>
                 Vælg detaljegrad
               </option>
-              <option value="LOW">Meget simpel</option>
-              <option value="MEDIUM">
+              <option value="low">Meget simpel</option>
+              <option value="medium">
                 Simpel outline med noget skygge/tekstur
               </option>
-              <option value="HIGH">Meget detaljeret</option>
+              <option value="high">Meget detaljeret</option>
             </select>
           </div>
         </div>
