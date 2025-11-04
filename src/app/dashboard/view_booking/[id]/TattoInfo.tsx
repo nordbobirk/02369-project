@@ -13,7 +13,7 @@ export type Tattoo = {
     placement?: string;
     tattoo_type?: string;
     detail_level?: string;
-    booking_images?: { id: number; image_url: string }[];
+    tattoo_images?: { id: number; image_url: string }[];
     colored_option?: string;
     estimated_price?: number;
     color_description?: string | null;
@@ -36,7 +36,7 @@ export function TattooInfo({ tattoos }: TattooInfoProps) {
     return (
         <div className="p-2 border border-black rounded-lg flex flex-col md:flex-row gap-4">
             <div className="order-1 md:order-2 md:w-60 w-full">
-                <TattooImages images={tattoo.booking_images} />
+                <TattooImages images={tattoo.tattoo_images} />
             </div>
 
             <div className="flex-1 order-2 md:order-1">
