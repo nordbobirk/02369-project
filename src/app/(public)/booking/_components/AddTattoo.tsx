@@ -9,7 +9,7 @@ export function AddTattooControls({ addTattoo }: { addTattoo: () => void }) {
           onClick={addTattoo}
           type="button"
         >
-          Tilføj tatovering
+          Tilføj endnu en tatovering
         </Button>
         <p className="text-xs text-center pt-2">
           Du kan tilføje andre tatoveringer til samme booking. Det kan du
