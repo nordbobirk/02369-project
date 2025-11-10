@@ -15,10 +15,12 @@ import {
 import { FormTitle } from "./FormTitle";
 import { ContactInfo } from "./ContactInfo";
 import { Estimates } from "./Estimates";
-import { inspect } from "util";
 import { TattooForm } from "./TattooForm";
 import { AddTattooControls } from "./AddTattoo";
-import { bookingDataValidationSchema } from "../validation";
+import { Error } from "./Error";
+import { BookingSubmissionInput, submitBooking, submitFilePaths } from "../submitBooking";
+import { initBrowserClient } from "@/lib/supabase/client";
+import { BOOKING_IMAGES_BUCKET_NAME } from "@/lib/storage";
 
 // Placeholder functions for price and time estimates
 const estimatePrice = (formData: BookingFormData): number => {
@@ -62,10 +64,10 @@ export type TattooData = {
  */
 const getDefaultTattoo = (index: number) =>
   ({
-    colorOption: "BLACK",
-    placement: "ARM_LOWER",
-    size: "MEDIUM",
-    tattooType: "FLASH",
+    colorOption: "black",
+    placement: "arm_lower",
+    size: "medium",
+    tattooType: "flash",
     title: getTattooTitle(index),
   } as TattooData);
 
@@ -96,6 +98,7 @@ export default function BookingForm() {
   );
   const [nextTattooTitleIndex, setNextTattooTitleIndex] = useState<number>(1);
   const [isFirstView, setIsFirstView] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (selectedTattooIndex !== null && !isFirstView) {
@@ -183,7 +186,6 @@ export default function BookingForm() {
     setNextTattooTitleIndex(nextTattooTitleIndex + 1);
     setFormData({ ...formData, tattoos });
     const newSelectedTattooIndex = tattoos.length - 1;
-    console.log("addTattoo select", newSelectedTattooIndex);
     selectTattoo(newSelectedTattooIndex);
   };
 
@@ -195,7 +197,6 @@ export default function BookingForm() {
     const tattoos = [...formData.tattoos];
     tattoos.splice(deleteIndex, 1);
     setFormData({ ...formData, tattoos });
-    console.log("deleteTattoo select", null);
     selectTattoo(null);
   };
 
@@ -203,7 +204,8 @@ export default function BookingForm() {
    * Check if the form is filled out and ready for submission
    */
   const isFormFilledOut = (): boolean => {
-    return bookingDataValidationSchema.safeParse(formData).success;
+    return true; // for testing
+    // return bookingDataValidationSchema.safeParse(formData).success;
   };
 
   /**
@@ -220,11 +222,62 @@ export default function BookingForm() {
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("submitting ", inspect(formData));
+    const supabase = initBrowserClient();
+
+    let submissionData = {
+      ...formData,
+      tattoos: formData.tattoos.map((tattoo) => ({
+        ...tattoo,
+        uploadId: crypto.randomUUID(),
+      })),
+    };
+
     setIsSubmissionLoading(true);
-    new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
-      setIsSubmissionLoading(false);
+    const submissionResult = await submitBooking({
+      ...submissionData,
+      tattoos: submissionData.tattoos.map((tattoo) => ({
+        colorOption: tattoo.colorOption,
+        uploadId: tattoo.uploadId,
+        tattooType: tattoo.tattooType,
+        placement: tattoo.placement,
+        size: tattoo.size,
+        colorDescription: tattoo.colorDescription,
+        customDescription: tattoo.customDescription,
+        detailLevel: tattoo.detailLevel,
+        flashComments: tattoo.flashComments,
+      })),
     });
+
+    // upload image files
+    for (const entry of submissionResult) {
+      const tattoo = submissionData.tattoos.find(
+        (t) => t.uploadId === entry.upload_id
+      );
+      if (!tattoo) continue;
+      const files =
+        tattoo.tattooType === "flash"
+          ? [tattoo.flashImage]
+          : tattoo.customReferenceImages;
+      if (!files) continue;
+
+      const paths = [];
+      for (const file of files) {
+        if (!file) continue;
+        const { data, error } = await supabase.storage
+          .from(BOOKING_IMAGES_BUCKET_NAME)
+          .upload(
+            `${new Date().getFullYear()}/${crypto.randomUUID()}.${file.name
+              .split(".")
+              .findLast((substr) => substr.length > 0)}`,
+            file
+          );
+          if (!data) continue;
+          paths.push(data.path);
+      }
+      submitFilePaths(paths, entry.id);
+    }
+
+    setIsSubmissionLoading(false);
   };
 
   return (
@@ -268,6 +321,8 @@ export default function BookingForm() {
               timeEstimate={timeEstimate}
               priceEstimate={priceEstimate}
             />
+
+            <Error error={error} />
 
             {/* Submit Button */}
             <div className="flex flex-col items-center">

@@ -22,7 +22,7 @@ export function TypeSelect({
         {/* flash */}
         <label
           className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all ${
-            tattooData.tattooType === "FLASH"
+            tattooData.tattooType === "flash"
               ? "border-2 border-blue-500/50"
               : "border border-slate-700 hover:bg-slate-100/50"
           }`}
@@ -30,17 +30,17 @@ export function TypeSelect({
           <input
             type="radio"
             name="tattooType"
-            value="FLASH"
-            checked={tattooData.tattooType === "FLASH"}
+            value="flash"
+            checked={tattooData.tattooType === "flash"}
             onChange={handleTattooInputChange}
             className="sr-only"
           />
           <div
             className={`w-5 h-5 rounded-full flex items-center justify-center border ${
-              tattooData.tattooType === "FLASH" ? "border-blue-500" : ""
+              tattooData.tattooType === "flash" ? "border-blue-500" : ""
             }`}
           >
-            {tattooData.tattooType === "FLASH" && (
+            {tattooData.tattooType === "flash" && (
               <div className="w-3 h-3 rounded-full bg-blue-500"></div>
             )}
           </div>
@@ -53,7 +53,7 @@ export function TypeSelect({
         {/* custom */}
         <label
           className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all ${
-            tattooData.tattooType === "CUSTOM"
+            tattooData.tattooType === "custom"
               ? "border-2 border-blue-500/50 hover:bg-slate-100/50"
               : "border border-slate-700 hover:bg-slate-100/50"
           }`}
@@ -61,19 +61,19 @@ export function TypeSelect({
           <input
             type="radio"
             name="tattooType"
-            value="CUSTOM"
-            checked={tattooData.tattooType === "CUSTOM"}
+            value="custom"
+            checked={tattooData.tattooType === "custom"}
             onChange={handleTattooInputChange}
             className="sr-only"
           />
           <div
             className={`w-5 h-5 rounded-full flex items-center justify-center border ${
-              tattooData.tattooType === "CUSTOM"
+              tattooData.tattooType === "custom"
                 ? "border-blue-500"
                 : "border-slate-500"
             }`}
           >
-            {tattooData.tattooType === "CUSTOM" && (
+            {tattooData.tattooType === "custom" && (
               <div className="w-3 h-3 rounded-full bg-blue-500"></div>
             )}
           </div>
@@ -85,7 +85,7 @@ export function TypeSelect({
           </div>
         </label>
       </div>
-      {tattooData.tattooType === "FLASH" && (
+      {tattooData.tattooType === "flash" && (
         <p className="text-sm pt-4">
           Du kan se alle mine flashes på min{" "}
           <InstagramTextLink text={"Instagram"} />. Hvert flash er unikt, og jeg
