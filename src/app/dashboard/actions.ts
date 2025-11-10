@@ -107,6 +107,36 @@ export async function getAllBookings(): Promise<Booking[]> {
   return bookings as Booking[];
 }
 
+export async function getAllBookingsLimited(limit = 15, offset = 0): Promise<Booking[]> {
+  const supabase = await initServerClient();
+  const { data: bookings, error } = await supabase
+    .from("bookings")
+    .select(`*, tattoos(*)`)
+    .order("date_and_time", { ascending: true })
+    .range(offset, offset + limit - 1); // Supabase uses inclusive ranges
+
+  if (error) throw error;
+  return bookings as Booking[];
+}
+
+export async function getBookingsAfter(lastDate?: string, limit = 15) {
+  const supabase = await initServerClient();
+  let query = supabase
+    .from("bookings")
+    .select(`*, tattoos(*)`)
+    .order("date_and_time", { ascending: true })
+    .limit(limit);
+
+  if (lastDate) {
+    query = query.gt("date_and_time", lastDate);
+  }
+
+  const { data: bookings, error } = await query;
+
+  if (error) throw error;
+  return bookings as Booking[];
+}
+
 export async function getTimeUntilBooking(date_and_time: string): Promise<string> {
   const now = new Date();
   const bookingDate = new Date(date_and_time);
@@ -122,6 +152,7 @@ export async function getTimeUntilBooking(date_and_time: string): Promise<string
 
   return `${days} Dage, ${hours} Timer, ${minutes} Minuter indtil bookingen`;
 }
+
 
 
 

@@ -1,43 +1,92 @@
+"use client";
 
-import * as React from "react"
-
-import { initServerClient } from "@/lib/supabase/server";
-import { getTodaysBookings, getPendingBookings, Tattoo } from "./actions"
+import * as React from "react";
+import { Booking, getAllBookingsLimited } from "./actions";
 import BookingCard from "./Booking";
 
-export default async function Home() {
-  const supabase = await initServerClient();
-  const pendingBookings = await getPendingBookings();
+export default function Home() {
+  const [bookings, setBookings] = React.useState<Booking[]>([]);
+  const [offset, setOffset] = React.useState(0);
+  const [loading, setLoading] = React.useState(false);
+  const [hasMore, setHasMore] = React.useState(true);
+  const limit = 5;
 
-  const todaysBookings = await getTodaysBookings()
+  const fetchBookings = async () => {
+    if (loading || !hasMore) return;
+    setLoading(true);
+
+    const newBookings = await getAllBookingsLimited(limit, offset);
+    setBookings(prev => [...prev, ...newBookings]);
+    setOffset(prev => prev + newBookings.length);
+    setHasMore(newBookings.length === limit);
+    setLoading(false);
+  };
+
+  // Initial fetch
+  React.useEffect(() => {
+    fetchBookings();
+  }, []);
+
+  // Group bookings by date
+  const bookingsByDate = bookings.reduce((groups, booking) => {
+    const dateObj = new Date(booking.date_and_time);
+    const dateKey = dateObj.toLocaleDateString("da-DK", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+    if (!groups[dateKey]) groups[dateKey] = [];
+    groups[dateKey].push(booking);
+    return groups;
+  }, {} as Record<string, Booking[]>);
+
+  const sortedDateGroups = Object.keys(bookingsByDate).sort((a, b) => {
+    return new Date(a).getTime() - new Date(b).getTime();
+  });
+
+  // Intersection Observer for infinite scrolling
+  const loadMoreRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (!loadMoreRef.current) return;
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries[0].isIntersecting) {
+          fetchBookings();
+        }
+      },
+      {
+        root: null,
+        rootMargin: "200px",
+        threshold: 0,
+      }
+    );
+
+    observer.observe(loadMoreRef.current);
+
+    return () => {
+      if (loadMoreRef.current) observer.unobserve(loadMoreRef.current);
+    };
+  }, [loadMoreRef.current, loading, hasMore]);
+
   return (
-    <>
-      <div className="flex flex-col lg:flex-row flex-wrap justify-center gap-6 px-4 mt-8">
-        <div
-          className=" lg:m-4 rounded-xl border shadow-sm w-full lg:w-[45%]">
-          <div>
-            <p className="border-b p-6 font-medium">Der er {pendingBookings?.length} ubesvarede anmodninger</p>
-          </div>
-          <div className="p-4">
-            {pendingBookings?.map((booking) => (
-              <BookingCard booking={booking} key={booking.id}></BookingCard>
-            ))}
-          </div>
-        </div>
-
-        <div className=" lg:m-4 rounded-xl border shadow-sm w-full lg:w-[45%]  ">
-          <div>
-            <p className="border-b p-6 font-medium">Bookinger i dag</p>
-          </div>
-          <div className="p-4">
-            {(todaysBookings?.length) ? todaysBookings?.map((booking) => (
-              <BookingCard booking={booking} key={booking.id}></BookingCard>
-            )) : <p>Ingen bookinger i dag</p>
-            }
-
-          </div>
+    <div className="flex flex-col lg:flex-row flex-wrap justify-center gap-6 px-4 mt-8">
+      <div className="lg:m-4 rounded-xl border shadow-sm w-full lg:w-[45%]">
+        <div className="p-4 max-h-[70vh] overflow-y-auto">
+          {sortedDateGroups.map(date => (
+            <div key={date} className="mb-8">
+              <p className="border-b p-6 font-medium text-lg">{date}</p>
+              {bookingsByDate[date]
+                .sort((a: Booking, b: Booking) => new Date(a.date_and_time).getTime() - new Date(b.date_and_time).getTime())
+                .map(booking => <BookingCard key={booking.id} booking={booking} />)}
+            </div>
+          ))}
+          {loading && <p className="text-center my-4">Loading...</p>}
+          {!hasMore && <p className="text-center my-4">Ikke flere bookinger.</p>}
+          {/* This div acts as a sentinel for IntersectionObserver */}
+          <div ref={loadMoreRef} />
         </div>
       </div>
-    </>
+    </div>
   );
 }
