@@ -1,9 +1,8 @@
 
 import * as React from "react"
-import Calendar from "./Calendar";
+
 import { initServerClient } from "@/lib/supabase/server";
-import ViewBooking from "@/app/dashboard/ViewBooking";
-import { getTodaysBookings, getTimeUntilBooking, getPendingBookings, Tattoo } from "./actions"
+import { getTodaysBookings, getPendingBookings, Tattoo } from "./actions"
 import BookingCard from "./Booking";
 
 export default async function Home() {
@@ -13,10 +12,6 @@ export default async function Home() {
   const todaysBookings = await getTodaysBookings()
   return (
     <>
-      <div className="flex justify-center pb-10 border-b mx-2">
-        <Calendar />
-      </div>
-
       <div className="flex flex-col lg:flex-row flex-wrap justify-center gap-6 px-4 mt-8">
         <div
           className=" lg:m-4 rounded-xl border shadow-sm w-full lg:w-[45%]">
