@@ -51,7 +51,7 @@ export async function getPendingBookingById( params : string ) {
             *,
             tattoos (
                 *,
-                booking_images (
+                tattoo_images (
                     id,
                     image_url
                 )

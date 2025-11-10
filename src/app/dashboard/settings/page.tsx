@@ -1,51 +1,72 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronRight, ClipboardClock, CalendarCheck, FilePenLine } from "lucide-react";
+import React, { useState } from "react";
+import { Menu, X, CalendarCheck, Clock, Settings } from "lucide-react";
 import FastSkema from "./FastSkema";
-import Tilgængelighed from "./Tilgængelighed";
+import Tilgængelighed from "./Tilgængelighed"; 
 
 export default function Page() {
-  const [activePanel, setActivePanel] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activePanel, setActivePanel] = useState("skema");
 
   const items = [
-    { icon: <ClipboardClock />, label: "Fast skema" },
-    { icon: <CalendarCheck />, label: "Tilgængelighed" },
-    { icon: <FilePenLine />, label: "Rediger FAQ" },
-    
+    { id: "skema", label: "Fast skema", icon: <CalendarCheck size={18} /> },
+    { id: "tid", label: "Tilgængelighed", icon: <Clock size={18} /> },
+    { id: "indstillinger", label: "Indstillinger", icon: <Settings size={18} /> },
   ];
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen p-10 bg-white gap-8">
-      {/* Left side list */}
-      <div className="w-full sm:w-[400px] md:w-[500px] rounded-2xl border border-border bg-card shadow-md overflow-hidden">
-        {items.map((item, index) => (
-          <button
-            key={index}
-            onClick={() => setActivePanel(item.label)}
-            className="flex items-center justify-between w-full px-6 py-5 hover:bg-muted/50 transition-all border-b last:border-none"
-          >
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-lg bg-muted text-muted-foreground">
-                {item.icon}
-              </div>
-              <span className="text-base font-medium text-foreground">
-                {item.label}
-              </span>
-            </div>
-            <ChevronRight className="w-5 h-5 text-muted-foreground" />
-          </button>
-        ))}
+    <div className="min-h-screen flex flex-col md:flex-row bg-gray-50">
+      {/*  Mobile Header */}
+      <div className="md:hidden flex items-center justify-between p-4 border-b bg-white shadow-sm">
+        <h1 className="text-lg font-semibold">Tattoo Studio</h1>
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="p-2 rounded-md border bg-gray-100 hover:bg-gray-200 transition"
+        >
+          {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
       </div>
 
-      {/* Right side panels */}
-      {activePanel === "Fast skema" && (
-        <FastSkema onClose={() => setActivePanel(null)} />
-      )}
+      {/* Sidebar */}
+      <aside
+        className={`${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0 fixed md:static top-0 left-0 h-full md:h-auto w-64 md:w-64 z-20 bg-white border-r shadow-lg md:shadow-none transform transition-transform duration-300 ease-in-out`}
+      >
+        <div className="p-6 border-b">
+          <h2 className="text-xl font-bold">Menu</h2>
+        </div>
 
-      {activePanel === "Tilgængelighed" && (
-        <Tilgængelighed onClose={() => setActivePanel(null)} />
-      )}
+        <nav className="flex flex-col">
+          {items.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => {
+                setActivePanel(item.id);
+                setSidebarOpen(false);
+              }}
+              className={`flex items-center gap-3 px-6 py-4 text-left text-sm font-medium border-b hover:bg-gray-100 ${
+                activePanel === item.id ? "bg-gray-100 text-pink-600" : ""
+              }`}
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </button>
+          ))}
+        </nav>
+      </aside>
+
+      {/* Main content */}
+      <main className="flex-1 p-4 sm:p-6 overflow-y-auto">
+        {activePanel === "skema" && <FastSkema />}
+        {activePanel === "tid" && <Tilgængelighed />} 
+        {activePanel === "indstillinger" && (
+          <div className="p-8 text-center text-gray-400">
+          
+          </div>
+        )}
+      </main>
     </div>
   );
 }

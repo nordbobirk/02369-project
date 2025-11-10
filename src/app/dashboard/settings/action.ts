@@ -1,16 +1,33 @@
 "use server";
-
 import { initServerClient } from "@/lib/supabase/server";
-import { revalidatePath } from "next/cache";
 
-export async function setSetting(setting_key: string, setting_value: string) {
+export async function getAllBookings() {
   const supabase = await initServerClient();
-  await supabase.from("settings").insert({ setting_key, setting_value });
-  revalidatePath("/settings", "page");
-}
 
-export async function deleteAll() {
-    const supabase = await initServerClient();
-    await supabase.from("settings").delete().neq("id", 0);
-    revalidatePath("/settings", "page");
+  // Get open days from Tilgængelighed
+  const { data: openDays, error: availabilityError } = await supabase
+    .from("Tilgængelighed")
+    .select("date")
+    .eq("is_open", true);
+
+  if (availabilityError) {
+    console.error("❌ Error fetching availability:", availabilityError);
+    return [];
+  }
+
+  const openDates = openDays.map((d) => d.date);
+
+  // Get confirmed bookings only for open days
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("id, name, date_and_time, status")
+    .eq("status", "confirmed")
+    .in("date_and_time", openDates);
+
+  if (error) {
+    console.error("❌ Supabase error:", error);
+    return [];
+  }
+
+  return data;
 }
