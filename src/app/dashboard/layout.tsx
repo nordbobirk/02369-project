@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
-import { BookImageIcon, CalendarIcon, HomeIcon, MoveRightIcon, SettingsIcon, UserIcon } from "lucide-react";
+import { BookImageIcon, CalendarIcon, CircleQuestionMark, CircleQuestionMarkIcon, HomeIcon, MoveRightIcon, SettingsIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
 import { DropdownMenuDemo } from "./DropdownMenu";
 
@@ -29,9 +29,9 @@ export default function PublicLayout({
                         </Button>
 
                         <Button variant="secondary" asChild>
-                            <Link href="/dashboard/all_bookings" className="flex items-center gap-1">
-                                <BookImageIcon className="h-4 w-4" />
-                                <span className="hidden sm:inline">Alle bookings</span>
+                            <Link href="/dashboard/pending_bookings" className="flex items-center gap-1">
+                                <CircleQuestionMarkIcon className="h-4 w-4" />
+                                <span className="hidden sm:inline">Ubesvarede anmodninger</span>
                             </Link>
                         </Button>
 
