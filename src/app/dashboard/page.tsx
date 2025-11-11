@@ -50,7 +50,7 @@ export default function Home() {
   const loadMoreRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    if (!loadMoreRef.current || loading || !hasMore) return; 
+    if (!loadMoreRef.current || loading || !hasMore) return;
 
     const observer = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting) {
@@ -62,18 +62,45 @@ export default function Home() {
     return () => observer.disconnect();
   }, [fetchBookings, loading, hasMore]);
 
+  // Calculate today's key using the same format as the grouping
+  const todayKey = new Date().toLocaleDateString("da-DK", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
+  const todaysBookings = bookingsByDate[todayKey] ?? [];
+
   return (
     <div className="flex flex-col lg:flex-row flex-wrap justify-center gap-6 px-4 mt-8">
       <div className="lg:m-4 rounded-xl border shadow-sm w-full lg:w-[45%]">
         <div className="p-4 max-h-[70vh] overflow-y-auto">
-          {sortedDateGroups.map(date => (
-            <div key={date} className="mb-8">
-              <p className="border-b p-6 font-medium text-lg">{date}</p>
-              {bookingsByDate[date]
+
+          {/* ---- TODAY SECTION ---- */}
+          <div className="">
+            <p className="border-b p-6 font-medium text-lg">I dag</p>
+
+
+            {todaysBookings.length > 0 ? (
+              todaysBookings
                 .sort((a, b) => new Date(a.date_and_time).getTime() - new Date(b.date_and_time).getTime())
-                .map(booking => <BookingCard key={booking.id} booking={booking} />)}
-            </div>
-          ))}
+                .map(booking => <BookingCard key={booking.id} booking={booking} />)
+            ) : (
+              <p className="p-6 text-gray-500 italic">Ingen bookinger i dag.</p>
+            )}
+          </div>
+
+          {/* ---- OTHER DATES ---- */}
+          {sortedDateGroups
+            .filter(date => date !== todayKey) // prevent showing today twice
+            .map(date => (
+              <div key={date} className="mb-8">
+                <p className="border-b p-6 font-medium text-lg">{date}</p>
+                {bookingsByDate[date]
+                  .sort((a, b) => new Date(a.date_and_time).getTime() - new Date(b.date_and_time).getTime())
+                  .map(booking => <BookingCard key={booking.id} booking={booking} />)}
+              </div>
+            ))}
 
           {loading && <p className="text-center my-4">Loading...</p>}
           {!hasMore && <p className="text-center my-4">Ikke flere bookinger.</p>}
