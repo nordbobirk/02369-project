@@ -12,6 +12,7 @@ import { initServerClient } from "@/lib/supabase/server";
 
 // startDate and endDate should month based
 // When looking at the calendar, it should take the date top left and bottom
+// TODO Reuse functions in /dashboard/actions.ts?
 export async function getAvailability(startDate: string, endDate: string) {
   const supabase = await initServerClient()
   
@@ -20,6 +21,9 @@ export async function getAvailability(startDate: string, endDate: string) {
     .select('date')
     .gte('date', startDate)
     .lte('date', endDate)
+    // Should maybe be false, 
+    // if we assume days are open if not false.
+    // Might clash with customer opening days blocks at a time
     .eq('is_open', true)
   
 
