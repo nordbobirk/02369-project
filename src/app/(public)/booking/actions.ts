@@ -7,6 +7,7 @@ import { initServerClient } from "@/lib/supabase/server";
 // FIXME duration should be factored in ..
 // PO said to assign random value 1-4,
 // until we get/develop a concrete duration estimation algorithm
+// (maybe used fixed for ease of use while developing)
 // note to self: tattoos has duration column
 
 // startDate and endDate should month based
