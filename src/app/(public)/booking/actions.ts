@@ -16,7 +16,7 @@ export async function getAvailability(startDate: string, endDate: string) {
   
   const { data:availability, error } = await supabase
     .from('Tilgængelighed')
-    .select('*')
+    .select('date')
     .gte('date', startDate)
     .lte('date', endDate)
     .eq('is_open', true)
@@ -30,7 +30,7 @@ export async function getBookings(startDate: string, endDate: string) {
   
   const { data:bookings, error } = await supabase
     .from('bookings')
-    .select('*')
+    .select('date_and_time')
     .gte('date', startDate)
     .lte('date', endDate)
     .in('status', ['pending', 'confirmed'])
