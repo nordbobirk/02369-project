@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { getAvailability, getAvailableSlots, getBookings } from "@/app/(public)/booking/actions"
+import { isToday } from "date-fns"
 
 export function Calendar20() {
   const [date, setDate] = React.useState<Date | undefined>(
-    new Date(2025, 5, 12)
+    new Date()
   )
   const [selectedTime, setSelectedTime] = React.useState<string | null>("10:00")
   const timeSlots = Array.from({ length: 4 }, (_, i) => {
@@ -58,19 +59,10 @@ const getCalendarBounds = (monthDate: Date) => {
 
 const { firstVisibleDate, lastVisibleDate } = getCalendarBounds(displayedMonth)
 
-/* React.useEffect(() => {
-  const fetchAvailability = async () => {
-    const start = firstVisibleDate.toISOString().split('T')[0] // YYYY-MM-DD
-    const end = lastVisibleDate.toISOString().split('T')[0]
-    
-    const slots = await getAvailableSlots(start, end)
-    // Update your component state with slots
-  }
+const [unavailableDays, setBookedDays] = React.useState<Date[]>([])
+
   
-  fetchAvailability()
-}, [firstVisibleDate, lastVisibleDate]) */
-const slots = getAvailableSlots(firstVisibleDate, lastVisibleDate)
-const days
+
   return (
     <Card className="gap-0 p-0">
       <CardContent className="relative p-0 md:pr-48">
@@ -80,7 +72,7 @@ const days
             selected={date}
             onSelect={setDate}
             defaultMonth={date}
-            disabled={}
+            disabled={unavailableDays}
             showOutsideDays={true}
             modifiers={{
               booked: bookedDates,
@@ -91,7 +83,7 @@ const days
             className="bg-transparent p-0 [--cell-size:--spacing(10)] md:[--cell-size:--spacing(12)]"
             formatters={{
               formatWeekdayName: (date) => {
-                return date.toLocaleString("en-US", { weekday: "short" })
+                return date.toLocaleString("dk", { weekday: "short" })
               },
             }}
           />
@@ -115,10 +107,10 @@ const days
         <div className="text-sm">
           {date && selectedTime ? (
             <>
-              Your meeting is booked for{" "}
+              Din aftale vil blive lagt {" "}
               <span className="font-medium">
                 {" "}
-                {date?.toLocaleDateString("en-US", {
+                {date?.toLocaleDateString("dk", {
                   weekday: "long",
                   day: "numeric",
                   month: "long",
@@ -127,7 +119,7 @@ const days
               at <span className="font-medium">{selectedTime}</span>.
             </>
           ) : (
-            <>Select a date and time for your meeting.</>
+            <>Vælg dag og tid for din aftale.</>
           )}
         </div>
         <Button
