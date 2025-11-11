@@ -74,7 +74,7 @@ export default function Home() {
   return (
     <div className="flex flex-col lg:flex-row flex-wrap justify-center gap-6 px-4 mt-8">
       <div className="lg:m-4 rounded-xl border shadow-sm w-full lg:w-[45%]">
-        <div className="p-4 max-h-[70vh] overflow-y-auto">
+        <div className="p-4 max-h-[75vh] overflow-y-auto">
 
           {/* ---- TODAY SECTION ---- */}
           <div className="">

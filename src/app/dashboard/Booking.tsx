@@ -12,7 +12,7 @@ function getTimeUntilBooking(date_and_time: string): string {
 
     const diffMs = bookingDate.getTime() - now.getTime();
 
-    if (diffMs <= 0) return "Booking time has passed";
+    if (diffMs <= 0) return "Bookingen er startet";
 
     const totalMinutes = Math.floor(diffMs / (1000 * 60));
     const days = Math.floor(totalMinutes / (60 * 24));
