@@ -107,31 +107,18 @@ export async function getAllBookings(): Promise<Booking[]> {
   return bookings as Booking[];
 }
 
-export async function getAllBookingsLimited(limit = 15, offset = 0): Promise<Booking[]> {
+export async function getLimitedBookingsAfterDate(limit = 15, offset = 0): Promise<Booking[]> {
+  const today = new Date();
+  const targetDay = today.toISOString().split("T")[0];
+  const start = `${targetDay}T00:00:00Z`;
+  
   const supabase = await initServerClient();
   const { data: bookings, error } = await supabase
     .from("bookings")
     .select(`*, tattoos(*)`)
+    .gte("date_and_time", start)
     .order("date_and_time", { ascending: true })
     .range(offset, offset + limit - 1); // Supabase uses inclusive ranges
-
-  if (error) throw error;
-  return bookings as Booking[];
-}
-
-export async function getBookingsAfter(lastDate?: string, limit = 15) {
-  const supabase = await initServerClient();
-  let query = supabase
-    .from("bookings")
-    .select(`*, tattoos(*)`)
-    .order("date_and_time", { ascending: true })
-    .limit(limit);
-
-  if (lastDate) {
-    query = query.gt("date_and_time", lastDate);
-  }
-
-  const { data: bookings, error } = await query;
 
   if (error) throw error;
   return bookings as Booking[];

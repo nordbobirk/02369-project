@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Booking, getAllBookingsLimited } from "./actions";
+import { Booking, getLimitedBookingsAfterDate } from "./actions";
 import BookingCard from "./Booking";
 
 export default function Home() {
@@ -15,7 +15,7 @@ export default function Home() {
     if (loading || !hasMore) return;
 
     setLoading(true);
-    const newBookings = await getAllBookingsLimited(limit, offset);
+    const newBookings = await getLimitedBookingsAfterDate(limit, offset);
 
     setBookings(prev => [...prev, ...newBookings]);
     setOffset(prev => prev + newBookings.length);
