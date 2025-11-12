@@ -5,32 +5,52 @@ import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { getAvailability, getAvailableSlots, getBookings } from "@/app/(public)/booking/actions"
-import { isToday } from "date-fns"
+import { availability, booking, getAvailability, getBookings } from "@/app/(public)/booking/actions"
 import { da } from "date-fns/locale"
 
 export function Calendar20() {
   const [date, setDate] = React.useState<Date | undefined>(
     new Date()
   )
-
-
+  const [availability, setAvailability] = React.useState<availability[]>([])
+  const [bookings, setBookings] = React.useState<booking[]>([])
   const [selectedTime, setSelectedTime] = React.useState<string | null>("10:00")
+
+
   const timeSlots = Array.from({ length: 4 }, (_, i) => {
-    //FIXME Logic here to handle lunch breaks and other changes to 
+    //FIXME Logic here to handle lunch breaks and other changes to time slots
     const totalMinutes = i * 120
     const hour = Math.floor(totalMinutes / 60) + 10
     const minute = totalMinutes % 60
     return `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`
   })
 
-  const bookedDates = Array.from(
-    { length: 3 },
-    (_, i) => new Date(2025, 11, 17 + i)
-  )
-  
- 
-  
+  const availableDates = availability.map(a => new Date(a.date))
+
+  React.useEffect(() => {
+    getAvailability().then((response) => {
+      setAvailability(response || [])
+    })
+  }, [])
+
+  React.useEffect(() => {
+    getBookings().then((response) => {
+      setBookings(response || [])
+    })
+  }, [])
+
+
+  const isDateAvailable = (checkDate: Date) => {
+    return availableDates.some(
+      (availableDate) =>
+        availableDate.getDate() === checkDate.getDate() &&
+        availableDate.getMonth() === checkDate.getMonth() &&
+        availableDate.getFullYear() === checkDate.getFullYear()
+    )
+  }
+
+  const disabledMatcher = (date: Date) => !isDateAvailable(date)
+
 
   return (
     <Card className="gap-0 p-0">
@@ -42,13 +62,13 @@ export function Calendar20() {
             onSelect={setDate}
             locale={da}
             defaultMonth={date}
-            disabled={bookedDates}
-            showOutsideDays={false}
+            disabled={disabledMatcher}
+            showOutsideDays={true}
             modifiers={{
-              booked: bookedDates,
+              available: availableDates,
             }}
             modifiersClassNames={{
-              booked: "[&>button]:line-through opacity-100",
+              available: "",
             }}
             className="bg-transparent p-0 [--cell-size:--spacing(10)] md:[--cell-size:--spacing(12)]"
             formatters={{

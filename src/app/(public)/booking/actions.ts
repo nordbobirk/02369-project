@@ -3,7 +3,14 @@
 import * as React from "react"
 import { initServerClient } from "@/lib/supabase/server";
 
+export type availability = {
+  date: Date
+  is_open: Boolean
+}
 
+export type booking = {
+  date_and_time: Date
+}
 // FIXME duration should be factored in ..
 // PO said to assign random value 1-4,
 // until we get/develop a concrete duration estimation algorithm
@@ -13,32 +20,24 @@ import { initServerClient } from "@/lib/supabase/server";
 // startDate and endDate should month based
 // When looking at the calendar, it should take the date top left and bottom
 // TODO Reuse functions in /dashboard/actions.ts?
-export async function getAvailability(startDate: Date, endDate: Date) {
+export async function getAvailability() {
   const supabase = await initServerClient()
-  console.log(startDate, endDate)
-
-  const start = startDate.toString().split("T")[0]
-  console.log(start)
-
-  const { data:availability, error } = await supabase
+  
+  const { data:availabilityTable, error } = await supabase
     .from('Tilgængelighed')
     .select('date, is_open')
-    //.gte('date', startDate)
-    //.lte('date', endDate)
     // Should maybe be false, 
-    // if we assume days are open if not false.
+    // if we assume days are closed if not true.
     // Might clash with customer opening days blocks at a time
-    //.eq('is_open', true)
+    .eq('is_open', true)
   
-  console.log("Get availability result:")
-  console.log(availability) 
-  return availability
+  return availabilityTable as availability[]
 }
 
-export async function getBookings(/* startDate: Date, endDate: Dat */e) {
+export async function getBookings(/* startDate: Date, endDate: Date */): Promise<booking[]> {
   const supabase = await initServerClient()
   
-  console.log(startDate, endDate)
+  //console.log(startDate, endDate)
   
   // Convert to timestampz
 
@@ -47,33 +46,10 @@ export async function getBookings(/* startDate: Date, endDate: Dat */e) {
     .select('date_and_time')
     //.gte('date_and_time', startDate)
     //.lte('date_and_time', endDate)
-    //.in('status', ['pending', 'confirmed'])
+    .in('status', ['pending', 'confirmed'])
   
   console.log("Get bookings result:")
   console.log(bookings)
-  return bookings
+  return bookings as booking[]
 }
 
-// AI-gen helper function
-export async function getAvailableSlots(startDate: Date, endDate: Date) {
-  const [availability, bookings] = await Promise.all([
-    getAvailability(startDate, endDate),
-    getBookings(startDate, endDate)
-  ])
-  
-  
-  // Convert bookings to a Set for quick lookup
-  const bookedSlots = new Set(
-    bookings?.map(b => b.date_and_time) || []
-  )
-  
-  // Filter availability and remove booked slots
-  const availableDates = availability
-    ?.filter(a => a.is_open)
-    .map(a => a.date) || []
-  
-  return {
-    availableDates,
-    bookedSlots: Array.from(bookedSlots)
-  }
-}   
