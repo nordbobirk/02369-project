@@ -107,7 +107,7 @@ export async function getAllBookings(): Promise<Booking[]> {
   return bookings as Booking[];
 }
 
-export async function getLimitedBookingsAfterDate(limit = 15, offset = 0): Promise<Booking[]> {
+export async function getLimitedBookingsAfterDate(limit = 5, offset = 0): Promise<Booking[]> {
   const today = new Date();
   const targetDay = today.toISOString().split("T")[0];
   const start = `${targetDay}T00:00:00Z`;
@@ -124,7 +124,20 @@ export async function getLimitedBookingsAfterDate(limit = 15, offset = 0): Promi
   return bookings as Booking[];
 }
 
+export async function getLimitedOldBookings(limit = 5, offset = 0): Promise<Booking[]> {
+  const today = new Date();
+  const targetDay = today.toISOString().split("T")[0];
+  const start = `${targetDay}T00:00:00Z`;
+  
+  const supabase = await initServerClient();
+  const { data: bookings, error } = await supabase
+    .from("bookings")
+    .select(`*, tattoos(*)`)
+    .lt("date_and_time", start) // get bookings before today
+    .order("date_and_time", { ascending: false }) // get them "backwards", so when displayed todays date is in the middle
+    .range(offset, offset + limit - 1); // inclusive range
 
-
-
+  if (error) throw error;
+  return bookings as Booking[];
+}
 
