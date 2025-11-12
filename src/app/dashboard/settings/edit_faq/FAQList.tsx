@@ -17,6 +17,7 @@ import Image from "next/image";
  */
 type FAQ = {
     id: number
+    category: string
     question: string
     answer: string
     index: number
@@ -34,23 +35,27 @@ type FAQ = {
  * @param {FAQ} props.faq - The FAQ data to display
  * @param {boolean} props.isEditing - Whether this FAQ is currently being edited
  * @param {Function} props.onEdit - Callback to enter edit mode
+ * @param {string} props.editCategroy - Current value of the category in edit mode
  * @param {string} props.editQuestion - Current value of the question in edit mode
  * @param {string} props.editAnswer - Current value of the answer in edit mode
+ * @param {Function} props.onCategoryChance - Callback when category text changes
  * @param {Function} props.onQuestionChange - Callback when question text changes
  * @param {Function} props.onAnswerChange - Callback when answer text changes
  * @param {Function} props.onCancelAction - Callback to exit edit mode
  */
-function SortableFAQItem({ faq, isEditing, onEdit, editQuestion, editAnswer, onQuestionChange, onAnswerChange, onCancelAction, onDeletedAction, onSavedAction }: {
+function SortableFAQItem({ faq, isEditing, onEdit, editCategory, editQuestion, editAnswer, onCategoryChange, onQuestionChange, onAnswerChange, onCancelAction, onDeletedAction, onSavedAction }: {
     faq: FAQ
     isEditing: boolean
     onEdit: () => void
+    editCategory: string
     editQuestion: string
     editAnswer: string
+    onCategoryChange: (c: string) => void
     onQuestionChange: (q: string) => void
     onAnswerChange: (a: string) => void
     onCancelAction: () => void
     onDeletedAction: () => void
-    onSavedAction: (updated: { id: number, question: string, answer: string }) => void
+    onSavedAction: (updated: { id: number, category: string, question: string, answer: string }) => void
 }) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: faq.id })
 
@@ -65,8 +70,10 @@ function SortableFAQItem({ faq, isEditing, onEdit, editQuestion, editAnswer, onQ
             {isEditing ? (
                 <EditFAQ
                     id={faq.id}
+                    category={editCategory}
                     question={editQuestion}
                     answer={editAnswer}
+                    onCategoryChange={onCategoryChange}
                     onQuestionChange={onQuestionChange}
                     onAnswerChange={onAnswerChange}
                     onCancelAction={onCancelAction}
@@ -78,9 +85,10 @@ function SortableFAQItem({ faq, isEditing, onEdit, editQuestion, editAnswer, onQ
                         <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing mt-1 text-gray-400 hover:text-gray-600">
                             <Image src="/icons/drag_indicator.svg" alt="Drag handle" width={20} height={20} />
                         </div>
-                        <div className="flex-1">
-                            <h3 className="font-bold text-lg mb-2">{faq.question}</h3>
-                            <p className="text-gray-700 mb-2">{faq.answer}</p>
+                        <div className="mb-4 p-4 border rounded-lg bg-white shadow-sm">
+                            <h1 className="text-sm font-semibold text-pink-600 tracking-wide mb-1">{faq.category}</h1>
+                            <h3 className="text-lg font-bold text-gray-900 mb-2">{faq.question}</h3>
+                            <p className="text-gray-700 leading-relaxed mb-4">{faq.answer}</p>
                             <Button onClick={onEdit} variant="outline" className="mr-2">Edit</Button>
                             <DeleteFAQ
                                 id={faq.id}
@@ -108,6 +116,7 @@ function SortableFAQItem({ faq, isEditing, onEdit, editQuestion, editAnswer, onQ
 export default function FAQList({ initialFAQs }: { initialFAQs: FAQ[] }) {
     const [faqs, setFaqs] = useState(initialFAQs)
     const [editingId, setEditingId] = useState<number | null>(null)
+    const [editCategory, setEditCategory] = useState('')
     const [editQuestion, setEditQuestion] = useState('')
     const [editAnswer, setEditAnswer] = useState('')
 
@@ -120,12 +129,14 @@ export default function FAQList({ initialFAQs }: { initialFAQs: FAQ[] }) {
 
     const handleEdit = (faq: FAQ) => {
         setEditingId(faq.id)
+        setEditCategory(faq.category)
         setEditQuestion(faq.question)
         setEditAnswer(faq.answer)
     }
 
     const handleCancel = () => {
         setEditingId(null)
+        setEditCategory('')
         setEditQuestion('')
         setEditAnswer('')
     }
@@ -170,8 +181,10 @@ export default function FAQList({ initialFAQs }: { initialFAQs: FAQ[] }) {
                             faq={faq}
                             isEditing={editingId === faq.id}
                             onEdit={() => handleEdit(faq)}
+                            editCategory={editCategory}
                             editQuestion={editQuestion}
                             editAnswer={editAnswer}
+                            onCategoryChange={setEditCategory}
                             onQuestionChange={setEditQuestion}
                             onAnswerChange={setEditAnswer}
                             onCancelAction={handleCancel}

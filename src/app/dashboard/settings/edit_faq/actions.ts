@@ -41,11 +41,11 @@ export async function getCategories() {
  * @param {string} answer - The new answer text
  * @throws {Error} If the update fails
  */
-export async function updateFAQ(id: number, question: string, answer: string) {
+export async function updateFAQ(id: number, category: string, question: string, answer: string) {
     const supabase = await initServerClient()
     const { error } = await supabase
         .from('faq_contents')
-        .update({ question, answer })
+        .update({ category, question, answer })
         .eq('id', id)
 
     if (error) throw error
