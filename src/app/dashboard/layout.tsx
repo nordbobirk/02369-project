@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
-import { BookImageIcon, CalendarIcon, HomeIcon, MoveRightIcon, SettingsIcon, UserIcon } from "lucide-react";
+import { BookImageIcon, CalendarIcon, HomeIcon, SettingsIcon } from "lucide-react";
 import Link from "next/link";
 import { DropdownMenuDemo } from "./DropdownMenu";
 
