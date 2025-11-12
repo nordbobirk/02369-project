@@ -15,32 +15,42 @@ import { initServerClient } from "@/lib/supabase/server";
 // TODO Reuse functions in /dashboard/actions.ts?
 export async function getAvailability(startDate: Date, endDate: Date) {
   const supabase = await initServerClient()
-  
+  console.log(startDate, endDate)
+
+  const start = startDate.toString().split("T")[0]
+  console.log(start)
+
   const { data:availability, error } = await supabase
     .from('Tilgængelighed')
     .select('date, is_open')
-    .gte('date', startDate)
-    .lte('date', endDate)
+    //.gte('date', startDate)
+    //.lte('date', endDate)
     // Should maybe be false, 
     // if we assume days are open if not false.
     // Might clash with customer opening days blocks at a time
     //.eq('is_open', true)
   
-
+  console.log("Get availability result:")
+  console.log(availability) 
   return availability
 }
 
-export async function getBookings(startDate: Date, endDate: Date) {
+export async function getBookings(/* startDate: Date, endDate: Dat */e) {
   const supabase = await initServerClient()
   
+  console.log(startDate, endDate)
+  
+  // Convert to timestampz
+
   const { data:bookings, error } = await supabase
     .from('bookings')
     .select('date_and_time')
-    .gte('date_and_time', startDate)
-    .lte('date_and_time', endDate)
-    .in('status', ['pending', 'confirmed'])
+    //.gte('date_and_time', startDate)
+    //.lte('date_and_time', endDate)
+    //.in('status', ['pending', 'confirmed'])
   
-
+  console.log("Get bookings result:")
+  console.log(bookings)
   return bookings
 }
 
@@ -50,6 +60,7 @@ export async function getAvailableSlots(startDate: Date, endDate: Date) {
     getAvailability(startDate, endDate),
     getBookings(startDate, endDate)
   ])
+  
   
   // Convert bookings to a Set for quick lookup
   const bookedSlots = new Set(

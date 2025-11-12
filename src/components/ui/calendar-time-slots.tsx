@@ -7,11 +7,14 @@ import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { getAvailability, getAvailableSlots, getBookings } from "@/app/(public)/booking/actions"
 import { isToday } from "date-fns"
+import { da } from "date-fns/locale"
 
 export function Calendar20() {
   const [date, setDate] = React.useState<Date | undefined>(
     new Date()
   )
+
+
   const [selectedTime, setSelectedTime] = React.useState<string | null>("10:00")
   const timeSlots = Array.from({ length: 4 }, (_, i) => {
     //FIXME Logic here to handle lunch breaks and other changes to 
@@ -23,44 +26,10 @@ export function Calendar20() {
 
   const bookedDates = Array.from(
     { length: 3 },
-    (_, i) => new Date(2025, 5, 17 + i)
+    (_, i) => new Date(2025, 11, 17 + i)
   )
-
+  
  
-    const [displayedMonth, setDisplayedMonth] = React.useState<Date>(
-    new Date(2025, 5, 1)
-    )
-
-// Calculate the first and last visible dates in the calendar grid
-const getCalendarBounds = (monthDate: Date) => {
-  const year = monthDate.getFullYear()
-  const month = monthDate.getMonth()
-  
-  // First day of the displayed month
-  const firstDayOfMonth = new Date(year, month, 1)
-  const firstDayOfWeek = firstDayOfMonth.getDay() // 0 = Sunday
-  
-  // Calculate the first visible date (might be from previous month)
-  const firstVisibleDate = new Date(firstDayOfMonth)
-  firstVisibleDate.setDate(firstVisibleDate.getDate() - firstDayOfWeek)
-  
-  // Last day of the displayed month
-  const lastDayOfMonth = new Date(year, month + 1, 0)
-  const lastDayOfWeek = lastDayOfMonth.getDay()
-  
-  // Calculate the last visible date (might be from next month)
-  const lastVisibleDate = new Date(lastDayOfMonth)
-  lastVisibleDate.setDate(lastVisibleDate.getDate() + (6 - lastDayOfWeek))
-  
-  return { firstVisibleDate, lastVisibleDate }
-}
-
-
-
-const { firstVisibleDate, lastVisibleDate } = getCalendarBounds(displayedMonth)
-
-const [unavailableDays, setBookedDays] = React.useState<Date[]>([])
-
   
 
   return (
@@ -71,9 +40,10 @@ const [unavailableDays, setBookedDays] = React.useState<Date[]>([])
             mode="single"
             selected={date}
             onSelect={setDate}
+            locale={da}
             defaultMonth={date}
-            disabled={unavailableDays}
-            showOutsideDays={true}
+            disabled={bookedDates}
+            showOutsideDays={false}
             modifiers={{
               booked: bookedDates,
             }}
@@ -116,7 +86,7 @@ const [unavailableDays, setBookedDays] = React.useState<Date[]>([])
                   month: "long",
                 })}{" "}
               </span>
-              at <span className="font-medium">{selectedTime}</span>.
+              kl. <span className="font-medium">{selectedTime}</span>.
             </>
           ) : (
             <>Vælg dag og tid for din aftale.</>
