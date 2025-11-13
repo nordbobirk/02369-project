@@ -22,6 +22,11 @@ export default function AddFAQ({ maxIndex, onFAQAddedAction }: {
                         ? enteredNewCategory.trim()
                         : selectedCategory
 
+                if (!selectedCategory || selectedCategory === "") {
+                    alert("Vælg venligst en kategori før du sender.") // or show inline error
+                    return
+                }
+
                 const question = formData.get('question') as string
                 const answer = formData.get('answer') as string
 
