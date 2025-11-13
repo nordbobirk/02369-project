@@ -38,6 +38,7 @@ import {
   useState,
 } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
+import Link from 'next/link';
 
 const monthEventVariants = cva('size-2 rounded-full', {
   variants: {
@@ -400,7 +401,9 @@ const CalendarMonthView = () => {
                         monthEventVariants({ variant: event.color })
                       )}
                     ></div>
-                    <span className="flex-1 truncate leading-tight">{event.title}</span>
+                    <Link href="/dashboard/view_booking/[id]" as={`/dashboard/view_booking/${event.id}`} className="content-center">
+                      <span className="flex-1 truncate leading-tight">{event.title}</span>
+                    </Link>
                     <time className="hidden sm:inline tabular-nums text-muted-foreground/50 text-xs">
                       {format(event.start, 'HH:mm')}
                     </time>
