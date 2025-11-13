@@ -49,7 +49,9 @@ export async function getBookings(): Promise<booking[]> {
     total_duration: booking.tattoos?.reduce((sum, tattoo) => 
     sum + (tattoo.estimated_duration || 0), 0) || 0
   }))
-  console.log(bookingsWithDuration)
+  // TODO the whole tattoo object is also fetched
+  // Might not mean much with current load
+  // But will probably be a problem in the future
   
   return bookingsWithDuration as booking[]
   
