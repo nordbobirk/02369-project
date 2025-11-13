@@ -19,9 +19,13 @@ export default function DeleteFAQ({ id, onDeletedAction }: { id: number, onDelet
             await deleteFAQ(id)
             onDeletedAction()
         }} className="inline">
-            <Button type="submit" variant="destructive">
-                Delete
-            </Button>
+            <Button
+  type="submit"
+  className="bg-rose-300 hover:bg-rose-400 text-white font-semibold rounded-xl px-4 py-2 shadow-sm"
+>
+  Slet
+</Button>
+
         </form>
     )
 }

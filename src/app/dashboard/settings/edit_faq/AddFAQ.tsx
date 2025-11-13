@@ -32,8 +32,10 @@ export default function AddFAQ({ maxIndex, onFAQAddedAction }: {
             const newFAQ = await createFAQ(category, question, answer, maxIndex + 1)
             onFAQAddedAction(newFAQ)
             // router.refresh()
-        }} className="border p-4 rounded-lg bg-gray-50">
-            <h3 className="font-bold mb-2">Add New FAQ</h3>
+        }} className="border p-4 rounded-lg bg-gray-50 text-center mx-auto">
+  <h3 className="font-bold mb-2">Tilføj ny FAQ</h3>
+
+
 
             {/* Dropdown that updates parent state */}
             <DropSelectMenu value={category} onChange={setCategory} />
@@ -43,18 +45,19 @@ export default function AddFAQ({ maxIndex, onFAQAddedAction }: {
 
             <input
                 name="question"
-                placeholder="Question"
+                placeholder="Spørgsmål"
                 className="w-full mb-2 p-2 border rounded"
                 required
             />
             <textarea
                 name="answer"
-                placeholder="Answer"
+                placeholder="Svar"
                 className="w-full mb-2 p-2 border rounded"
                 required
             />
-            <Button type="submit">
-                Add FAQ
+            <Button type="submit"
+                className="bg-rose-300 hover:bg-rose-400 text-white font-semibold rounded-xl px-4 py-2 shadow-sm">
+                Tilføj FAQ
             </Button>
         </form>
     )

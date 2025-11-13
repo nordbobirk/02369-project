@@ -33,7 +33,7 @@ export function DropSelectMenu({
 
   const displayLabel = value
     ? value.charAt(0).toUpperCase() + value.slice(1)
-    : "Choose category"
+    : "Vælg kategori"
 
   return (
     <div className="w-full mb-2 p-2">

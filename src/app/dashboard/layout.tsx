@@ -38,7 +38,7 @@ export default function PublicLayout({
                         <Button variant="secondary" asChild>
                             <Link href="/dashboard/settings" className="flex items-center gap-1">
                                 <SettingsIcon className="h-4 w-4" />
-                                <span className="hidden sm:inline">Indstillinger</span>
+                                <span className="hidden sm:inline">Præferencer</span>
                             </Link>
                         </Button>
                     </div>
