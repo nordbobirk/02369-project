@@ -6,26 +6,27 @@ import { deleteFAQ } from './actions'
 /**
  * DeleteFAQ Component
  * 
- * A form component that permanently deletes an FAQ entry from the database.
- * Displays a destructive-styled button to indicate the irreversible action.
- * 
- * @component
- * @param {Object} props - Component props
- * @param {number} props.id - The unique identifier of the FAQ to delete
+ * Permanently deletes an FAQ entry from the database.
+ * Prompts the user to confirm deletion before calling the server.
  */
 export default function DeleteFAQ({ id, onDeletedAction }: { id: number, onDeletedAction: () => void }) {
-    return (
-        <form action={async () => {
-            await deleteFAQ(id)
-            onDeletedAction()
-        }} className="inline">
-            <Button
-  type="submit"
-  className="bg-rose-300 hover:bg-rose-400 text-white font-semibold rounded-xl px-4 py-2 shadow-sm"
->
-  Slet
-</Button>
+  return (
+    <form
+      action={async () => {
+        // Ask for confirmation
+        if (!window.confirm("Are you sure you want to delete this FAQ?")) {
+          return
+        }
 
-        </form>
-    )
+        // If confirmed, delete and call callback
+        await deleteFAQ(id)
+        onDeletedAction()
+      }}
+      className="inline"
+    >
+      <Button type="submit" className="bg-rose-300 hover:bg-rose-400 text-white font-semibold rounded-xl px-4 py-2 shadow-sm">
+        Delete
+      </Button>
+    </form>
+  )
 }

@@ -6,6 +6,7 @@ import {
   League_Spartan,
   Archivo_Black,
 } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -36,6 +37,30 @@ const archivoBlack = Archivo_Black({
   variable: "--font-archivo-black",
 });
 
+const tropiLand = localFont({
+  src: [
+    {
+      path: "./fonts/tropi-land/Tropi Land - (Demo) hanscostudio.com.ttf",
+      weight: "400",
+      style: "normal"
+    }
+  ],
+  variable: "--font-tropi-land",
+  display: "swap"
+});
+
+const urbane = localFont({
+  src: [
+    { 
+      path: "./fonts/urbane/Urbane-Medium.ttf",
+      weight: "400",
+      style: "normal"
+    }
+  ],
+  variable: "--font-urbane",
+  display: "swap"
+});
+
 export const metadata: Metadata = {
   title: "Bebsis Booking",
   description: "Book tid til tatovering hos Andrea Carlberg",
@@ -49,8 +74,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable}${anton.variable} ${spartan.variable}
-      ${archivoBlack.variable}`}
+        className={`${geistSans.variable} ${geistMono.variable}${anton.variable} ${spartan.variable} ${archivoBlack.variable} ${tropiLand.variable} ${urbane.variable}`}
       >
         <main className="min-h-[60vh] p-5">{children}</main>
       </body>

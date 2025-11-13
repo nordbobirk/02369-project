@@ -8,42 +8,42 @@ export default function Aftercare() {
           <h1 className="text-4xl md:text-5xl font-bold text-black mb-8 text-center">
             Aftercare
           </h1>
-          <p className="text-lg text-center mb-12 text-left">
+          <p className="border-2 border-black text-lg text-center mb-12 p-8 text-left rounded-xl">
             Den rigtige aftercare er vigtig for heling og vedligeholdelse af
             kvaliteten af din nye tatovering. Følg nedenstående instruktioner
             for at opnå de bedste resultater.
           </p>
 
           {/* Tidslinje */}
-          <div className="bg-black/80 rounded-xl p-8 mb-8">
-            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+          <div className="border-2 border-black rounded-xl p-8 mb-8">
+            <h2 className="text-2xl font-bold text-black mb-6 flex items-center gap-2">
               <Clock className="h-6 w-6 text-red-500" />
               Healing Tidslinje
             </h2>
             <div className="space-y-4">
               <div className="border-l-4 border-red-500 pl-6">
-                <h3 className="text-lg font-semibold text-white">
+                <h3 className="text-lg font-semibold text-black">
                   Dag 1-3: Initial heling
                 </h3>
-                <p className="text-slate-100">
+                <p className="text-slate-1000">
                   Behold forbindingen i 2-4 timer, vask derefter forsigtigt og
                   påfør et tyndt lag salve.
                 </p>
               </div>
               <div className="border-l-4 border-orange-500 pl-6">
-                <h3 className="text-lg font-semibold text-white">
+                <h3 className="text-lg font-semibold text-black">
                   Dag 4-14: Afningsfase
                 </h3>
-                <p className="text-slate-100">
+                <p className="text-slate-1000">
                   Huden begynder at skalle og flage. Pil eller krads ikke. Skift
                   til parfume-fri lotion.
                 </p>
               </div>
               <div className="border-l-4 border-green-500 pl-6">
-                <h3 className="text-lg font-semibold text-white">
+                <h3 className="text-lg font-semibold text-black">
                   Dag 15-30: Endelig heling
                 </h3>
-                <p className="text-slate-100">
+                <p className="text-slate-1000">
                   Fortsæt med at fugte huden. Tatoveringen kan se en smule mat
                   ud – det er normalt.
                 </p>
@@ -53,12 +53,12 @@ export default function Aftercare() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
             {/* Gør */}
-            <div className="bg-black/80 rounded-xl p-8">
-              <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <div className="border-2 border-black rounded-xl p-8">
+              <h2 className="text-2xl font-bold text-black mb-6 flex items-center gap-2">
                 <CheckCircle className="h-6 w-6 text-green-500" />
                 GØR
               </h2>
-              <ul className="space-y-3 text-slate-100">
+              <ul className="space-y-3 text-slate-1000">
                 <li className="flex items-start gap-2">
                   <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                   <span>Vask dine hænder før du rører ved din tatovering</span>
@@ -93,12 +93,12 @@ export default function Aftercare() {
             </div>
 
             {/* Gør ikke */}
-            <div className="bg-black/80 rounded-xl p-8">
-              <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <div className="border-2 border-black rounded-xl p-8">
+              <h2 className="text-2xl font-bold text-black mb-6 flex items-center gap-2">
                 <XCircle className="h-6 w-6 text-red-500" />
                 GØR IKKE
               </h2>
-              <ul className="space-y-3 text-slate-100">
+              <ul className="space-y-3 text-slate-1000">
                 <li className="flex items-start gap-2">
                   <XCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
                   <span>Pil, krads eller skræl ikke tatoveringen</span>
@@ -140,32 +140,32 @@ export default function Aftercare() {
           </div>
 
           {/* Produkter */}
-          <div className="bg-black/80 rounded-xl p-8 mb-8">
-            <h2 className="text-2xl font-bold text-white mb-6">
+          <div className="border-2 border-black rounded-xl p-8 mb-8">
+            <h2 className="text-2xl font-bold text-black mb-6">
               Anbefalede Produkter
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center">
-                <h3 className="text-lg font-semibold text-white mb-2">
+                <h3 className="text-lg font-semibold text-black mb-2">
                   Dag 1-3
                 </h3>
-                <p className="text-slate-100 text-sm">
+                <p className="text-slate-1000 text-sm">
                   Aquaphor eller A&D Salve
                 </p>
               </div>
               <div className="text-center">
-                <h3 className="text-lg font-semibold text-white mb-2">
+                <h3 className="text-lg font-semibold text-black mb-2">
                   Dag 4-14
                 </h3>
-                <p className="text-slate-100 text-sm">
+                <p className="text-slate-1000 text-sm">
                   Duftfri lotion (Cetaphil, Lubriderm)
                 </p>
               </div>
               <div className="text-center">
-                <h3 className="text-lg font-semibold text-white mb-2">
+                <h3 className="text-lg font-semibold text-black mb-2">
                   Langsigtet
                 </h3>
-                <p className="text-slate-100 text-sm">Solcreme med SPF 30+</p>
+                <p className="text-slate-1000 text-sm">Solcreme med SPF 30+</p>
               </div>
             </div>
           </div>
