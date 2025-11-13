@@ -9,6 +9,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu"
 import { getCategories } from "./actions"
 
@@ -24,15 +25,19 @@ export function DropSelectMenu({
   const [allCategories, setAllCategories] = React.useState<string[]>([])
 
   React.useEffect(() => {
-    async function fetchCategories() {
-      const categories = await getCategories()
-      const uniqueCategories = Array.from(
-        new Set(categories.map((c: { category: string }) => c.category))
+  async function fetchCategories() {
+    const categories = await getCategories()
+    const uniqueCategories = Array.from(
+      new Set(
+        categories
+          .map((c: { category: string }) => c.category)
+          .filter((c) => c && c.trim() !== "")
       )
-      setAllCategories(uniqueCategories)
-    }
-    fetchCategories()
-  }, [])
+    )
+    setAllCategories(uniqueCategories)
+  }
+  fetchCategories()
+}, [])
 
   const hasCreateItem = hasCreate
   const displayLabel =
@@ -68,7 +73,7 @@ export function DropSelectMenu({
                   value="create_new"
                   className="font-medium text-blue-600"
                 >
-                  ➕ Create new category
+                  ➕ Lav ny kategori
                 </DropdownMenuRadioItem>
               </>
             )}

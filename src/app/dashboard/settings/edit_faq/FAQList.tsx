@@ -85,8 +85,8 @@ function SortableFAQItem({ faq, isEditing, onEdit, editCategory, editQuestion, e
                         <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing mt-1 text-gray-400 hover:text-gray-600">
                             <Image src="/icons/drag_indicator.svg" alt="Drag handle" width={20} height={20} />
                         </div>
-                        <div className="mb-4 p-4 border rounded-lg bg-white shadow-sm">
-                            <h1 className="text-sm font-semibold text-pink-600 tracking-wide mb-1">{faq.category}</h1>
+                        <div className="mb-4 p-4 rounded-lg ">
+                            <h1 className="text-sm font-semibold text-rose-300 tracking-wide mb-1">{faq.category}</h1>
                             <h3 className="text-lg font-bold text-gray-900 mb-2">{faq.question}</h3>
                             <p className="text-gray-700 leading-relaxed mb-4">{faq.answer}</p>
                             <Button onClick={onEdit} variant="outline" className="mr-2">Rediger</Button>

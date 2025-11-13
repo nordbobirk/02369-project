@@ -44,7 +44,7 @@ export default function AddFAQ({ maxIndex, onFAQAddedAction }: {
                     name="newCategory"
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
-                    placeholder="Enter new category name..."
+                    placeholder="Skriv en ny kategori..."
                     className="w-full mb-2 p-2 border rounded"
                     required
                 />
