@@ -24,7 +24,7 @@ export default function DeleteFAQ({ id, onDeletedAction }: { id: number, onDelet
       }}
       className="inline"
     >
-      <Button type="submit" variant="destructive">
+      <Button type="submit" className="bg-rose-300 hover:bg-rose-400 text-white font-semibold rounded-xl px-4 py-2 shadow-sm">
         Delete
       </Button>
     </form>

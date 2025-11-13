@@ -39,9 +39,12 @@ export default function SaveEditedFAQ({
             onSavedAction({ id, category, question, answer })
             onCancelAction()
         }} className="inline mr-2">
-            <Button type="submit" variant="default">
-                Save
-            </Button>
+            <Button
+    type="submit"
+    className="bg-rose-300 hover:bg-rose-400 text-white font-semibold rounded-xl px-4 py-2 shadow-sm"
+  >
+    Gem ændring
+  </Button>
         </form>
     )
 }

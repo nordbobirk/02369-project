@@ -37,10 +37,10 @@ export function DropSelectMenu({
   const hasCreateItem = hasCreate
   const displayLabel =
     value === "create_new"
-      ? "➕ Create new category"
+      ? "➕ Lav ny kategori"
       : value
       ? value.charAt(0).toUpperCase() + value.slice(1)
-      : "Choose category"
+      : "Vælg kategori"
 
   return (
     <div className="w-full mb-2">

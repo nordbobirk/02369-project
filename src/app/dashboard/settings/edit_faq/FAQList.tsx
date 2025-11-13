@@ -89,7 +89,7 @@ function SortableFAQItem({ faq, isEditing, onEdit, editCategory, editQuestion, e
                             <h1 className="text-sm font-semibold text-pink-600 tracking-wide mb-1">{faq.category}</h1>
                             <h3 className="text-lg font-bold text-gray-900 mb-2">{faq.question}</h3>
                             <p className="text-gray-700 leading-relaxed mb-4">{faq.answer}</p>
-                            <Button onClick={onEdit} variant="outline" className="mr-2">Edit</Button>
+                            <Button onClick={onEdit} variant="outline" className="mr-2">Rediger</Button>
                             <DeleteFAQ
                                 id={faq.id}
                                 onDeletedAction={onDeletedAction}

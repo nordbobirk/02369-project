@@ -1,13 +1,13 @@
 "use server";
 
-import { initBrowserClient } from "@/lib/supabase/client";
+import { initServerClient } from "@/lib/supabase/server";
 
-//  Get all availability data
+// Get all availability data
 export async function getAvailability() {
-  const supabase = initBrowserClient();
+  const supabase = await initServerClient();
 
   const { data, error } = await supabase
-    .from("Tilgængelighed") // 👈 make sure the table name matches exactly in Supabase
+    .from("Tilgængelighed")
     .select("id, date, is_open")
     .order("date", { ascending: true });
 
@@ -16,22 +16,22 @@ export async function getAvailability() {
     return [];
   }
 
-  console.log(" Availability fetched:", data?.length || 0);
+  console.log("✅ Availability fetched:", data?.length || 0);
   return data;
 }
 
 // Toggle a day open/closed
 export async function toggleAvailability(date: string, is_open: boolean) {
-  const supabase = initBrowserClient();
+  const supabase = await initServerClient();
 
   const { data, error } = await supabase
     .from("Tilgængelighed")
     .upsert([{ date, is_open }], { onConflict: "date" });
 
   if (error) {
-    console.error("Error updating availability:", error);
+    console.error("❌ Error updating availability:", error);
   } else {
-    console.log(` Updated: ${date} → ${is_open ? "ÅBEN" : "LUKKET"}`);
+    console.log(`✅ Updated: ${date} → ${is_open ? "ÅBEN" : "LUKKET"}`);
   }
 
   return data;

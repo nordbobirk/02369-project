@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { getAvailability, toggleAvailability } from "./availabilityAction";
+import { getAvailability, toggleAvailability } from "./availabilityClient";
 
-export default function Tilgængelighed() {
+export default function AvailabilityPage() {
   const [availability, setAvailability] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -25,7 +25,12 @@ export default function Tilgængelighed() {
   ];
   const weekdays = ["ma", "ti", "on", "to", "fr", "lø", "sø"];
 
-  // get availability from Supabase
+  // ---- Helper: consistent ISO-like format YYYY-MM-DD ----
+  function formatDateISO(date: Date): string {
+    return date.toISOString().split("T")[0];
+  }
+
+  // ---- Fetch availability from Supabase ----
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
@@ -40,7 +45,7 @@ export default function Tilgængelighed() {
     fetchData();
   }, []);
 
-  // Toggle a single day
+  // ---- Toggle a single day ----
   async function handleToggle(date: string) {
     const newState = !availability[date];
     setAvailability((prev) => ({ ...prev, [date]: newState }));
@@ -48,7 +53,7 @@ export default function Tilgængelighed() {
     console.log(`✅ Updated: ${date} → ${newState ? "ÅBEN" : "LUKKET"}`);
   }
 
-  // Swipe / drag support
+  // ---- Drag / Swipe Support ----
   function handleMouseDown(date: string) {
     setIsDragging(true);
     handleToggle(date);
@@ -60,7 +65,7 @@ export default function Tilgængelighed() {
     setIsDragging(false);
   }
 
-  //  Calendar helpers
+  // ---- Calendar setup ----
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
   const firstDay = new Date(year, month, 1);
@@ -71,11 +76,11 @@ export default function Tilgængelighed() {
   const previousMonth = () => setCurrentDate(new Date(year, month - 1, 1));
   const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
 
-  // Mass actions (open / close entire month)
+  // ---- Bulk actions ----
   async function openAllMonth() {
     const updated = { ...availability };
     const updates = daysArray.map((day) => {
-      const dateString = new Date(year, month, day).toLocaleDateString("sv-SE");
+      const dateString = formatDateISO(new Date(year, month, day));
       updated[dateString] = true;
       return toggleAvailability(dateString, true);
     });
@@ -86,7 +91,7 @@ export default function Tilgængelighed() {
   async function closeAllMonth() {
     const updated = { ...availability };
     const updates = daysArray.map((day) => {
-      const dateString = new Date(year, month, day).toLocaleDateString("sv-SE");
+      const dateString = formatDateISO(new Date(year, month, day));
       updated[dateString] = false;
       return toggleAvailability(dateString, false);
     });
@@ -94,9 +99,9 @@ export default function Tilgængelighed() {
     setAvailability(updated);
   }
 
-  // Rigtig dato
+  // ---- Get formatted date string ----
   function getLocalDateString(year: number, month: number, day: number) {
-    return new Date(year, month, day).toLocaleDateString("sv-SE");
+    return formatDateISO(new Date(year, month, day));
   }
 
   return (
@@ -114,7 +119,7 @@ export default function Tilgængelighed() {
           onMouseLeave={handleMouseUp}
         >
           {/* Month header */}
-          <div className="bg-pink-300 flex items-center justify-between px-4 py-3 text-lg font-semibold text-gray-800 capitalize">
+          <div className="bg-rose-300 flex items-center justify-between px-4 py-3 text-lg font-semibold text-gray-800 capitalize">
             <button
               onClick={previousMonth}
               className="text-gray-800 hover:text-gray-900 text-2xl"
@@ -132,14 +137,19 @@ export default function Tilgængelighed() {
             </button>
           </div>
 
-          {/*  Bulk buttons */}
+          {/* Bulk buttons */}
           <div className="flex justify-between px-4 py-2 text-sm bg-gray-50 border-b">
             <button
               onClick={openAllMonth}
-              className="text-green-600 font-medium hover:underline"
+             
             >
-              
-            
+        
+            </button>
+            <button
+              onClick={closeAllMonth}
+             
+            >
+             
             </button>
           </div>
 
@@ -189,7 +199,7 @@ export default function Tilgængelighed() {
                   className={`m-1 rounded-md flex items-center justify-center transition-all font-medium
                     ${
                       isOpen
-                        ? "bg-pink-400 text-white hover:bg-pink-500"
+                        ? "bg-rose-300 text-white hover:bg-rose-300"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                   style={{ height: "50px" }}
