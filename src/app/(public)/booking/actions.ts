@@ -9,8 +9,11 @@ export type availability = {
 }
 
 export type booking = {
+  id: string
   date_and_time: Date
+  total_duration?: number
 }
+
 // FIXME duration should be factored in ..
 // PO said to assign random value 1-4,
 // until we get/develop a concrete duration estimation algorithm
@@ -34,22 +37,20 @@ export async function getAvailability() {
   return availabilityTable as availability[]
 }
 
-export async function getBookings(/* startDate: Date, endDate: Date */): Promise<booking[]> {
+export async function getBookings(): Promise<booking[]> {
   const supabase = await initServerClient()
-  
-  //console.log(startDate, endDate)
-  
-  // Convert to timestampz
-
-  const { data:bookings, error } = await supabase
+  const { data: bookings, error } = await supabase
     .from('bookings')
-    .select('date_and_time')
-    //.gte('date_and_time', startDate)
-    //.lte('date_and_time', endDate)
+    .select('id, date_and_time, tattoos(estimated_duration)')
     .in('status', ['pending', 'confirmed'])
   
-  console.log("Get bookings result:")
-  console.log(bookings)
-  return bookings as booking[]
+  const bookingsWithDuration = bookings?.map(booking => ({
+    ...booking,
+    total_duration: booking.tattoos?.reduce((sum, tattoo) => 
+    sum + (tattoo.estimated_duration || 0), 0) || 0
+  }))
+  console.log(bookingsWithDuration)
+  
+  return bookingsWithDuration as booking[]
+  
 }
-

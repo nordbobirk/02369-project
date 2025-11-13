@@ -16,17 +16,21 @@ export function Calendar20() {
   const [bookings, setBookings] = React.useState<booking[]>([])
   const [selectedTime, setSelectedTime] = React.useState<string | null>("10:00")
 
-
-  const timeSlots = Array.from({ length: 4 }, (_, i) => {
+  const lunchBreak = 13 // FIXME fetch lunch break setting when it gets added
+    
+  const timeSlots = Array.from({ length: 7 }, (_, i) => {
     //FIXME Logic here to handle lunch breaks and other changes to time slots
-    const totalMinutes = i * 120
+    const totalMinutes = i * 60
     const hour = Math.floor(totalMinutes / 60) + 10
     const minute = totalMinutes % 60
     return `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`
+  }).filter((_, i) => { 
+    // This filters the lunchBreak from available time buttons
+    const hour = Math.floor((i * 60) / 60) + 10
+    return hour !== lunchBreak
   })
 
-  const availableDates = availability.map(a => new Date(a.date))
-
+  
   React.useEffect(() => {
     getAvailability().then((response) => {
       setAvailability(response || [])
@@ -38,7 +42,8 @@ export function Calendar20() {
       setBookings(response || [])
     })
   }, [])
-
+  
+  const availableDates = availability.map(a => new Date(a.date))
 
   const isDateAvailable = (checkDate: Date) => {
     return availableDates.some(
@@ -48,7 +53,7 @@ export function Calendar20() {
         availableDate.getFullYear() === checkDate.getFullYear()
     )
   }
-
+  console.log(bookings)
   const disabledMatcher = (date: Date) => !isDateAvailable(date)
 
 
