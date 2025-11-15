@@ -104,3 +104,28 @@ export async function rejectPendingBooking(params: string | Array<string> | unde
     revalidatePath('/dashboard/view_booking/' + params)
     return
 }
+
+export async function updateBookingDetails(
+    bookingId: string,
+    email: string,
+    phoneNumber: string,
+    internalNotes: string
+) {
+    const supabase = await initServerClient()
+
+    const { error } = await supabase
+        .from('bookings')
+        .update({
+            email,
+            phone_number: phoneNumber,
+            internal_notes: internalNotes,
+            edited_date_and_time: new Date().toISOString()
+        })
+        .eq('id', bookingId)
+
+    if (error) throw error
+
+    revalidatePath(`/dashboard/view_booking/${bookingId}`)
+    return
+}
+

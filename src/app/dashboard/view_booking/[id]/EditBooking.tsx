@@ -1,23 +1,11 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { EditIcon } from "lucide-react";
 
-import { useParams } from 'next/navigation'
-import {EditIcon} from "lucide-react";
-
-export default function AcceptButton() {
-
-    const params = useParams();
-    const id = params.id as string;
-
-    // TODO: Implement editBooking function in actions.ts
-    const onClick = async () => {
-        return;
-    }
-
-
+export default function EditBooking({ onEditAction }: { onEditAction: () => void }) {
     return (
-        <Button onClick={onClick} variant="secondary">
+        <Button onClick={onEditAction} variant="secondary">
             <EditIcon/>
         </Button>
     )
