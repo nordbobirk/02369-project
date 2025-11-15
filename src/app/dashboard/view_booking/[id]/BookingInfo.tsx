@@ -6,6 +6,7 @@ import RejectButton from "@/app/dashboard/view_booking/[id]/RejectPendingBooking
 import { formatMinutesHrsMins } from "@/app/dashboard/utils/formatMinutes";
 import {formatPhoneNumber} from "@/app/dashboard/utils/formatPhoneNumber";
 import {formatDateTime } from "@/app/dashboard/utils/formatDateTime";
+import EditBooking from "@/app/dashboard/view_booking/[id]/EditBooking";
 
 type Booking = {
     id: string;
@@ -29,7 +30,10 @@ export default function BookingInfo({ booking }: BookingInfoProps) {
     return (
         <div className="flex flex-col md:flex-row items-stretch gap-4 p-2 border border-black rounded-lg">
             <div className="flex-1 min-w-0">
-                <span className="font-semibold text-lg break-words">{booking.name}</span>
+                <div className="flex items-center justify-between">
+                    <span className="font-semibold text-lg break-words">{booking.name}</span>
+                    <EditBooking />
+                </div>
                 <div className="text-sm space-y-1 mt-2">
                     <div>
                         <span className="font-medium">Tid og dato:</span>{" "}
