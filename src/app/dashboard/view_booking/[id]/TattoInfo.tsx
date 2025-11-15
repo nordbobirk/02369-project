@@ -1,9 +1,11 @@
-// src/app/dashboard/view_booking/[id]/TattoInfo.tsx
 "use client";
 
 import { useState } from "react";
 import { TattooImages } from "@/app/dashboard/view_booking/[id]/TattooImages";
-import {formatMinutesHrsMins} from "@/app/dashboard/utils/formatMinutes";
+import { formatMinutesHrsMins } from "@/app/dashboard/utils/formatMinutes";
+import EditTattoo from "@/app/dashboard/view_booking/[id]/EditTattoo";
+import SaveEditTattoo from "@/app/dashboard/view_booking/[id]/SaveEditTattoo";
+import CancelEditTattoo from "@/app/dashboard/view_booking/[id]/CancelEditTattoo";
 
 export type Tattoo = {
     id: number;
@@ -26,12 +28,37 @@ interface TattooInfoProps {
 
 export function TattooInfo({ tattoos }: TattooInfoProps) {
     const [index, setIndex] = useState(0);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedWidth, setEditedWidth] = useState<number | undefined>();
+    const [editedHeight, setEditedHeight] = useState<number | undefined>();
+    const [editedPlacement, setEditedPlacement] = useState("");
+    const [editedDetailLevel, setEditedDetailLevel] = useState("");
+    const [editedColoredOption, setEditedColoredOption] = useState("");
+    const [editedColorDescription, setEditedColorDescription] = useState("");
 
     if (!tattoos?.length) {
         return <p>Ingen tatoveringer</p>;
     }
 
     const tattoo = tattoos[index];
+
+    const handleEdit = () => {
+        setEditedWidth(tattoo.width);
+        setEditedHeight(tattoo.height);
+        setEditedPlacement(tattoo.placement ?? "");
+        setEditedDetailLevel(tattoo.detail_level ?? "");
+        setEditedColoredOption(tattoo.colored_option ?? "");
+        setEditedColorDescription(tattoo.color_description ?? "");
+        setIsEditing(true);
+    };
+
+    const handleCancel = () => {
+        setIsEditing(false);
+    };
+
+    const handleSave = async () => {
+        setIsEditing(false);
+    };
 
     return (
         <div className="p-2 border border-black rounded-lg flex flex-col md:flex-row gap-4">
@@ -45,6 +72,23 @@ export function TattooInfo({ tattoos }: TattooInfoProps) {
                         Tattoo {index + 1}{" "}
                         <span className="text-sm text-muted-foreground">({tattoo.tattoo_type})</span>
                     </div>
+                    {!isEditing ? (
+                        <EditTattoo onEditAction={handleEdit} />
+                    ) : (
+                        <div className="flex gap-2">
+                            <SaveEditTattoo
+                                tattooId={tattoo.id.toString()}
+                                width={editedWidth}
+                                height={editedHeight}
+                                placement={editedPlacement}
+                                detailLevel={editedDetailLevel}
+                                coloredOption={editedColoredOption}
+                                colorDescription={editedColorDescription}
+                                onSaveAction={handleSave}
+                            />
+                            <CancelEditTattoo onCancelAction={handleCancel} />
+                        </div>
+                    )}
                 </div>
 
                 <div className="text-sm mt-2">
@@ -52,20 +96,88 @@ export function TattooInfo({ tattoos }: TattooInfoProps) {
                         <div className="whitespace-pre-wrap break-words">{tattoo.notes}</div>
                         <div>
                             <span className="font-medium">Størrelse:</span>{" "}
-                            {tattoo.width ?? "—"} x {tattoo.height ?? "—"} cm
+                            {isEditing ? (
+                                <>
+                                    <input
+                                        type="number"
+                                        value={editedWidth ?? ""}
+                                        onChange={(e) => setEditedWidth(e.target.value ? Number(e.target.value) : undefined)}
+                                        placeholder="Bredde"
+                                        className="w-20 px-2 py-1 border border-gray-300 rounded"
+                                    />
+                                    {" x "}
+                                    <input
+                                        type="number"
+                                        value={editedHeight ?? ""}
+                                        onChange={(e) => setEditedHeight(e.target.value ? Number(e.target.value) : undefined)}
+                                        placeholder="Højde"
+                                        className="w-20 px-2 py-1 border border-gray-300 rounded"
+                                    />
+                                    {" cm"}
+                                </>
+                            ) : (
+                                `${tattoo.width ?? "—"} x ${tattoo.height ?? "—"} cm`
+                            )}
                         </div>
                         <div>
-                            <span className="font-medium">Placering:</span> {tattoo.placement ?? "—"}
+                            <span className="font-medium">Placering:</span>{" "}
+                            {isEditing ? (
+                                <input
+                                    type="text"
+                                    value={editedPlacement}
+                                    onChange={(e) => setEditedPlacement(e.target.value)}
+                                    className="ml-2 px-2 py-1 border border-gray-300 rounded"
+                                />
+                            ) : (
+                                tattoo.placement ?? "—"
+                            )}
                         </div>
                         <div>
-                            <span className="font-medium">Detaljeniveau:</span> {tattoo.detail_level ?? "—"}
+                            <span className="font-medium">Detaljeniveau:</span>{" "}
+                            {isEditing ? (
+                                <select
+                                    value={editedDetailLevel}
+                                    onChange={(e) => setEditedDetailLevel(e.target.value)}
+                                    className="ml-2 px-2 py-1 border border-gray-300 rounded"
+                                >
+                                    <option value="">Vælg</option>
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                </select>
+                            ) : (
+                                tattoo.detail_level ?? "—"
+                            )}
                         </div>
                         <div>
-                            <span className="font-medium">Farvevalg:</span> {tattoo.colored_option ?? "—"}
+                            <span className="font-medium">Farvevalg:</span>{" "}
+                            {isEditing ? (
+                                <select
+                                    value={editedColoredOption}
+                                    onChange={(e) => setEditedColoredOption(e.target.value)}
+                                    className="ml-2 px-2 py-1 border border-gray-300 rounded"
+                                >
+                                    <option value="">Vælg</option>
+                                    <option value="black">Sort</option>
+                                    <option value="colored">Farver</option>
+                                </select>
+                            ) : (
+                                tattoo.colored_option ?? "—"
+                            )}
                         </div>
-                        {tattoo.color_description && (
+                        {(isEditing ? editedColoredOption === "colored" : tattoo.color_description) && (
                             <div>
-                                <span className="font-medium">Farvebeskrivelse:</span> {tattoo.color_description}
+                                <span className="font-medium">Farvebeskrivelse:</span>{" "}
+                                {isEditing ? (
+                                    <input
+                                        type="text"
+                                        value={editedColorDescription}
+                                        onChange={(e) => setEditedColorDescription(e.target.value)}
+                                        className="ml-2 px-2 py-1 border border-gray-300 rounded w-full"
+                                    />
+                                ) : (
+                                    tattoo.color_description
+                                )}
                             </div>
                         )}
                         <div>Est. tid: {formatMinutesHrsMins(tattoo.estimated_duration)} </div>
@@ -80,7 +192,8 @@ export function TattooInfo({ tattoos }: TattooInfoProps) {
                                 tattoos.length <= 1 ? 0 : (i - 1 + tattoos.length) % tattoos.length
                             )
                         }
-                        className="px-3 py-2 rounded-md bg-gray-100 hover:bg-gray-200"
+                        disabled={isEditing}
+                        className="px-3 py-2 rounded-md bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         aria-label="Previous tattoo"
                     >
                         ←
@@ -96,7 +209,8 @@ export function TattooInfo({ tattoos }: TattooInfoProps) {
                                 tattoos.length <= 1 ? 0 : (i + 1) % tattoos.length
                             )
                         }
-                        className="px-3 py-2 rounded-md bg-gray-100 hover:bg-gray-200"
+                        disabled={isEditing}
+                        className="px-3 py-2 rounded-md bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         aria-label="Next tattoo"
                     >
                         →

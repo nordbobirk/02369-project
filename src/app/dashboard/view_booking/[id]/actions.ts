@@ -129,3 +129,49 @@ export async function updateBookingDetails(
     return
 }
 
+export async function updateTattooDetails(
+    tattooId: string,
+    width: number | undefined,
+    height: number | undefined,
+    placement: string,
+    detailLevel: string,
+    coloredOption: string,
+    colorDescription: string
+) {
+    const supabase = await initServerClient()
+
+    const updateData: any = {
+        width,
+        height,
+        placement,
+        detail_level: detailLevel,
+        colored_option: coloredOption,
+    }
+
+    // Kun tilføj color_description hvis coloredOption er 'colored'
+    if (coloredOption === 'colored') {
+        updateData.color_description = colorDescription
+    } else {
+        updateData.color_description = null
+    }
+
+    const { error } = await supabase
+        .from('tattoos')
+        .update(updateData)
+        .eq('id', tattooId)
+
+    if (error) throw error
+
+    // Hent booking_id for at kunne revalidate den korrekte path
+    const { data: tattoo } = await supabase
+        .from('tattoos')
+        .select('booking_id')
+        .eq('id', tattooId)
+        .single()
+
+    if (tattoo?.booking_id) {
+        revalidatePath(`/dashboard/view_booking/${tattoo.booking_id}`)
+    }
+
+    return
+}
