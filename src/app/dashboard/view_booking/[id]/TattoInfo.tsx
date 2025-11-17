@@ -41,6 +41,7 @@ export function TattooInfo({ tattoos }: TattooInfoProps) {
     }
 
     const tattoo = tattoos[index];
+    console.log(tattoo.tattoo_type + "TESTSTERSTE");
 
     const handleEdit = () => {
         setEditedWidth(tattoo.width);
@@ -132,22 +133,30 @@ export function TattooInfo({ tattoos }: TattooInfoProps) {
                                 tattoo.placement ?? "—"
                             )}
                         </div>
-                        <div>
-                            <span className="font-medium">Detaljeniveau:</span>{" "}
-                            {isEditing ? (
-                                <select
-                                    value={editedDetailLevel}
-                                    onChange={(e) => setEditedDetailLevel(e.target.value)}
-                                    className="ml-2 px-2 py-1 border border-gray-300 rounded"
-                                >
-                                    <option value="low">Low</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="high">High</option>
-                                </select>
-                            ) : (
-                                tattoo.detail_level ?? "—"
-                            )}
-                        </div>
+                        {tattoo.tattoo_type == "custom" ? (
+                            <div>
+                                <span className="font-medium">Detaljeniveau:</span>{" "}
+                                {isEditing ? (
+                                    <select
+                                        value={editedDetailLevel}
+                                        onChange={(e) => setEditedDetailLevel(e.target.value)}
+                                        className="ml-2 px-2 py-1 border border-gray-300 rounded"
+                                    >
+                                        <option value="low">Low</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="high">High</option>
+                                    </select>
+                                ) : (
+                                    tattoo.detail_level ?? "—"
+                                )}
+                            </div>
+
+                        ) :
+                            <div className="flex ">
+                                <span className="font-medium">Detaljeniveau: </span>
+                                <p className="ml-2"> Flash</p>
+                            </div>
+                        }
                         <div>
                             <span className="font-medium">Farvevalg:</span>{" "}
                             {isEditing ? (
