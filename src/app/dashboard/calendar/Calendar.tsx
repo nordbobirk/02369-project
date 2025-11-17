@@ -4,10 +4,10 @@ import * as React from "react"
 
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { getBookingsAtDate, getAllBookings, Booking, Tattoo } from "./actions"
+import { getBookingsAtDate, getAllBookings, Booking, Tattoo } from "@/app/dashboard/actions"
 import { da } from "date-fns/locale"
-import ViewBooking from "./ViewBooking"
-import BookingCard from "./Booking"
+import ViewBooking from "@/app/dashboard/ViewBooking"
+import BookingCard from "@/app/dashboard/Booking"
 
 export default function Calendar31() {
   const [date, setDate] = React.useState<Date>(new Date())

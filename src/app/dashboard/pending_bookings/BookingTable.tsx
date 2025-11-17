@@ -26,67 +26,34 @@ import {
 import { Booking } from "../actions"
 import ViewBooking from "../ViewBooking"
 import { ArrowUpDown } from "lucide-react"
-import {formatMinutesHrsMins} from "@/app/dashboard/utils/formatMinutes";
+import { formatMinutesHrsMins } from "@/app/dashboard/utils/formatMinutes";
 
 
 export const columns: ColumnDef<Booking>[] = [
     {
-        accessorKey: "status",
-        header: ({ column }) => (
-            <Button
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            >
-                Status
-                <ArrowUpDown></ArrowUpDown>
-            </Button>
-        ),
-        cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("status")}</div>
-        ),
-        sortingFn: (a, b) => {
-            // Order logic
-            const order = ["pending", "edited","confirmed", "customer_cancelled", "artist_cancelled", "done"]
-            const aVal = (a.getValue("status") as string)?.toLowerCase() ?? ""
-            const bVal = (b.getValue("status") as string)?.toLowerCase() ?? ""
-
-            const aIndex = order.indexOf(aVal)
-            const bIndex = order.indexOf(bVal)
-
-            // if both are known statuses, sort by that order
-            if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex
-
-            // fallback to normal ASCII comparison
-            return aVal.localeCompare(bVal)
-        },
-    },
-    {
-        accessorKey: "name",
-        header: "Navn",
-        cell: ({ row }) => (
-            <div>{row.getValue("name")}</div>
-        ),
-    },
-    {
-        accessorKey: "email",
-        header: "Email",
-        cell: ({ row }) => (
-            <div className="lowercase">{row.getValue("email")}</div>
-        ),
-    },
-    {
         accessorKey: "date_and_time",
         header: "Dato",
+        sortingFn: (a, b) => {
+            const now = Date.now()
+            const dateA = new Date(a.getValue("date_and_time")).getTime()
+            const dateB = new Date(b.getValue("date_and_time")).getTime()
+
+            const isPastA = dateA < now
+            const isPastB = dateB < now
+
+            // If one is past and the other is future → past goes last
+            if (isPastA !== isPastB) {
+                return isPastA ? -1 : 1
+            }
+
+            // Both are either past or both upcoming → sort newest first
+            return dateB - dateA
+        },
         cell: ({ row }) => {
             const raw = row.getValue("date_and_time") as string | Date
-
-            // Try to safely convert it into a Date
             const date = new Date(raw)
-
-            // Fallback if invalid
             if (isNaN(date.getTime())) return <div>Ugyldig dato</div>
 
-            // Format using toLocaleString
             const formatted = date.toLocaleString("da-DK", {
                 day: "2-digit",
                 month: "2-digit",
@@ -95,8 +62,35 @@ export const columns: ColumnDef<Booking>[] = [
                 minute: "2-digit",
             })
 
-            return <div>{formatted}</div>
+            const isPast = date.getTime() < Date.now()
+
+            return (
+                <div className="flex gap-2 items-center">
+                    {formatted}
+                    {isPast && (
+                        <span className="text-xs bg-red-200 text-red-800 px-2 py-0.5 rounded">
+                            Over dato
+                        </span>
+                    )}
+                </div>
+            )
         },
+    },
+    {
+        accessorKey: "name",
+        header: "Navn",
+        filterFn: "includesString",
+        cell: ({ row }) => (
+            <div>{row.getValue("name")}</div>
+        ),
+    },
+    {
+        accessorKey: "email",
+        header: "Email",
+        filterFn: "includesString",
+        cell: ({ row }) => (
+            <div className="lowercase">{row.getValue("email")}</div>
+        ),
     },
     {
         accessorKey: "duration",
@@ -142,7 +136,12 @@ export default function BookingTable({ data }: { data: Booking[] }) {
     )
     const [columnVisibility, setColumnVisibility] =
         React.useState<VisibilityState>({})
-    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [sorting, setSorting] = React.useState<SortingState>([
+        { id: "date_and_time", desc: true }
+    ])
+    // Filter state to get email and name at once
+    const [globalFilter, setGlobalFilter] = React.useState("")
+
 
     const table = useReactTable({
         data,
@@ -154,10 +153,12 @@ export default function BookingTable({ data }: { data: Booking[] }) {
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         onColumnVisibilityChange: setColumnVisibility,
+        onGlobalFilterChange: setGlobalFilter,
         state: {
             sorting,
             columnFilters,
             columnVisibility,
+            globalFilter,
         },
     })
 
@@ -165,18 +166,16 @@ export default function BookingTable({ data }: { data: Booking[] }) {
         <div className="sm:w-3/4 mx-auto">
             <div className="flex items-center py-4">
                 <Input
-                    placeholder="Filter emails..."
-                    value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-                    onChange={(event) =>
-                        table.getColumn("email")?.setFilterValue(event.target.value)
-                    }
+                    placeholder="Filter emails/navn..."
+                    value={globalFilter}
+                    onChange={(e) => setGlobalFilter(e.target.value)}
                     className="max-w-sm"
                 />
 
             </div>
             <div className="overflow-hidden rounded-md border">
                 <Table>
-                    <TableHeader>
+                    <TableHeader className="bg-neutral-100">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => {

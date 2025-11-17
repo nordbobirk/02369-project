@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import ViewBooking from '../../app/dashboard/ViewBooking';
 import { VariantProps, cva } from 'class-variance-authority';
 import {
   Locale,
@@ -32,10 +33,12 @@ import {
   forwardRef,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
+import Link from 'next/link';
 
 const monthEventVariants = cva('size-2 rounded-full', {
   variants: {
@@ -197,31 +200,42 @@ const EventGroup = ({
   events: CalendarEvent[];
   hour: Date;
 }) => {
-  return (
-    <div className="h-16 sm:h-20 border-t last:border-b">
-      {events
-        .filter((event) => isSameHour(event.start, hour))
-        .map((event) => {
-          const hoursDifference =
-            differenceInMinutes(event.end, event.start) / 60;
-          const startPosition = event.start.getMinutes() / 60;
+  const hourlyEvents = events.filter((event) =>
+    isSameHour(event.start, hour)
+  );
 
-          return (
-            <div
-              key={event.id}
-              className={cn(
-                'relative text-[10px] sm:text-xs',
-                dayEventVariants({ variant: event.color })
-              )}
-              style={{
-                top: `${startPosition * 100}%`,
-                height: `${hoursDifference * 100}%`,
-              }}
-            >
-              {event.title}
+  if (!hourlyEvents.length) return <div className="h-16 sm:h-20 border-t last:border-b" />;
+
+  return (
+    <div className="h-16 sm:h-20 border-t last:border-b relative">
+      {hourlyEvents.map((event) => {
+        const totalMinutes = differenceInMinutes(event.end, event.start);
+        const hoursDifference = totalMinutes / 60;
+        const startOffset = event.start.getMinutes() / 60;
+        const minHeight = 50; // px fallback for short/zero-duration events
+
+        return (
+          <div
+            key={event.id}
+            className={cn(
+              'absolute left-0 right-0 mx-0.5 sm:mx-1 p-1 rounded text-[10px] sm:text-xs overflow-hidden shadow-sm',
+              dayEventVariants({ variant: event.color })
+            )}
+            style={{
+              top: `${startOffset * 100}%`,
+              height: `max(${hoursDifference * 100}%, ${minHeight}px)`,
+            }}
+          >
+            <div className="flex justify-between items-center gap-1">
+              <span className="truncate">{event.title}</span>
+              <span className="text-[9px] sm:text-[10px] text-muted-foreground/60">
+                {format(event.start, "HH:mm")}-{format(event.end, "HH:mm")}
+              </span>
+              <ViewBooking bookingId={event.id}></ViewBooking>
             </div>
-          );
-        })}
+          </div>
+        );
+      })}
     </div>
   );
 };
@@ -254,7 +268,8 @@ const CalendarWeekView = () => {
 
     for (let i = 0; i < 7; i++) {
       const day = addDays(start, i);
-      const hours = [...Array(24)].map((_, i) => setHours(day, i));
+      // Only include 8:00–18:00 (exclusive of 18:00 if you prefer)
+      const hours = Array.from({ length: 11 }, (_, j) => setHours(day, j + 8));
       weekDates.push(hours);
     }
 
@@ -386,7 +401,9 @@ const CalendarMonthView = () => {
                         monthEventVariants({ variant: event.color })
                       )}
                     ></div>
-                    <span className="flex-1 truncate leading-tight">{event.title}</span>
+                    <Link href="/dashboard/view_booking/[id]" as={`/dashboard/view_booking/${event.id}`} className="content-center">
+                      <span className="flex-1 truncate leading-tight">{event.title}</span>
+                    </Link>
                     <time className="hidden sm:inline tabular-nums text-muted-foreground/50 text-xs">
                       {format(event.start, 'HH:mm')}
                     </time>
@@ -577,10 +594,25 @@ CalendarTodayTrigger.displayName = 'CalendarTodayTrigger';
 
 const CalendarCurrentDate = () => {
   const { date, view } = useCalendar();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    // render placeholder during SSR to avoid mismatch
+    return (
+      <span className="tabular-nums text-sm sm:text-base opacity-0">
+        {/* Keep layout stable but invisible */}
+        {format(new Date(), view === 'day' ? 'dd MMMM yyyy' : 'MMMM yyyy', { locale: da })}
+      </span>
+    );
+  }
 
   return (
-    <time dateTime={date.toUTCString()} className="tabular-nums text-sm sm:text-base">
-      {format(date, view === 'day' ? 'dd MMMM yyyy' : 'MMMM yyyy', {locale: da})}
+    <time dateTime={date.toISOString()} className="tabular-nums text-sm sm:text-base">
+      {format(date, view === 'day' ? 'dd MMMM yyyy' : 'MMMM yyyy', { locale: da })}
     </time>
   );
 };
@@ -590,7 +622,7 @@ const TimeTable = () => {
 
   return (
     <div className="pr-1 sm:pr-2 w-8 sm:w-12">
-      {Array.from(Array(25).keys()).map((hour) => {
+      {Array.from({ length: 11 }, (_, i) => i + 8).map((hour) => {
         return (
           <div
             className="text-right relative text-[10px] sm:text-xs text-muted-foreground/50 h-16 sm:h-20 last:h-0"

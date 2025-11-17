@@ -56,7 +56,6 @@ export async function getBookingsAtDate(date: Date) {
     .gte("date_and_time", start)
     .lte("date_and_time", end);
 
-  console.log(bookings)
   return bookings as Booking[];
 }
 
@@ -77,7 +76,6 @@ export async function getTodaysBookings() {
     .gte("date_and_time", start)
     .lte("date_and_time", end);
 
-  console.log(bookings)
   return bookings;
 }
 
@@ -90,7 +88,6 @@ export async function getPendingBookings() {
             tattoos(*)
         `)
     .in("status", ["pending", "edited"])
-  console.log(bookings)
   return bookings;
 }
 
@@ -107,23 +104,37 @@ export async function getAllBookings(): Promise<Booking[]> {
   return bookings as Booking[];
 }
 
-export async function getTimeUntilBooking(date_and_time: string): Promise<string> {
-  const now = new Date();
-  const bookingDate = new Date(date_and_time);
+export async function getLimitedBookingsAfterDate(limit = 5, offset = 0): Promise<Booking[]> {
+  const today = new Date();
+  const targetDay = today.toISOString().split("T")[0];
+  const start = `${targetDay}T00:00:00Z`;
+  
+  const supabase = await initServerClient();
+  const { data: bookings, error } = await supabase
+    .from("bookings")
+    .select(`*, tattoos(*)`)
+    .gte("date_and_time", start)
+    .order("date_and_time", { ascending: true })
+    .range(offset, offset + limit - 1); // Supabase uses inclusive ranges
 
-  const diffMs = bookingDate.getTime() - now.getTime();
-
-  if (diffMs <= 0) return "Booking time has passed";
-
-  const totalMinutes = Math.floor(diffMs / (1000 * 60));
-  const days = Math.floor(totalMinutes / (60 * 24));
-  const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
-  const minutes = totalMinutes % 60;
-
-  return `${days} Dage, ${hours} Timer, ${minutes} Minuter indtil bookingen`;
+  if (error) throw error;
+  return bookings as Booking[];
 }
 
+export async function getLimitedOldBookings(limit = 5, offset = 0): Promise<Booking[]> {
+  const today = new Date();
+  const targetDay = today.toISOString().split("T")[0];
+  const start = `${targetDay}T00:00:00Z`;
+  
+  const supabase = await initServerClient();
+  const { data: bookings, error } = await supabase
+    .from("bookings")
+    .select(`*, tattoos(*)`)
+    .lt("date_and_time", start) // get bookings before today
+    .order("date_and_time", { ascending: false }) // get them "backwards", so when displayed todays date is in the middle
+    .range(offset, offset + limit - 1); // inclusive range
 
-
-
+  if (error) throw error;
+  return bookings as Booking[];
+}
 

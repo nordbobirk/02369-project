@@ -104,3 +104,95 @@ export async function rejectPendingBooking(params: string | Array<string> | unde
     revalidatePath('/dashboard/view_booking/' + params)
     return
 }
+
+export async function updateBookingDetails(
+    bookingId: string,
+    email: string,
+    phoneNumber: string,
+    internalNotes: string
+) {
+    const supabase = await initServerClient()
+
+    const { error } = await supabase
+        .from('bookings')
+        .update({
+            email,
+            phone_number: phoneNumber,
+            internal_notes: internalNotes,
+            edited_date_and_time: new Date().toISOString()
+        })
+        .eq('id', bookingId)
+
+    if (error) throw error
+
+    revalidatePath(`/dashboard/view_booking/${bookingId}`)
+    return
+}
+
+export async function updateTattooDetails(
+    tattooId: string,
+    width: number | undefined,
+    height: number | undefined,
+    placement: string,
+    detailLevel: string,
+    coloredOption: string,
+    colorDescription: string
+) {
+    const supabase = await initServerClient()
+
+    const updateData: any = {
+        width,
+        height,
+        placement,
+        detail_level: detailLevel,
+        colored_option: coloredOption,
+    }
+
+    // Kun tilføj color_description hvis coloredOption er 'colored'
+    if (coloredOption === 'colored') {
+        updateData.color_description = colorDescription
+    } else {
+        updateData.color_description = null
+    }
+
+    const { error } = await supabase
+        .from('tattoos')
+        .update(updateData)
+        .eq('id', tattooId)
+
+    if (error) throw error
+
+    // Hent booking_id for at kunne revalidate den korrekte path
+    const { data: tattoo } = await supabase
+        .from('tattoos')
+        .select('booking_id')
+        .eq('id', tattooId)
+        .single()
+
+    if (tattoo?.booking_id) {
+        revalidatePath(`/dashboard/view_booking/${tattoo.booking_id}`)
+    }
+
+    return
+}
+
+/**
+ * Cancels a confirmed booking by changing its status to 'artist_cancelled'.
+ *
+ * @param bookingId - The id of the booking to cancel.
+ * @throws {Error} If there is an error updating the booking status.
+ */
+export async function cancelBooking(bookingId: string) {
+    const supabase = await initServerClient()
+
+    const { error } = await supabase
+        .from('bookings')
+        .update({ status: 'artist_cancelled' })
+        .eq('id', bookingId)
+        .eq('status', 'confirmed') // Extra sikkerhed - kun confirmed bookings kan aflyses
+
+    if (error) throw error
+
+    revalidatePath(`/dashboard/view_booking/${bookingId}`)
+    return
+}
