@@ -175,3 +175,24 @@ export async function updateTattooDetails(
 
     return
 }
+
+/**
+ * Cancels a confirmed booking by changing its status to 'artist_cancelled'.
+ *
+ * @param bookingId - The id of the booking to cancel.
+ * @throws {Error} If there is an error updating the booking status.
+ */
+export async function cancelBooking(bookingId: string) {
+    const supabase = await initServerClient()
+
+    const { error } = await supabase
+        .from('bookings')
+        .update({ status: 'artist_cancelled' })
+        .eq('id', bookingId)
+        .eq('status', 'confirmed') // Extra sikkerhed - kun confirmed bookings kan aflyses
+
+    if (error) throw error
+
+    revalidatePath(`/dashboard/view_booking/${bookingId}`)
+    return
+}

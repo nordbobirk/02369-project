@@ -11,6 +11,7 @@ import {formatDateTime } from "@/app/dashboard/utils/formatDateTime";
 import EditBooking from "@/app/dashboard/view_booking/[id]/EditBooking";
 import SaveEditBooking from "@/app/dashboard/view_booking/[id]/SaveEditBooking";
 import CancelEditBooking from "@/app/dashboard/view_booking/[id]/CancelEditBooking";
+import CancelBooking from "@/app/dashboard/view_booking/[id]/CancelBooking";
 
 type Booking = {
     id: string;
@@ -149,6 +150,11 @@ export default function BookingInfo({ booking }: BookingInfoProps) {
                         <br/>
                         <AcceptButton /> <span> </span>
                         <RejectButton />
+                    </div>
+                )}
+                {booking.status === "confirmed" && (
+                    <div className="mt-4">
+                        <CancelBooking />
                     </div>
                 )}
             </div>
