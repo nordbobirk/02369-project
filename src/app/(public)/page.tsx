@@ -74,6 +74,15 @@ export default function Home() {
                         >
                             <Link href="/aftercare">Aftercare</Link>
                         </Button>
+
+                        <Button
+                            asChild
+                            variant="secondary"
+                            size="lg"
+                            className="rounded-full opacity-90 hover:opacity-100"
+                        >
+                            <Link href="/beforeBooking">Før din tid</Link>
+                        </Button>
                     </div>
                 </div>
             </section>

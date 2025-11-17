@@ -56,7 +56,6 @@ export async function getBookingsAtDate(date: Date) {
     .gte("date_and_time", start)
     .lte("date_and_time", end);
 
-  console.log(bookings)
   return bookings as Booking[];
 }
 
@@ -77,7 +76,6 @@ export async function getTodaysBookings() {
     .gte("date_and_time", start)
     .lte("date_and_time", end);
 
-  console.log(bookings)
   return bookings;
 }
 
@@ -90,7 +88,6 @@ export async function getPendingBookings() {
             tattoos(*)
         `)
     .in("status", ["pending", "edited"])
-  console.log(bookings)
   return bookings;
 }
 

@@ -112,8 +112,6 @@ export async function deleteFAQ(id: number) {
  * @throws {Error} If the reordering fails
  */
 export async function reorderFAQ(id: number, newIndex: number) {
-    console.log('reorderFAQ called:', { id, newIndex })
-
     const supabase = await initServerClient()
 
     // Henter alle FAQs
@@ -164,9 +162,7 @@ export async function reorderFAQ(id: number, newIndex: number) {
             .eq('id', id)
     )
 
-    const results = await Promise.all(updates)
-    console.log('Updated affected indexes:', results)
-
+    await Promise.all(updates)
     revalidatePath('/dashboard/settings/edit_faq')
 
 }
