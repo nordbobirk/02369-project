@@ -140,7 +140,6 @@ export function TattooInfo({ tattoos }: TattooInfoProps) {
                                     onChange={(e) => setEditedDetailLevel(e.target.value)}
                                     className="ml-2 px-2 py-1 border border-gray-300 rounded"
                                 >
-                                    <option value="">Vælg</option>
                                     <option value="low">Low</option>
                                     <option value="medium">Medium</option>
                                     <option value="high">High</option>
@@ -157,7 +156,6 @@ export function TattooInfo({ tattoos }: TattooInfoProps) {
                                     onChange={(e) => setEditedColoredOption(e.target.value)}
                                     className="ml-2 px-2 py-1 border border-gray-300 rounded"
                                 >
-                                    <option value="">Vælg</option>
                                     <option value="black">Sort</option>
                                     <option value="colored">Farver</option>
                                 </select>
