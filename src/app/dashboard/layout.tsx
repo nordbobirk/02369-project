@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { BookImageIcon, CalendarIcon, HomeIcon, SettingsIcon } from "lucide-react";
+import { CalendarIcon, CircleQuestionMarkIcon, HomeIcon, SettingsIcon } from "lucide-react";
 import Link from "next/link";
 import { DropdownMenuDemo } from "./DropdownMenu";
 
