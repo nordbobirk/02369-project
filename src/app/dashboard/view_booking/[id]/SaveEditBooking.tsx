@@ -25,6 +25,7 @@ export default function SaveEditBooking({
     const [isSaving, setIsSaving] = useState(false);
 
     const handleSave = async () => {
+        setIsSaving(true);
         await updateBookingDetails(bookingId, email, phoneNumber, internalNotes);
         onSaveAction();
         router.refresh();
