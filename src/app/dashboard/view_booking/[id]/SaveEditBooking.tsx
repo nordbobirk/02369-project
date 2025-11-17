@@ -3,6 +3,8 @@
 import { Button } from '@/components/ui/button'
 import { updateBookingDetails } from './actions'
 import { useRouter } from 'next/navigation'
+import {useState} from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 interface SaveEditBookingProps {
     bookingId: string;
@@ -20,15 +22,18 @@ export default function SaveEditBooking({
                                             onSaveAction
                                         }: SaveEditBookingProps) {
     const router = useRouter();
+    const [isSaving, setIsSaving] = useState(false);
 
     const handleSave = async () => {
         await updateBookingDetails(bookingId, email, phoneNumber, internalNotes);
         onSaveAction();
         router.refresh();
+        setIsSaving(false);
     };
 
     return (
         <Button onClick={handleSave} variant="default">
+            {isSaving ? <Spinner className="mr-2" /> : null}
             Gem
         </Button>
     )

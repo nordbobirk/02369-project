@@ -1,8 +1,10 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
 import { updateTattooDetails } from './actions'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 interface SaveEditTattooProps {
     tattooId: string;
@@ -26,8 +28,10 @@ export default function SaveEditTattoo({
                                            onSaveAction
                                        }: SaveEditTattooProps) {
     const router = useRouter();
+    const [isSaving, setIsSaving] = useState(false);
 
     const handleSave = async () => {
+        setIsSaving(true);
         await updateTattooDetails(
             tattooId,
             width,
@@ -39,10 +43,12 @@ export default function SaveEditTattoo({
         );
         onSaveAction();
         router.refresh();
+        setIsSaving(false);
     };
 
     return (
-        <Button onClick={handleSave} variant="default">
+        <Button onClick={handleSave} disabled={isSaving} variant="default">
+            {isSaving ? <Spinner className="mr-2" /> : null}
             Gem
         </Button>
     )
