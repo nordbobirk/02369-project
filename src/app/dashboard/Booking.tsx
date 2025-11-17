@@ -12,7 +12,7 @@ function getTimeUntilBooking(date_and_time: string): string {
 
     const diffMs = bookingDate.getTime() - now.getTime();
 
-    if (diffMs <= 0) return "Booking time has passed";
+    if (diffMs <= 0) return "Bookingen er startet";
 
     const totalMinutes = Math.floor(diffMs / (1000 * 60));
     const days = Math.floor(totalMinutes / (60 * 24));
@@ -26,7 +26,7 @@ function getTimeUntilBooking(date_and_time: string): string {
 export default function BookingCard({ booking }: { booking: Booking }) {
     return (
         <div
-            className="mb-3 bg-muted after:bg-primary/70 relative rounded-md p-2 pl-6 text-sm after:absolute after:inset-y-2 after:left-2 after:w-1 after:rounded-full flex justify-between "
+            className="my-3 bg-muted after:bg-primary/70 relative rounded-md p-2 pl-6 text-sm after:absolute after:inset-y-2 after:left-2 after:w-1 after:rounded-full flex justify-between "
         >
             <div>
                 <div className="font-medium">Booking til {booking.name}</div>
