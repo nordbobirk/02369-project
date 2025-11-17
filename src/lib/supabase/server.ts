@@ -1,8 +1,15 @@
-import "server-only"
+import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
 export async function initServerClient() {
+  if (
+    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+  ) {
+    throw new Error("failed to initialize supabase server client");
+  }
+
   const cookieStore = await cookies();
 
   return createServerClient(

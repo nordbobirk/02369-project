@@ -133,8 +133,6 @@ export default function FAQList({ initialFAQs }: { initialFAQs: FAQ[] }) {
     const handleDragEnd = async (event: DragEndEvent) => {
         const { active, over } = event
 
-        console.log('Drag ended:', { active: active.id, over: over?.id })
-
         if (over && active.id !== over.id) {
             const oldIndex = faqs.findIndex(f => f.id === active.id)
             const newIndex = faqs.findIndex(f => f.id === over.id)
