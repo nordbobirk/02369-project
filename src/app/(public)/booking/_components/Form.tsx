@@ -21,6 +21,7 @@ import { Error } from "./Error";
 import { BookingSubmissionInput, submitBooking, submitFilePaths } from "../submitBooking";
 import { initBrowserClient } from "@/lib/supabase/client";
 import { BOOKING_IMAGES_BUCKET_NAME } from "@/lib/storage";
+import DatePicker from "./DatePicker";
 
 // Placeholder functions for price and time estimates
 const estimatePrice = (formData: BookingFormData): number => {
@@ -315,6 +316,11 @@ export default function BookingForm() {
             <ContactInfo
               formData={formData}
               handleInputChange={handleGlobalInputChange}
+            />
+
+            <DatePicker
+              
+            
             />
 
             <Estimates
