@@ -42,6 +42,80 @@ export function Calendar20({
     });
   }, []);
 
+  // Group bookings by date (yyyy-mm-dd) and compute occupied timeslots
+  const bookingsByDate = React.useMemo(() => {
+    const map = new Map<string, booking[]>();
+    bookings.forEach((b) => {
+      const d = new Date(b.date_and_time);
+      d.setHours(0, 0, 0, 0);
+      const key = d.toISOString();
+      const arr = map.get(key) || [];
+      arr.push(b);
+      map.set(key, arr);
+    });
+    return map;
+  }, [bookings]);
+
+  // Compute which dates are fully booked (all timeslots occupied)
+  const fullyBookedDates = React.useMemo(() => {
+    const set = new Set<string>();
+    bookingsByDate.forEach((bookingsList, key) => {
+      const occupied = new Set<string>();
+      bookingsList.forEach((b) => {
+        const start = new Date(b.date_and_time);
+        const hh = start.getHours().toString().padStart(2, "0");
+        const mm = start.getMinutes().toString().padStart(2, "0");
+        const startStr = `${hh}:${mm}`;
+        let durationMins = (b.total_duration as any) || 60;
+        if (!durationMins || typeof durationMins !== "number") durationMins = 60;
+        const slotsToOccupy = Math.max(1, Math.ceil(durationMins / 60));
+        const startIndex = timeSlots.indexOf(startStr);
+        if (startIndex === -1) return;
+        for (let i = 0; i < slotsToOccupy; i++) {
+          const idx = startIndex + i;
+          if (idx < timeSlots.length) occupied.add(timeSlots[idx]);
+        }
+      });
+
+      if (occupied.size >= timeSlots.length) {
+        set.add(key);
+      }
+    });
+    return set;
+  }, [bookingsByDate, timeSlots]);
+
+  // Compute occupied timeslots for the currently selected date
+  const occupiedTimesForSelectedDate = React.useMemo(() => {
+    if (!date) return new Set<string>();
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    const list = bookingsByDate.get(d.toISOString()) || [];
+    const occupied = new Set<string>();
+    list.forEach((b) => {
+      const start = new Date(b.date_and_time);
+      const hh = start.getHours().toString().padStart(2, "0");
+      const mm = start.getMinutes().toString().padStart(2, "0");
+      const startStr = `${hh}:${mm}`;
+      let durationMins = (b.total_duration as any) || 60;
+      if (!durationMins || typeof durationMins !== "number") durationMins = 60;
+      const slotsToOccupy = Math.max(1, Math.ceil(durationMins / 60));
+      const startIndex = timeSlots.indexOf(startStr);
+      if (startIndex === -1) return;
+      for (let i = 0; i < slotsToOccupy; i++) {
+        const idx = startIndex + i;
+        if (idx < timeSlots.length) occupied.add(timeSlots[idx]);
+      }
+    });
+    return occupied;
+  }, [bookingsByDate, date, timeSlots]);
+
+  // If the currently selected time becomes occupied, clear it
+  React.useEffect(() => {
+    if (selectedTime && occupiedTimesForSelectedDate.has(selectedTime)) {
+      setSelectedTime(null);
+    }
+  }, [selectedTime, occupiedTimesForSelectedDate]);
+
   // send combined datetime to parent
   React.useEffect(() => {
     if (!date || !selectedTime) {
@@ -67,7 +141,12 @@ export function Calendar20({
     );
   };
 
-  const disabledMatcher = (date: Date) => !isDateAvailable(date);
+  const disabledMatcher = (date: Date) => {
+    if (!isDateAvailable(date)) return true;
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    return fullyBookedDates.has(d.toISOString());
+  };
 
   return (
     <Card className="gap-0 p-0">
@@ -92,16 +171,23 @@ export function Calendar20({
         </div>
         <div className="no-scrollbar inset-y-0 right-0 flex max-h-72 w-full scroll-pb-6 flex-col gap-4 overflow-y-auto border-t p-6 md:absolute md:max-h-none md:w-48 md:border-t-0 md:border-l">
           <div className="grid gap-2">
-            {timeSlots.map((time) => (
-              <Button
-                key={time}
-                variant={selectedTime === time ? "default" : "outline"}
-                onClick={() => setSelectedTime(time)}
-                className="w-full shadow-none"
-              >
-                {time}
-              </Button>
-            ))}
+            {timeSlots.map((time) => {
+              const isOccupied = occupiedTimesForSelectedDate.has(time);
+              const isDateAvail = date ? isDateAvailable(date) : false;
+              const isDisabled = !isDateAvail || isOccupied;
+              return (
+                <Button
+                  key={time}
+                  variant={isOccupied ? "ghost" : selectedTime === time ? "default" : "outline"}
+                  onClick={() => !isDisabled && setSelectedTime(time)}
+                  className={`w-full shadow-none ${isOccupied ? "opacity-60 cursor-not-allowed" : ""}`}
+                  disabled={isDisabled}
+                  title={isOccupied ? "Optaget" : undefined}
+                >
+                  {time}
+                </Button>
+              );
+            })}
           </div>
         </div>
       </CardContent>
