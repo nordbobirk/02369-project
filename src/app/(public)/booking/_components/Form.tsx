@@ -21,7 +21,7 @@ import { Error } from "./Error";
 import { BookingSubmissionInput, submitBooking, submitFilePaths } from "../submitBooking";
 import { initBrowserClient } from "@/lib/supabase/client";
 import { BOOKING_IMAGES_BUCKET_NAME } from "@/lib/storage";
-import DatePicker from "./DatePicker";
+import { DatePicker } from "./DatePicker";
 
 // Placeholder functions for price and time estimates
 const estimatePrice = (formData: BookingFormData): number => {
@@ -41,6 +41,7 @@ export type BookingFormData = {
   customerName: string;
   customerEmail: string;
   customerPhone: string;
+  dateTime: Date;
 };
 
 /**
@@ -88,6 +89,7 @@ export default function BookingForm() {
     customerName: "",
     customerEmail: "",
     customerPhone: "",
+    dateTime: new Date(),
   });
 
   const [priceEstimate, setPriceEstimate] = useState<number>(0);
@@ -319,8 +321,8 @@ export default function BookingForm() {
             />
 
             <DatePicker
-              
-            
+              formData={formData}
+              handleInputChange={handleGlobalInputChange}
             />
 
             <Estimates

@@ -22,7 +22,7 @@ export async function submitBooking(bookingFormData: BookingSubmissionInput) {
       email: bookingFormData.customerEmail,
       phone_number: bookingFormData.customerPhone,
       name: bookingFormData.customerName,
-      date_and_time: new Date(),
+      date_and_time: bookingFormData.dateTime,
       is_FirstTattoo: bookingFormData.isFirstTattoo,
     })
     .select("id");

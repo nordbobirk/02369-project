@@ -8,42 +8,55 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { availability, booking, getAvailability, getBookings } from "@/app/(public)/booking/actions"
 import { da } from "date-fns/locale"
 
-export function Calendar20() {
-  const [date, setDate] = React.useState<Date | undefined>(
-    new Date()
-  )
-  const [availability, setAvailability] = React.useState<availability[]>([])
-  const [bookings, setBookings] = React.useState<booking[]>([])
-  const [selectedTime, setSelectedTime] = React.useState<string | null>("10:00")
+export function Calendar20({
+  onDateTimeChange,
+}: {
+  onDateTimeChange?: (value: Date | null) => void;
+}) {
+  const [date, setDate] = React.useState<Date | undefined>(new Date());
+  const [availability, setAvailability] = React.useState<availability[]>([]);
+  const [bookings, setBookings] = React.useState<booking[]>([]);
+  const [selectedTime, setSelectedTime] = React.useState<string | null>("10:00");
 
-  const lunchBreak = 13 // FIXME fetch lunch break setting when it gets added
-    
+  const lunchBreak = 13;
+
   const timeSlots = Array.from({ length: 7 }, (_, i) => {
-    //FIXME Logic here to handle lunch breaks and other changes to time slots
-    const totalMinutes = i * 60
-    const hour = Math.floor(totalMinutes / 60) + 10
-    const minute = totalMinutes % 60
-    return `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`
-  }).filter((_, i) => { 
-    // This filters the lunchBreak from available time buttons
-    const hour = Math.floor((i * 60) / 60) + 10
-    return hour !== lunchBreak
-  })
+    const totalMinutes = i * 60;
+    const hour = Math.floor(totalMinutes / 60) + 10;
+    const minute = totalMinutes % 60;
+    return `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+  }).filter((_, i) => {
+    const hour = Math.floor((i * 60) / 60) + 10;
+    return hour !== lunchBreak;
+  });
 
-  
   React.useEffect(() => {
     getAvailability().then((response) => {
-      setAvailability(response || [])
-    })
-  }, [])
+      setAvailability(response || []);
+    });
+  }, []);
 
   React.useEffect(() => {
     getBookings().then((response) => {
-      setBookings(response || [])
-    })
-  }, [])
-  
-  const availableDates = availability.map(a => new Date(a.date))
+      setBookings(response || []);
+    });
+  }, []);
+
+  // send combined datetime to parent
+  React.useEffect(() => {
+    if (!date || !selectedTime) {
+      onDateTimeChange?.(null);
+      return;
+    }
+
+    const [h, m] = selectedTime.split(":").map(Number);
+    const combined = new Date(date);
+    combined.setHours(h, m, 0, 0);
+
+    onDateTimeChange?.(combined);
+  }, [date, selectedTime]);
+
+  const availableDates = availability.map(a => new Date(a.date));
 
   const isDateAvailable = (checkDate: Date) => {
     return availableDates.some(
@@ -51,11 +64,10 @@ export function Calendar20() {
         availableDate.getDate() === checkDate.getDate() &&
         availableDate.getMonth() === checkDate.getMonth() &&
         availableDate.getFullYear() === checkDate.getFullYear()
-    )
-  }
-  console.log(bookings)
-  const disabledMatcher = (date: Date) => !isDateAvailable(date)
+    );
+  };
 
+  const disabledMatcher = (date: Date) => !isDateAvailable(date);
 
   return (
     <Card className="gap-0 p-0">
@@ -69,17 +81,12 @@ export function Calendar20() {
             defaultMonth={date}
             disabled={disabledMatcher}
             showOutsideDays={true}
-            modifiers={{
-              available: availableDates,
-            }}
-            modifiersClassNames={{
-              available: "",
-            }}
-            className="bg-transparent p-0 [--cell-size:--spacing(10)] md:[--cell-size:--spacing(12)]"
+            modifiers={{ available: availableDates }}
+            modifiersClassNames={{ available: "" }}
+            className="bg-transparent p-0 [--cell-size:--spacing(8)] md:[--cell-size:--spacing(12)]"
             formatters={{
-              formatWeekdayName: (date) => {
-                return date.toLocaleString("dk", { weekday: "short" })
-              },
+              formatWeekdayName: (date) =>
+                date.toLocaleString("dk", { weekday: "short" }),
             }}
           />
         </div>
@@ -102,29 +109,21 @@ export function Calendar20() {
         <div className="text-sm">
           {date && selectedTime ? (
             <>
-              Din aftale vil blive lagt {" "}
+              Din aftale vil blive lagt{" "}
               <span className="font-medium">
-                {" "}
                 {date?.toLocaleDateString("dk", {
                   weekday: "long",
                   day: "numeric",
                   month: "long",
-                })}{" "}
-              </span>
+                })}
+              </span>{" "}
               kl. <span className="font-medium">{selectedTime}</span>.
             </>
           ) : (
             <>Vælg dag og tid for din aftale.</>
           )}
         </div>
-        <Button
-          disabled={!date || !selectedTime}
-          className="w-full md:ml-auto md:w-auto"
-          variant="outline"
-        >
-          Continue
-        </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
