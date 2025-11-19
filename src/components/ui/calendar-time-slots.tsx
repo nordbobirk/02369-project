@@ -1,19 +1,21 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { availability, booking, getAvailability, getBookings } from "@/app/(public)/booking/actions"
-import { da } from "date-fns/locale"
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { availability, booking, getAvailability, getBookings } from "@/app/(public)/booking/actions";
+import { da } from "date-fns/locale";
 
 export function Calendar20({
   onDateTimeChange,
   onAvailabilityChange,
+  slotDuration = 30, // default slot duration in minutes
 }: {
   onDateTimeChange?: (value: Date | null) => void;
   onAvailabilityChange?: (available: boolean) => void;
+  slotDuration?: number;
 }) {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const [availability, setAvailability] = React.useState<availability[]>([]);
@@ -21,15 +23,19 @@ export function Calendar20({
   const [selectedTime, setSelectedTime] = React.useState<string | null>("10:00");
 
   const lunchBreak = 13;
+  const startHour = 10;
+  const totalSlots = (7*60)/slotDuration;
 
-  const timeSlots = Array.from({ length: 7 }, (_, i) => {
-    const totalMinutes = i * 60;
-    const hour = Math.floor(totalMinutes / 60) + 10;
+  // Generate time slots based on slotDuration
+  const timeSlots = Array.from({ length: totalSlots }, (_, i) => {
+    const totalMinutes = i * slotDuration;
+    const hour = startHour + Math.floor(totalMinutes / 60);
     const minute = totalMinutes % 60;
+
     return `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
-  }).filter((_, i) => {
-    const hour = Math.floor((i * 60) / 60) + 10;
-    return hour !== lunchBreak;
+  }).filter((time) => {
+    const [h] = time.split(":").map(Number);
+    return h !== lunchBreak;
   });
 
   React.useEffect(() => {
@@ -44,7 +50,7 @@ export function Calendar20({
     });
   }, []);
 
-  // Group bookings by date (yyyy-mm-dd) and compute occupied timeslots
+  // Group bookings by date (yyyy-mm-dd)
   const bookingsByDate = React.useMemo(() => {
     const map = new Map<string, booking[]>();
     bookings.forEach((b) => {
@@ -58,7 +64,7 @@ export function Calendar20({
     return map;
   }, [bookings]);
 
-  // Compute which dates are fully booked (all timeslots occupied)
+  // Compute fully booked dates
   const fullyBookedDates = React.useMemo(() => {
     const set = new Set<string>();
     bookingsByDate.forEach((bookingsList, key) => {
@@ -68,9 +74,9 @@ export function Calendar20({
         const hh = start.getHours().toString().padStart(2, "0");
         const mm = start.getMinutes().toString().padStart(2, "0");
         const startStr = `${hh}:${mm}`;
-        let durationMins = (b.total_duration as any) || 60;
-        if (!durationMins || typeof durationMins !== "number") durationMins = 60;
-        const slotsToOccupy = Math.max(1, Math.ceil(durationMins / 60));
+        let durationMins = (b.total_duration as any) || slotDuration;
+        if (!durationMins || typeof durationMins !== "number") durationMins = slotDuration;
+        const slotsToOccupy = Math.max(1, Math.ceil(durationMins / slotDuration));
         const startIndex = timeSlots.indexOf(startStr);
         if (startIndex === -1) return;
         for (let i = 0; i < slotsToOccupy; i++) {
@@ -78,15 +84,12 @@ export function Calendar20({
           if (idx < timeSlots.length) occupied.add(timeSlots[idx]);
         }
       });
-
-      if (occupied.size >= timeSlots.length) {
-        set.add(key);
-      }
+      if (occupied.size >= timeSlots.length) set.add(key);
     });
     return set;
-  }, [bookingsByDate, timeSlots]);
+  }, [bookingsByDate, timeSlots, slotDuration]);
 
-  // Compute occupied timeslots for the currently selected date
+  // Occupied times for selected date
   const occupiedTimesForSelectedDate = React.useMemo(() => {
     if (!date) return new Set<string>();
     const d = new Date(date);
@@ -98,9 +101,9 @@ export function Calendar20({
       const hh = start.getHours().toString().padStart(2, "0");
       const mm = start.getMinutes().toString().padStart(2, "0");
       const startStr = `${hh}:${mm}`;
-      let durationMins = (b.total_duration as any) || 60;
-      if (!durationMins || typeof durationMins !== "number") durationMins = 60;
-      const slotsToOccupy = Math.max(1, Math.ceil(durationMins / 60));
+      let durationMins = (b.total_duration as any) || slotDuration;
+      if (!durationMins || typeof durationMins !== "number") durationMins = slotDuration;
+      const slotsToOccupy = Math.max(1, Math.ceil(durationMins / slotDuration));
       const startIndex = timeSlots.indexOf(startStr);
       if (startIndex === -1) return;
       for (let i = 0; i < slotsToOccupy; i++) {
@@ -109,34 +112,16 @@ export function Calendar20({
       }
     });
     return occupied;
-  }, [bookingsByDate, date, timeSlots]);
+  }, [bookingsByDate, date, timeSlots, slotDuration]);
 
-  // If the currently selected time becomes occupied, clear it
+  // Clear selection if now occupied
   React.useEffect(() => {
     if (selectedTime && occupiedTimesForSelectedDate.has(selectedTime)) {
       setSelectedTime(null);
     }
   }, [selectedTime, occupiedTimesForSelectedDate]);
 
-  // send combined datetime to parent
-  React.useEffect(() => {
-
-    // Tell parent whether selection is valid
-    onAvailabilityChange?.(!!(date && selectedTime && isSelectionValid));
-
-    if (!date || !selectedTime) {
-      onDateTimeChange?.(null);
-      return;
-    }
-
-    const [h, m] = selectedTime.split(":").map(Number);
-    const combined = new Date(date);
-    combined.setHours(h, m, 0, 0);
-
-    onDateTimeChange?.(combined);
-  }, [date, selectedTime]);
-
-  const availableDates = availability.map(a => new Date(a.date));
+  const availableDates = availability.map((a) => new Date(a.date));
 
   const isDateAvailable = (checkDate: Date) => {
     return availableDates.some(
@@ -154,28 +139,28 @@ export function Calendar20({
     const d = new Date(date);
     d.setHours(0, 0, 0, 0);
 
-    // Date is invalid if it is fully booked
     if (fullyBookedDates.has(d.toISOString())) return false;
-
     return true;
   }, [date, availability, fullyBookedDates]);
 
+  // Notify parent about selection validity and send datetime
   React.useEffect(() => {
-    onDateTimeChange?.(
-      date && selectedTime && isSelectionValid
-        ? (() => {
-          const [h, m] = selectedTime.split(":").map(Number);
-          const combined = new Date(date);
-          combined.setHours(h, m, 0, 0);
-          return combined;
-        })()
-        : null
-    );
+    onAvailabilityChange?.(!!(date && selectedTime && isSelectionValid));
+
+    if (!date || !selectedTime || !isSelectionValid) {
+      onDateTimeChange?.(null);
+      return;
+    }
+
+    const [h, m] = selectedTime.split(":").map(Number);
+    const combined = new Date(date);
+    combined.setHours(h, m, 0, 0);
+    onDateTimeChange?.(combined);
   }, [date, selectedTime, isSelectionValid]);
 
-  const disabledMatcher = (date: Date) => {
-    if (!isDateAvailable(date)) return true;
-    const d = new Date(date);
+  const disabledMatcher = (checkDate: Date) => {
+    if (!isDateAvailable(checkDate)) return true;
+    const d = new Date(checkDate);
     d.setHours(0, 0, 0, 0);
     return fullyBookedDates.has(d.toISOString());
   };
@@ -196,8 +181,7 @@ export function Calendar20({
             modifiersClassNames={{ available: "" }}
             className="bg-transparent p-0 [--cell-size:--spacing(8)] md:[--cell-size:--spacing(12)]"
             formatters={{
-              formatWeekdayName: (date) =>
-                date.toLocaleString("dk", { weekday: "short" }),
+              formatWeekdayName: (d) => d.toLocaleString("dk", { weekday: "short" }),
             }}
           />
         </div>
