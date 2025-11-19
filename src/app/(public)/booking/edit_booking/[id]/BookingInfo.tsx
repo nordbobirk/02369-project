@@ -1,16 +1,48 @@
 'use client'
 
-import { useState } from "react";
-import { TattooInfo } from "@/app/(public)/booking/edit_booking/[id]/TattoInfo";
-import type { Tattoo } from "@/app/dashboard/view_booking/[id]/TattoInfo";
-import { formatMinutesHrsMins } from "@/app/dashboard/utils/formatMinutes";
-import {formatPhoneNumber} from "@/app/dashboard/utils/formatPhoneNumber";
-import {formatDateTime } from "@/app/dashboard/utils/formatDateTime";
-import EditBooking from "@/app/(public)/booking/edit_booking/[id]/EditBooking";
-import SaveEditBooking from "@/app/dashboard/view_booking/[id]/SaveEditBooking";
-import CancelEditBooking from "@/app/dashboard/view_booking/[id]/CancelEditBooking";
 import CancelBooking from "@/app/(public)/booking/edit_booking/[id]/CancelBooking";
 
+// Helper Function for User-Friendly Status Display 
+const getStatusDisplay = (status: string) => {
+    switch (status) {
+        case "pending_approval":
+            return { text: "Afventer Godkendelse", style: "bg-yellow-100 text-yellow-800" };
+        case "confirmed":
+            return { text: "Bekræftet! Alt er klart", style: "bg-green-100 text-green-800" };
+        case "deposit_required":
+            return { text: "Depositum Kræves", style: "bg-blue-100 text-blue-800" };
+        case "customer_cancelled":
+            return { text: "Aflyst af Dig", style: "bg-gray-100 text-gray-700" };
+        case "artist_cancelled":
+            return { text: "Aflyst af Tatovøren", style: "bg-red-100 text-red-800" };
+        default:
+            return { text: "Ukendt Status", style: "bg-gray-200 text-gray-800" };
+    }
+};
+
+// Robust Date/Time Formatting (Placeholder/Direct Implementation) 
+const formatDisplayDateTime = (dateString: string |  Date | null): string => {
+    if (dateString != null) {
+        const date = new Date(dateString);
+        // Explicitly defines options to guarantee both date and time are included
+        const options: Intl.DateTimeFormatOptions = {
+            weekday: 'short',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',      // Forces time display
+            minute: '2-digit',    // Forces time display
+            hour12: false,        // Uses 24-hour time
+        };
+        // Using 'da-DK' for Danish locale based on your original code's language, 
+        // or 'undefined' to use the user's browser locale.
+        return date.toLocaleString('da-DK', options); 
+    }
+    return "-"
+};
+
+// --- 3. Component Types ---
+type Tattoo = any; // Placeholder for imported type
 type Booking = {
     id: string;
     email: string;
@@ -29,120 +61,81 @@ interface BookingInfoProps {
     booking: Booking;
 }
 
+// --- 4. Revised BookingInfo Component ---
 export default function BookingInfo({ booking }: BookingInfoProps) {
-    const [isEditing, setIsEditing] = useState(false);
-    const [editedEmail, setEditedEmail] = useState(booking.email);
-    const [editedPhone, setEditedPhone] = useState(booking.phone_number);
-    const [editedNotes, setEditedNotes] = useState(booking.internal_notes ?? "");
-
-    const handleEdit = () => {
-        setIsEditing(true);
-    };
-
-    const handleCancel = () => {
-        setEditedEmail(booking.email);
-        setEditedPhone(booking.phone_number);
-        setEditedNotes(booking.internal_notes);
-        setIsEditing(false);
-    };
-
-    const handleSave = async () => {
-        // SaveEditBooking håndterer gemningen
-        setIsEditing(false);
-    };
+    const statusInfo = getStatusDisplay(booking.status);
+    const formated_date_and_time = formatDisplayDateTime(booking.date_and_time);
+    const formated_edited_date_and_time = formatDisplayDateTime(booking.edited_date_and_time);
+    const formated_created_at = formatDisplayDateTime(booking.created_at);
 
     return (
-        <div className="space-y-4">
-            <div className="flex flex-col md:flex-row justify-between gap-6 p-6 border border-gray-300 bg-white rounded-xl shadow-sm">
-                <div className="w-full md:w-2/5">
-                    <div className="flex items-center justify-between mb-3">
-                        <span className="font-semibold text-xl text-gray-800">{booking.name}</span>
-                        {!isEditing ? (
-                            <EditBooking onEditAction={handleEdit} />
-                        ) : (
-                            <div className="flex gap-2">
-                                <SaveEditBooking
-                                    bookingId={booking.id}
-                                    email={editedEmail}
-                                    phoneNumber={editedPhone}
-                                    internalNotes={editedNotes}
-                                    onSaveAction={handleSave}
-                                />
-                                <CancelEditBooking onCancelAction={handleCancel} />
-                            </div>
-                        )}
-                    </div>
-                    <div className="space-y-2 text-sm mt-2 text-gray-900">
-                        <div>
-                            <span className="font-medium">Tid og dato:</span>{" "}
-                            {formatDateTime(new Date(booking.date_and_time).toLocaleString())}
-                        </div>
-                        <div>
-                            <span className="font-medium">Status:</span> {booking.status}
-                        </div>
-                        <div>
-                            <span className="font-medium">Email:</span>{" "}
-                            {isEditing ? (
-                                <input
-                                    type="email"
-                                    value={editedEmail}
-                                    onChange={(e) => setEditedEmail(e.target.value)}
-                                    className="ml-2 px-2 py-1 border border-gray-300 rounded"
-                                />
-                            ) : (
-                                booking.email
-                            )}
-                        </div>
-                        <div>
-                            <span className="font-medium">Telefon:</span>{" "}
-                            {isEditing ? (
-                                <input
-                                    type="tel"
-                                    value={editedPhone}
-                                    onChange={(e) => setEditedPhone(e.target.value)}
-                                    className="ml-2 px-2 py-1 border border-gray-300 rounded"
-                                />
-                            ) : (
-                                formatPhoneNumber(booking.phone_number)
-                            )}
-                        </div>
-                        <div>
-                            <span className="font-medium">Første Tattoo:</span>{" "}
-                            {booking.is_FirstTattoo ? "Ja" : "Nope"}
-                        </div>
-                        <div>
-                            <span className="font-medium">Samlet tid for tatoveringer:</span>{" "}
-                            {formatMinutesHrsMins(booking.tattoos?.reduce((acc, t) => acc + (t.estimated_duration ?? 0), 0) ?? 0)}
-                        </div>
-                        <div>
-                            <span className="font-medium">Samlet pris for tatoveringer:</span>{" "}
-                            {booking.tattoos?.reduce((acc, t) => acc + (t.estimated_price ?? 0), 0) ?? 0} kr
-                        </div>
-                        <div>
-                            <span className="font-medium">Oprettet:</span>{" "}
-                            {formatDateTime(new Date(booking.created_at).toLocaleString())}
-                        </div>
-                        <div>
-                        <span className="font-medium">Ændret:</span>{" "}
-                        {formatDateTime(booking.edited_date_and_time
-                            ? new Date(booking.edited_date_and_time).toLocaleString()
-                            : "—")}
-                        </div>
-                    </div>
+        <div className="p-6  rounded-xl max-w-lg mx-auto border-2 border-black">
+            {/* 1. Main Header */}
+            <h2 className="text-3xl font-extrabold text-gray-900 mb-6 flex items-center">
+                📅 Din booking
+            </h2>
+            
+            <div className="space-y-6">
+                {/* 2. Key Detail: Status (Most Important) */}
+                <div className="p-3 rounded-lg border">
+                    <span className="block text-sm font-bold text-rose-300 uppercase tracking-wider">
+                        Status
+                    </span>
+                    <p className={`mt-1 inline-flex items-center px-3 py-1 rounded-full text-lg font-bold ${statusInfo.style}`}>
+                        {statusInfo.text}
+                    </p>
                 </div>
-                <div className="w-full md:w-2/5">
-                    <div className="max-h-[55vh] md:max-h-[100%] overflow-auto">
-                        <TattooInfo tattoos={booking.tattoos} />
-                    </div>
+
+                {/* 3. Key Detail: Date and Time */}
+                <div>
+                    <span className="block text-sm text-rose-300 uppercase tracking-wider">
+                        Date & Time
+                    </span>
+                    <p className="font-bold text-gray-900">
+                        {/* Assuming formatDateTime handles localization and clarity */}
+                        {formated_date_and_time}
+                    </p>
+                    {booking.edited_date_and_time && (
+                        <p className="text-xs text-gray-500 mt-1">
+                            Last modified: {formated_edited_date_and_time}
+                        </p>
+                    )}
                 </div>
-        
+                
+                {/* 4. Contact Information Summary */}
+                <div className="border-t pt-4">
+                    <h3 className="text-l font-semibold text-black mb-2">
+                        Kunde Info
+                    </h3>
+                    <p className="text-sm text-gray-700">
+                        <span className="font-medium">Navn:</span> {booking.name}
+                    </p>
+                    <p className="text-sm text-gray-700">
+                        <span className="font-medium">Email:</span> {booking.email}
+                    </p>
+                    <p className="text-sm text-gray-700">
+                        <span className="font-medium">Telefon:</span> {booking.phone_number}
+                    </p>
+                </div>
+
+
+                {/* 5. Action: Cancellation (Appears only when eligible) */}
+                {booking.status !== "customer_cancelled" &&
+                booking.status !== "artist_cancelled" && (
+                    <div className="mt-6 pt-4 border-t border-red-200">
+                        <h3 className="text-lg font-semibold text-red-600 mb-2">
+                            ❌ Need to Cancel?
+                        </h3>
+                        <CancelBooking />
+                    </div>
+                )}
             </div>
-            {booking.status !== "customer_cancelled" &&
-            booking.status !== "artist_cancelled" && (
-            <div className="mt-4">
-            <CancelBooking />
+
+            {/* 6. Least Prominent Detail: Reference ID */}
+            <div className="mt-8 pt-4 border-t text-xs text-gray-500 ">
+                <p>Reference ID: {booking.id}</p>
+                <p>Booked On: {formated_created_at}</p>
             </div>
-            )}
-    </div>
+        </div>
     );
 }

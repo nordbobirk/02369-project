@@ -14,12 +14,7 @@ export default async function ViewBookingsPage({ params }: { params: {id: string
     }
 
     return (
-        <>
-            <h1>Booking med id: {bookings[0].id}</h1>
-            <div>
-                <BookingInfo booking={bookings[0]} />
-            </div>
-        </>
+        <BookingInfo booking={bookings[0]} />
     );
 }
 
