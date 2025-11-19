@@ -10,8 +10,10 @@ import { da } from "date-fns/locale"
 
 export function Calendar20({
   onDateTimeChange,
+  onAvailabilityChange,
 }: {
   onDateTimeChange?: (value: Date | null) => void;
+  onAvailabilityChange?: (available: boolean) => void;
 }) {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const [availability, setAvailability] = React.useState<availability[]>([]);
@@ -118,6 +120,10 @@ export function Calendar20({
 
   // send combined datetime to parent
   React.useEffect(() => {
+
+    // Tell parent whether selection is valid
+    onAvailabilityChange?.(!!(date && selectedTime && isSelectionValid));
+
     if (!date || !selectedTime) {
       onDateTimeChange?.(null);
       return;
@@ -140,6 +146,32 @@ export function Calendar20({
         availableDate.getFullYear() === checkDate.getFullYear()
     );
   };
+
+  const isSelectionValid = React.useMemo(() => {
+    if (!date) return false;
+    if (!isDateAvailable(date)) return false;
+
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+
+    // Date is invalid if it is fully booked
+    if (fullyBookedDates.has(d.toISOString())) return false;
+
+    return true;
+  }, [date, availability, fullyBookedDates]);
+
+  React.useEffect(() => {
+    onDateTimeChange?.(
+      date && selectedTime && isSelectionValid
+        ? (() => {
+          const [h, m] = selectedTime.split(":").map(Number);
+          const combined = new Date(date);
+          combined.setHours(h, m, 0, 0);
+          return combined;
+        })()
+        : null
+    );
+  }, [date, selectedTime, isSelectionValid]);
 
   const disabledMatcher = (date: Date) => {
     if (!isDateAvailable(date)) return true;
@@ -183,6 +215,7 @@ export function Calendar20({
                   className={`w-full shadow-none ${isOccupied ? "opacity-60 cursor-not-allowed" : ""}`}
                   disabled={isDisabled}
                   title={isOccupied ? "Optaget" : undefined}
+                  type="button"
                 >
                   {time}
                 </Button>

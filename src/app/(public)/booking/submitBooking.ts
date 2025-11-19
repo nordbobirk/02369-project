@@ -45,7 +45,7 @@ export async function submitBooking(bookingFormData: BookingSubmissionInput) {
         colored_option: tattoo.colorOption.toLowerCase(),
         color_description: tattoo.colorDescription,
         detail_level: tattoo.detailLevel,
-        estimated_duration: 0,
+        estimated_duration: tattoo.estimated_duration,
         estimated_price: 0,
         upload_id: tattoo.uploadId,
       }))
