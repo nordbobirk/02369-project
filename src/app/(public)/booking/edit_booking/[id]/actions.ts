@@ -67,44 +67,6 @@ export async function getPendingBookingById( params : string ) {
 }
 
 
-/**
- * Accepts a pending booking with the given id.
- *
- * @param params - The id of the pending booking to accept.
- * @throws {Error} If there is an error updating the booking status.
- */
-export async function acceptPendingBooking(params: string | Array<string> | undefined) {
-
-    const supabase = await initServerClient()
-    const { error } = await supabase
-        .from('bookings')
-        .update({ status: 'confirmed' })
-        .eq('id', params)
-
-    if (error) throw error
-    revalidatePath('/dashboard/view_booking' + params)
-    return
-}
-
-/**
- * Rejects a pending booking with the given id.
- *
- * @param params - The id of the pending booking to reject.
- * @throws {Error} If there is an error updating the booking status.
- */
-export async function rejectPendingBooking(params: string | Array<string> | undefined) {
-
-    const supabase = await initServerClient()
-    const { error } = await supabase
-        .from('bookings')
-        .update({ status: 'rejected' })
-        .eq('id', params)
-
-    if (error) throw error
-    revalidatePath('/dashboard/view_booking/' + params)
-    return
-}
-
 export async function updateBookingDetails(
     bookingId: string,
     email: string,
