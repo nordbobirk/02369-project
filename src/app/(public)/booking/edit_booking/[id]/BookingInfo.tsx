@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from "react";
-import { TattooInfo } from "@/app/dashboard/view_booking/[id]/TattoInfo";
+import { TattooInfo } from "@/app/(public)/booking/edit_booking/[id]/TattoInfo";
 import type { Tattoo } from "@/app/dashboard/view_booking/[id]/TattoInfo";
 import { formatMinutesHrsMins } from "@/app/dashboard/utils/formatMinutes";
 import {formatPhoneNumber} from "@/app/dashboard/utils/formatPhoneNumber";
 import {formatDateTime } from "@/app/dashboard/utils/formatDateTime";
-import EditBooking from "@/app/dashboard/view_booking/[id]/EditBooking";
+import EditBooking from "@/app/(public)/booking/edit_booking/[id]/EditBooking";
 import SaveEditBooking from "@/app/dashboard/view_booking/[id]/SaveEditBooking";
 import CancelEditBooking from "@/app/dashboard/view_booking/[id]/CancelEditBooking";
 import CancelBooking from "@/app/(public)/booking/edit_booking/[id]/CancelBooking";
@@ -52,11 +52,11 @@ export default function BookingInfo({ booking }: BookingInfoProps) {
     };
 
     return (
-        <div>
-            <div className="flex flex-col md:flex-row items-stretch gap-4 p-2 border border-black rounded-lg ">
-                <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                        <span className="font-semibold text-lg break-words">{booking.name}</span>
+        <div className="space-y-4">
+            <div className="flex flex-col md:flex-row justify-between gap-6 p-6 border border-gray-300 bg-white rounded-xl shadow-sm">
+                <div className="w-full md:w-2/5">
+                    <div className="flex items-center justify-between mb-3">
+                        <span className="font-semibold text-xl text-gray-800">{booking.name}</span>
                         {!isEditing ? (
                             <EditBooking onEditAction={handleEdit} />
                         ) : (
@@ -72,7 +72,7 @@ export default function BookingInfo({ booking }: BookingInfoProps) {
                             </div>
                         )}
                     </div>
-                    <div className="text-sm space-y-1 mt-2">
+                    <div className="space-y-2 text-sm mt-2 text-gray-900">
                         <div>
                             <span className="font-medium">Tid og dato:</span>{" "}
                             {formatDateTime(new Date(booking.date_and_time).toLocaleString())}
@@ -130,19 +130,19 @@ export default function BookingInfo({ booking }: BookingInfoProps) {
                         </div>
                     </div>
                 </div>
-                <div className="w-full md:w-1/2 flex-shrink-0">
+                <div className="w-full md:w-2/5">
                     <div className="max-h-[55vh] md:max-h-[100%] overflow-auto">
                         <TattooInfo tattoos={booking.tattoos} />
                     </div>
                 </div>
-                
-        </div>
+        
+            </div>
             {booking.status !== "customer_cancelled" &&
             booking.status !== "artist_cancelled" && (
             <div className="mt-4">
             <CancelBooking />
             </div>
             )}
-        </div>
+    </div>
     );
 }
