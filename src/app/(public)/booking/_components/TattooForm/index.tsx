@@ -52,6 +52,14 @@ export function TattooForm({
     }
   };
 
+  const handleFlashFileDelete = () => {
+    setFlashImageFile(null);
+    setTattooData({
+      ...tattooData,
+      flashImage: null,
+    });
+  };
+
   const handleCustomFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const filesArray = Array.from(e.target.files);
@@ -62,6 +70,17 @@ export function TattooForm({
       });
     }
   };
+
+  const handleCustomFileDelete = (index: number) => {
+  if (index < customReferenceFiles.length) {
+    const newFiles = customReferenceFiles.filter((_, i) => i !== index);
+    setCustomReferenceFiles(newFiles);
+    setTattooData({
+      ...tattooData,
+      customReferenceImages: newFiles,
+    });
+  }
+};
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -123,6 +142,8 @@ export function TattooForm({
         handleCustomFilesChange={handleCustomFilesChange}
         handleFlashFileChange={handleFlashFileChange}
         handleTattooInputChange={handleInputChange}
+        handleFlashFileDelete={handleFlashFileDelete}
+        handleCustomFileDelete={handleCustomFileDelete}
       />
 
       <General
