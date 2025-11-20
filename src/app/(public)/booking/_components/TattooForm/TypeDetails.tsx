@@ -200,7 +200,7 @@ export function TypeDetails({
                       </span>
                     </p>
                     <p className="text-slate-400 text-xs">
-                      Klik for at tilføje flere billeder eller skifte ud.
+                      Klik for at tilføje flere billeder.
                     </p>
                   </div>
                 </div>

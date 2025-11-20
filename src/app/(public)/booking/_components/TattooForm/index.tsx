@@ -62,25 +62,35 @@ export function TattooForm({
 
   const handleCustomFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      const filesArray = Array.from(e.target.files);
-      setCustomReferenceFiles(filesArray);
+      const newFilesArray = Array.from(e.target.files);
+      // Create a map of existing files keyed by name for quick lookup
+      const existingFilesMap = new Map(
+        customReferenceFiles.map((file) => [file.name, file])
+      );
+      // Add or overwrite files with new selections
+      newFilesArray.forEach((newFile) => {
+        existingFilesMap.set(newFile.name, newFile);
+      });
+      // Convert map values back to array
+      const mergedFiles = Array.from(existingFilesMap.values());
+      setCustomReferenceFiles(mergedFiles);
       setTattooData({
         ...tattooData,
-        customReferenceImages: filesArray,
+        customReferenceImages: mergedFiles,
       });
     }
   };
 
   const handleCustomFileDelete = (index: number) => {
-  if (index < customReferenceFiles.length) {
-    const newFiles = customReferenceFiles.filter((_, i) => i !== index);
-    setCustomReferenceFiles(newFiles);
-    setTattooData({
-      ...tattooData,
-      customReferenceImages: newFiles,
-    });
-  }
-};
+    if (index < customReferenceFiles.length) {
+      const newFiles = customReferenceFiles.filter((_, i) => i !== index);
+      setCustomReferenceFiles(newFiles);
+      setTattooData({
+        ...tattooData,
+        customReferenceImages: newFiles,
+      });
+    }
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<
