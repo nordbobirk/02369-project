@@ -3,18 +3,18 @@ import { TattooData } from "./Form";
 const customBaseMatrix: Record<DetailLevel, Record<Size, number>> = {
   low: {
     small: 30,
-    medium: 60,
-    large: 120,
+    medium: 45,
+    large: 90,
   },
   medium: {
     small: 60,
-    medium: 120,
-    large: 240,
+    medium: 90,
+    large: 120,
   },
   high: {
     small: 120,
-    medium: 240,
-    large: 360,
+    medium: 150,
+    large: 180,
   },
 };
 
@@ -33,7 +33,7 @@ const flashBaseMatrix: Record<TattooColor, Record<Size, number>> = {
 
 const customColorMultiplier: Record<TattooColor, number> = {
   black: 1.0,
-  colored: 1.35, // color takes ~35% longer for custom pieces
+  colored: 1.15, // color takes ~35% longer for custom pieces
 };
 
 export function getTattooDuration(tattoo: TattooData): number {

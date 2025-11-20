@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -29,7 +29,7 @@ const estimatePrice = (formData: BookingFormData): number => {
   return 1000;
 };
 
-const estimateTime = (formData: BookingFormData): number => {
+export const estimateTime = (formData: BookingFormData): number => {
   let totalMinutes = 0;
 
   for (const tattoo of formData.tattoos) {
@@ -143,23 +143,43 @@ export default function BookingForm() {
    * Handle input changes to global form values, ie. values not tied to a specific tattoo (e.g. customer info).
    * @param e change event
    */
-  const handleGlobalInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value, type } = e.target;
-    const checked =
-      type === "checkbox" ? (e.target as HTMLInputElement).checked : undefined;
+  const handleGlobalInputChange = useCallback(
+    (
+      e: React.ChangeEvent<
+        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+      >
+    ) => {
+      const { name, value, type } = e.target;
+      const checked =
+        type === "checkbox" ? (e.target as HTMLInputElement).checked : undefined;
 
-    const newFormData = {
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    };
+      const newFormData = {
+        ...formData,
+        [name]: type === "checkbox" ? checked : value,
+      } as BookingFormData;
 
-    setFormData(newFormData);
-    updateEstimates(newFormData);
-  };
+      // Avoid setting state if nothing changed to prevent re-render loops
+      const currentVal = (formData as any)[name];
+      const newVal = (newFormData as any)[name];
+
+      const valuesAreEqual = (() => {
+        if (name === "dateTime") {
+          const cur = currentVal as Date | undefined | null;
+          const neu = newVal as Date | undefined | null;
+          if (!cur && !neu) return true;
+          if (!cur || !neu) return false;
+          return cur.getTime() === neu.getTime();
+        }
+        return currentVal === newVal;
+      })();
+
+      if (valuesAreEqual) return;
+
+      setFormData(newFormData);
+      updateEstimates(newFormData);
+    },
+    [formData]
+  );
 
   /**
    * Handle input changes to a tattoo based on the change event and the tattoos index.
