@@ -8,6 +8,9 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { availability, booking, getAvailability, getBookings } from "@/app/(public)/booking/actions";
 import { da } from "date-fns/locale";
 
+// Giga scuffed compononent. Browse/debug at your own risk.
+
+
 /**
  * Smart Calendar picker:
  * - slotDuration: base increment (default 30)
