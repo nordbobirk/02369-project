@@ -101,7 +101,6 @@ export async function getTattooImageSignedUrl(imageUrl: string) {
  * @returns {Promise<Booking>} The booking data.
  * @throws {Error} If there is an error fetching the booking.
  */
-
 export async function getPendingBookingById( params : string ) {
     const supabase = await initServerClient()
 
@@ -176,6 +175,15 @@ export async function rejectPendingBooking(params: string | Array<string> | unde
     return
 }
 
+/**
+ * Updates the booking details with the provided new values.
+ *
+ * @param bookingId - The id of the booking to update.
+ * @param email - The new email for the booking.
+ * @param phoneNumber - The new phone number for the booking.
+ * @param internalNotes - The new internal notes for the booking.
+ * @throws {Error} If there is an error updating the booking details.
+ */
 export async function updateBookingDetails(
     bookingId: string,
     email: string,
@@ -200,6 +208,18 @@ export async function updateBookingDetails(
     return
 }
 
+/**
+ * Updates the tattoo details with the provided new values.
+ *
+ * @param tattooId - The id of the tattoo to update.
+ * @param width - The new width for the tattoo.
+ * @param height - The new height for the tattoo.
+ * @param placement - The new placement for the tattoo.
+ * @param detailLevel - The new detail level for the tattoo.
+ * @param coloredOption - The new colored option for the tattoo.
+ * @param colorDescription - The new color description for the tattoo.
+ * @throws {Error} If there is an error updating the tattoo details.
+ */
 export async function updateTattooDetails(
     tattooId: string,
     width: number | undefined,
