@@ -242,6 +242,7 @@ export function Calendar20({
       // get occupancy of existing bookings
       const occupancy = occupancyArrayForDate(checkDate); // boolean[]
       const slotsNeeded = Math.max(1, Math.ceil(desiredMins / slotDuration));
+      const mustIgnoreLunch = desiredMins >= 240 && desiredMins <= 420;
       const candidates: { startIndex: number; leftGap: number; lunchStartMins: number }[] = [];
 
       // sort lunch options by closeness to default 13:00 and prefer earlier when tie
@@ -289,44 +290,40 @@ export function Calendar20({
         }
         if (overlapsExistingBooking) continue;
 
-        // For each lunch option, check if lunch can be placed so candidate doesn't overlap lunch,
-        // and lunch itself does not overlap existing bookings
         let foundLunchOption: number | null = null;
-        for (const lunchStartMins of lunchSorted) {
-          const lunchSlotIndices = lunchSlotsForStart(lunchStartMins);
-          // If lunch falls entirely outside work range (no overlapping indices), it's invalid for our day
-          if (lunchSlotIndices.length === 0) continue;
 
-          // Does this lunch overlap any existing booking?
-          let lunchOverlapsBooking = false;
-          for (const li of lunchSlotIndices) {
-            if (occupancy[li]) {
-              lunchOverlapsBooking = true;
-              break;
+        if (mustIgnoreLunch) {
+          // For bookings 4–7 hours, lunch is ignored completely — always valid as long as no booking overlaps
+          foundLunchOption = -1; // special marker meaning "ignored"
+        } else {
+          // Normal lunch logic
+          for (const lunchStartMins of lunchSorted) {
+            const lunchSlotIndices = lunchSlotsForStart(lunchStartMins);
+            if (lunchSlotIndices.length === 0) continue;
+
+            let lunchOverlapsBooking = false;
+            for (const li of lunchSlotIndices) {
+              if (occupancy[li]) {
+                lunchOverlapsBooking = true;
+                break;
+              }
             }
-          }
-          if (lunchOverlapsBooking) continue; // can't move lunch here
+            if (lunchOverlapsBooking) continue;
 
-          // Does candidate overlap lunch?
-          let candidateOverlapsLunch = false;
-          for (let si = startIndex; si < endIndexExclusive; si++) {
-            if (lunchSlotIndices.includes(si)) {
-              candidateOverlapsLunch = true;
-              break;
+            let candidateOverlapsLunch = false;
+            for (let si = startIndex; si < endIndexExclusive; si++) {
+              if (lunchSlotIndices.includes(si)) {
+                candidateOverlapsLunch = true;
+                break;
+              }
             }
+            if (candidateOverlapsLunch) continue;
+
+            foundLunchOption = lunchStartMins;
+            break;
           }
-          // If candidate overlaps lunch, but we chose this lunch option intentionally to avoid overlapping with default lunch,
-          // then candidateOverlapsLunch must be false. If it is true, candidate cannot be scheduled with this lunch option.
-          if (candidateOverlapsLunch) continue;
 
-          // If we reached here, candidate fits and lunch can be moved to lunchStartMins without conflict
-          foundLunchOption = lunchStartMins;
-          break;
-        }
-
-        if (foundLunchOption === null) {
-          // No lunch placement makes this candidate valid (either because lunch always collides with bookings or candidate collides with all valid lunches)
-          continue;
+          if (foundLunchOption === null) continue;
         }
 
         // Compute leftGap: distance (in slots) from last occupied slot (or day start) to this candidate
@@ -367,7 +364,7 @@ export function Calendar20({
   const optimizedStartTimes = React.useMemo(() => {
     return computeOptimalSlots(date, desiredDuration || slotDuration);
   }, [date, desiredDuration, computeOptimalSlots]);
-  
+
   // If selectedTime becomes invalid (not in optimizedStartTimes), clear it
   React.useEffect(() => {
     if (selectedTime && !optimizedStartTimes.includes(selectedTime)) {
@@ -426,7 +423,7 @@ export function Calendar20({
   return (
     <Card className="gap-0 p-0">
       <CardContent className="relative p-0 md:pr-48">
-          <div className="p-6">
+        <div className="p-6">
           <Calendar
             mode="single"
             selected={date}
