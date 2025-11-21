@@ -32,6 +32,67 @@ type Booking = {
     tattoos: Tattoo[],
 }
 
+/**
+ * Generates a signed URL for a private tattoo image stored in Supabase Storage.
+ *
+ * Parses the image URL to extract the bucket name and file path, then creates
+ * a temporary signed URL that allows authenticated access to the private image
+ * for 1 hour.
+ *
+ * @param imageUrl - The full Supabase storage URL or relative path to the image.
+ *                   Format: `https://[project].supabase.co/storage/v1/object/[public|authenticated]/[bucket]/[path]`
+ *                   or just `[path]` (assumes 'tattoo-images' bucket).
+ * @returns {Promise<string>} A signed URL that provides temporary access to the image,
+ *                            or the original URL if signing fails.
+ * @throws Does not throw - returns original URL on error and logs to console.
+ */
+export async function getTattooImageSignedUrl(imageUrl: string) {
+    const supabase = await initServerClient()
+
+    // Extract path from the full Supabase storage URL
+    // Format: https://[project].supabase.co/storage/v1/object/[public|authenticated]/[bucket]/[path]
+
+    // First, try to extract bucket and path
+    let bucket = '';
+    let path = '';
+
+    // Check if it's a full URL
+    if (imageUrl.includes('/storage/v1/object/')) {
+        // Split by /storage/v1/object/
+        const parts = imageUrl.split('/storage/v1/object/');
+        if (parts.length >= 2) {
+            // Remove 'public' or 'authenticated' prefix if present
+            const afterStorage = parts[1].replace(/^(public|authenticated)\//, '');
+            const pathParts = afterStorage.split('/');
+
+            if (pathParts.length >= 2) {
+                bucket = pathParts[0];
+                path = pathParts.slice(1).join('/');
+            }
+        }
+    } else {
+        // If it's already just a path, assume bucket is 'tattoo-images'
+        bucket = 'tattoo-images';
+        path = imageUrl;
+    }
+
+    if (!bucket || !path) {
+        console.error('Could not parse bucket and path from URL:', imageUrl); // left for debugging
+        return imageUrl;
+    }
+
+    const { data, error } = await supabase.storage
+        .from(bucket)
+        .createSignedUrl(path, 3600) // 1 hour expiry
+
+    if (error) {
+        console.error('Error creating signed URL:', error); // left for debugging
+        return imageUrl;
+    }
+
+    return data.signedUrl;
+}
+
 
 /**
  * Fetches a booking by its id. The booking includes all its tattoos and their images.
@@ -40,12 +101,11 @@ type Booking = {
  * @returns {Promise<Booking>} The booking data.
  * @throws {Error} If there is an error fetching the booking.
  */
+
 export async function getPendingBookingById( params : string ) {
     const supabase = await initServerClient()
 
     const { data, error } = await supabase
-        // TODO: fix such that fields are specified and not everything (*).
-        //       dont wanna do this before the database is set up though..
         .from('bookings')
         .select(`
             *,
@@ -58,13 +118,24 @@ export async function getPendingBookingById( params : string ) {
             )
         `)
         .eq('id', params)
-        // .in('status', ['pending', 'edited'])
         .order('created_at', { ascending: false })
 
     if (error) throw error
 
+    // Generate signed URLs for all images
+    if (data && data[0]?.tattoos) {
+        for (const tattoo of data[0].tattoos) {
+            if (tattoo.tattoo_images) {
+                for (const image of tattoo.tattoo_images) {
+                    image.image_url = await getTattooImageSignedUrl(image.image_url)
+                }
+            }
+        }
+    }
+
     return data
 }
+
 
 
 /**
