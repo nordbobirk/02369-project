@@ -5,7 +5,7 @@ import CancelBooking from "@/app/(public)/booking/edit_booking/[id]/CancelBookin
 // Helper Function for User-Friendly Status Display 
 const getStatusDisplay = (status: string) => {
     switch (status) {
-        case "pending_approval":
+        case "pending":
             return { text: "Afventer Godkendelse", style: "bg-yellow-100 text-yellow-800" };
         case "confirmed":
             return { text: "Bekræftet! Alt er klart", style: "bg-green-100 text-green-800" };
