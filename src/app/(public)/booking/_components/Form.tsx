@@ -23,6 +23,7 @@ import { initBrowserClient } from "@/lib/supabase/client";
 import { BOOKING_IMAGES_BUCKET_NAME } from "@/lib/storage";
 import { DatePicker } from "./DatePicker";
 import { getTattooDuration } from "./TattooDurationEstimator";
+import { useRouter } from "next/navigation";
 
 // Placeholder functions for price and time estimates
 const estimatePrice = (formData: BookingFormData): number => {
@@ -112,6 +113,9 @@ export default function BookingForm() {
   const [error, setError] = useState<string | null>(null);
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
   const [isSelectionAvailable, setIsSelectionAvailable] = useState(false);
+
+  // For navigating to confirmation page
+  const router = useRouter();
 
   useEffect(() => {
     if (selectedTattooIndex !== null && !isFirstView) {
@@ -324,6 +328,7 @@ export default function BookingForm() {
       submitFilePaths(paths, entry.id);
     }
 
+    router.push("/booking/confirmation");
     setIsSubmissionLoading(false);
   };
 
