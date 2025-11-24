@@ -88,7 +88,7 @@ export async function getPendingBookings() {
             tattoos(*)
         `)
     .in("status", ["pending", "edited"])
-  return bookings;
+  return bookings as Booking[];
 }
 
 export async function getAllBookings(): Promise<Booking[]> {
@@ -114,23 +114,25 @@ export async function getLimitedBookingsAfterDate(limit = 5, offset = 0): Promis
     .from("bookings")
     .select(`*, tattoos(*)`)
     .gte("date_and_time", start)
+    .in("status", ["confirmed", "edited"])
     .order("date_and_time", { ascending: true })
     .range(offset, offset + limit - 1); // Supabase uses inclusive ranges
-
-  if (error) throw error;
-  return bookings as Booking[];
-}
-
-export async function getLimitedOldBookings(limit = 5, offset = 0): Promise<Booking[]> {
-  const today = new Date();
-  const targetDay = today.toISOString().split("T")[0];
-  const start = `${targetDay}T00:00:00Z`;
+    
+    if (error) throw error;
+    return bookings as Booking[];
+  }
   
-  const supabase = await initServerClient();
-  const { data: bookings, error } = await supabase
+  export async function getLimitedOldBookings(limit = 5, offset = 0): Promise<Booking[]> {
+    const today = new Date();
+    const targetDay = today.toISOString().split("T")[0];
+    const start = `${targetDay}T00:00:00Z`;
+    
+    const supabase = await initServerClient();
+    const { data: bookings, error } = await supabase
     .from("bookings")
     .select(`*, tattoos(*)`)
     .lt("date_and_time", start) // get bookings before today
+    .in("status", ["confirmed", "edited"])
     .order("date_and_time", { ascending: false }) // get them "backwards", so when displayed todays date is in the middle
     .range(offset, offset + limit - 1); // inclusive range
 

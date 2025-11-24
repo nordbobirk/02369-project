@@ -19,41 +19,27 @@ export default function Home() {
             <section className="order-1 px-6 md:px-10 pt-10 md:pt-0">
                 <div className="max-w-[22rem] sm:max-w-md md:max-w-lg mx-auto md:mx-0 md:mr-8 text-center md:text-left">
                     <h1
-                        className="tracking-tight drop-shadow text-white text-sm sm:text-xl md:text-xl
-            [font-family:var(--font-archivo-black),system-ui,sans-serif] uppercase
-            [-webkit-text-stroke:1px_#111]"
+                        className="font-tropi mt-3 drop-shadow text-rose-300 text-4xl sm:text-6xl md:text-6xl leading-snug [-webkit-text-stroke:1px_#111]"
                     >
-                        Tattoo Artist Copenhagen
+                        Bebsis Badekar
                     </h1>
-                    <h2
-                        className="tracking-tight drop-shadow text-white text-4xl sm:text-5xl md:text-6xl leading-[0.95]
-            [font-family:var(--font-archivo-black),system-ui,sans-serif] uppercase
-            [-webkit-text-stroke:1px_#111]"
-                    >
-                        Andrea Carlberg
-                    </h2>
                     <h3
-                        className="mt-3 drop-shadow text-white text-2xl sm:text-3xl md:text-4xl leading-snug
-            [font-family:var(--font-archivo-black),system-ui,sans-serif]
-            [-webkit-text-stroke:1px_#111]"
+                        className="font-urbane drop-shadow text-black text-1xl sm:text-1xl md:text-1xl leading-[0.95]
+                        uppercase"
                     >
-                        <a
-                            href="https://instagram.com/bebsisbadekar"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="underline-offset-4 hover:underline"
-                        >
-                            @bebsisbadekar
-                        </a>
+                        Tats by Andrea Carlberg
                     </h3>
 
                     <div className="mt-6 flex flex-wrap gap-3 justify-center md:justify-start">
-                        <Button asChild size="lg" className="rounded-full opacity-90 hover:opacity-100">
+                        <Button className="rounded-full bg-rose-300 hover:bg-rose-400 opacity-90 hover:opacity-100
+                                    transition-all duration-300 ease-out
+                                    hover:scale-105 hover:-translate-y-0.5
+                                    hover:shadow-[0_0_20px_rgba(244,114,182,0.5)]">
                             <Link href="/booking" aria-label="Book tid">
-                <span className="inline-flex items-center gap-2">
-                  <CalendarClock className="h-5 w-5" />
-                  Book tid
-                </span>
+                            <span className="inline-flex items-center gap-2">
+                                <CalendarClock className="h-5 w-5 transition-transform duration-300 group-hover:rotate-12" />
+                                Book tid
+                            </span>
                             </Link>
                         </Button>
 

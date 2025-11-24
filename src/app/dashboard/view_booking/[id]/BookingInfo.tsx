@@ -35,7 +35,7 @@ export default function BookingInfo({ booking }: BookingInfoProps) {
     const [isEditing, setIsEditing] = useState(false);
     const [editedEmail, setEditedEmail] = useState(booking.email);
     const [editedPhone, setEditedPhone] = useState(booking.phone_number);
-    const [editedNotes, setEditedNotes] = useState(booking.internal_notes);
+    const [editedNotes, setEditedNotes] = useState(booking.internal_notes ?? "");
 
     const handleEdit = () => {
         setIsEditing(true);
