@@ -52,7 +52,7 @@ export async function submitBooking(bookingFormData: BookingSubmissionInput) {
       email: bookingFormData.customerEmail,
       phone_number: bookingFormData.customerPhone,
       name: bookingFormData.customerName,
-      date_and_time: new Date(),
+      date_and_time: bookingFormData.dateTime,
       is_FirstTattoo: bookingFormData.isFirstTattoo,
       otp_hash: secureOtpHash
     })
@@ -95,7 +95,7 @@ export async function submitBooking(bookingFormData: BookingSubmissionInput) {
         colored_option: tattoo.colorOption.toLowerCase(),
         color_description: tattoo.colorDescription,
         detail_level: tattoo.detailLevel,
-        estimated_duration: 0,
+        estimated_duration: tattoo.estimated_duration,
         estimated_price: 0,
         upload_id: tattoo.uploadId,
       }))

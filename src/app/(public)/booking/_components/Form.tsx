@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -21,14 +21,22 @@ import { Error } from "./Error";
 import { BookingSubmissionInput, submitBooking, submitFilePaths } from "../submitBooking";
 import { initBrowserClient } from "@/lib/supabase/client";
 import { BOOKING_IMAGES_BUCKET_NAME } from "@/lib/storage";
+import { DatePicker } from "./DatePicker";
+import { getTattooDuration } from "./TattooDurationEstimator";
 
 // Placeholder functions for price and time estimates
 const estimatePrice = (formData: BookingFormData): number => {
   return 1000;
 };
 
-const estimateTime = (formData: BookingFormData): number => {
-  return 120;
+export const estimateTime = (formData: BookingFormData): number => {
+  let totalMinutes = 0;
+
+  for (const tattoo of formData.tattoos) {
+    totalMinutes += getTattooDuration(tattoo);
+  }
+
+  return totalMinutes;
 };
 
 /**
@@ -40,6 +48,7 @@ export type BookingFormData = {
   customerName: string;
   customerEmail: string;
   customerPhone: string;
+  dateTime: Date;
 };
 
 /**
@@ -57,19 +66,20 @@ export type TattooData = {
   colorOption: TattooColor;
   colorDescription?: string;
   title: string;
+  estimated_duration: number;
 };
 
 /**
  * The default tattoo in the form, ie. the default values for the forms tattoo section
  */
 const getDefaultTattoo = (index: number) =>
-  ({
-    colorOption: "black",
-    placement: "arm_lower",
-    size: "medium",
-    tattooType: "flash",
-    title: getTattooTitle(index),
-  } as TattooData);
+({
+  colorOption: "black",
+  placement: "arm_lower",
+  size: "medium",
+  tattooType: "flash",
+  title: getTattooTitle(index),
+} as TattooData);
 
 /**
  * Get the title for a tattoo
@@ -87,6 +97,7 @@ export default function BookingForm() {
     customerName: "",
     customerEmail: "",
     customerPhone: "",
+    dateTime: new Date(),
   });
 
   const [priceEstimate, setPriceEstimate] = useState<number>(0);
@@ -99,6 +110,8 @@ export default function BookingForm() {
   const [nextTattooTitleIndex, setNextTattooTitleIndex] = useState<number>(1);
   const [isFirstView, setIsFirstView] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
+  const [isSelectionAvailable, setIsSelectionAvailable] = useState(false);
 
   useEffect(() => {
     if (selectedTattooIndex !== null && !isFirstView) {
@@ -130,23 +143,43 @@ export default function BookingForm() {
    * Handle input changes to global form values, ie. values not tied to a specific tattoo (e.g. customer info).
    * @param e change event
    */
-  const handleGlobalInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value, type } = e.target;
-    const checked =
-      type === "checkbox" ? (e.target as HTMLInputElement).checked : undefined;
+  const handleGlobalInputChange = useCallback(
+    (
+      e: React.ChangeEvent<
+        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+      >
+    ) => {
+      const { name, value, type } = e.target;
+      const checked =
+        type === "checkbox" ? (e.target as HTMLInputElement).checked : undefined;
 
-    const newFormData = {
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    };
+      const newFormData = {
+        ...formData,
+        [name]: type === "checkbox" ? checked : value,
+      } as BookingFormData;
 
-    setFormData(newFormData);
-    updateEstimates(newFormData);
-  };
+      // Avoid setting state if nothing changed to prevent re-render loops
+      const currentVal = (formData as any)[name];
+      const newVal = (newFormData as any)[name];
+
+      const valuesAreEqual = (() => {
+        if (name === "dateTime") {
+          const cur = currentVal as Date | undefined | null;
+          const neu = newVal as Date | undefined | null;
+          if (!cur && !neu) return true;
+          if (!cur || !neu) return false;
+          return cur.getTime() === neu.getTime();
+        }
+        return currentVal === newVal;
+      })();
+
+      if (valuesAreEqual) return;
+
+      setFormData(newFormData);
+      updateEstimates(newFormData);
+    },
+    [formData]
+  );
 
   /**
    * Handle input changes to a tattoo based on the change event and the tattoos index.
@@ -224,12 +257,25 @@ export default function BookingForm() {
     e.preventDefault();
     const supabase = initBrowserClient();
 
+    if (!isSelectionAvailable) {
+      setError("Vælg venligst en gyldig dato og tid.");
+      return;
+    }
+
+    setError("");
+
+    const updatedTattoos = formData.tattoos.map((tattoo) => {
+      const updatedDuration = getTattooDuration(tattoo);
+      return {
+        ...tattoo,
+        estimated_duration: updatedDuration,
+        uploadId: crypto.randomUUID(),
+      };
+    });
+
     let submissionData = {
       ...formData,
-      tattoos: formData.tattoos.map((tattoo) => ({
-        ...tattoo,
-        uploadId: crypto.randomUUID(),
-      })),
+      tattoos: updatedTattoos,
     };
 
     setIsSubmissionLoading(true);
@@ -245,6 +291,7 @@ export default function BookingForm() {
         customDescription: tattoo.customDescription,
         detailLevel: tattoo.detailLevel,
         flashComments: tattoo.flashComments,
+        estimated_duration: tattoo.estimated_duration,
       })),
     });
 
@@ -271,8 +318,8 @@ export default function BookingForm() {
               .findLast((substr) => substr.length > 0)}`,
             file
           );
-          if (!data) continue;
-          paths.push(data.path);
+        if (!data) continue;
+        paths.push(data.path);
       }
       submitFilePaths(paths, entry.id);
     }
@@ -315,6 +362,12 @@ export default function BookingForm() {
             <ContactInfo
               formData={formData}
               handleInputChange={handleGlobalInputChange}
+            />
+
+            <DatePicker
+              formData={formData}
+              handleInputChange={handleGlobalInputChange}
+              onAvailabilityChange={setIsSelectionAvailable}
             />
 
             <Estimates
