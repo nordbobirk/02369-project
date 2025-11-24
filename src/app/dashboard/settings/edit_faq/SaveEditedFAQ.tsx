@@ -19,27 +19,32 @@ import { updateFAQ } from './actions'
  */
 export default function SaveEditedFAQ({
     id,
+    category,
     question,
     answer,
     onCancelAction,
     onSavedAction
 }: {
     id: number
+    category: string
     question: string
     answer: string
     onCancelAction: () => void
-    onSavedAction: (updated: { id: number, question: string, answer: string }) => void
+    onSavedAction: (updated: { id: number, category: string, question: string, answer: string }) => void
 }) {
 
     return (
         <form action={async () => {
-            await updateFAQ(id, question, answer)
-            onSavedAction({ id, question, answer })
+            await updateFAQ(id, category, question, answer)
+            onSavedAction({ id, category, question, answer })
             onCancelAction()
         }} className="inline mr-2">
-            <Button type="submit" variant="default">
-                Save
-            </Button>
+            <Button
+    type="submit"
+    className="bg-rose-300 hover:bg-rose-400 text-white font-semibold rounded-xl px-4 py-2 shadow-sm"
+  >
+    Gem ændring
+  </Button>
         </form>
     )
 }
