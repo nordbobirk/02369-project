@@ -14,7 +14,7 @@ export type Tattoo = {
     height?: number;
     placement?: string;
     tattoo_type?: string;
-    detail_level?: string;
+    detail_level?: string | null;
     tattoo_images?: { id: number; image_url: string }[];
     colored_option?: string;
     estimated_price?: number;
@@ -60,6 +60,11 @@ export function TattooInfo({ tattoos }: TattooInfoProps) {
         setIsEditing(false);
     };
 
+    // const handleSave = async () => {
+    //     const finalDetailLevel = tattoo.tattoo_type === "flash" ? null : editedDetailLevel;
+    //     setIsEditing(false);
+    // };
+
     return (
         <div className="p-2 border border-black rounded-lg flex flex-col md:flex-row gap-4">
             <div className="order-1 md:order-2 md:w-60 w-full">
@@ -81,7 +86,7 @@ export function TattooInfo({ tattoos }: TattooInfoProps) {
                                 width={editedWidth}
                                 height={editedHeight}
                                 placement={editedPlacement}
-                                detailLevel={editedDetailLevel}
+                                detailLevel={tattoo.tattoo_type === "flash" ? null : editedDetailLevel}
                                 coloredOption={editedColoredOption}
                                 colorDescription={editedColorDescription}
                                 onSaveAction={handleSave}

@@ -135,8 +135,6 @@ export async function getPendingBookingById( params : string ) {
     return data
 }
 
-
-
 /**
  * Accepts a pending booking with the given id.
  *
@@ -225,7 +223,7 @@ export async function updateTattooDetails(
     width: number | undefined,
     height: number | undefined,
     placement: string,
-    detailLevel: string,
+    detailLevel: string | null,
     coloredOption: string,
     colorDescription: string
 ) {
