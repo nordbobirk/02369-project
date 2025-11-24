@@ -88,7 +88,7 @@ export async function getPendingBookings() {
             tattoos(*)
         `)
     .in("status", ["pending", "edited"])
-  return bookings;
+  return bookings as Booking[];
 }
 
 export async function getAllBookings(): Promise<Booking[]> {
