@@ -9,7 +9,7 @@ import {
   Section,
   Text,
 } from "@react-email/components";
-import { main, container, box, heading, footer, hr, anchor } from "../styles";
+import { main, container, box, heading, footer, hr, anchor } from "../../styles";
 
 export default function CustomerEmailLayout({
   title,
