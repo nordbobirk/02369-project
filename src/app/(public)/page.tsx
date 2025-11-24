@@ -24,8 +24,8 @@ export default function Home() {
                         Bebsis Badekar
                     </h1>
                     <h3
-                        className="font-urbane tracking-tight drop-shadow text-white text-1xl sm:text-1xl md:text-1xl leading-[0.95]
-                        uppercase [-webkit-text-stroke:1px_#111]"
+                        className="font-urbane drop-shadow text-black text-1xl sm:text-1xl md:text-1xl leading-[0.95]
+                        uppercase"
                     >
                         Tats by Andrea Carlberg
                     </h3>
