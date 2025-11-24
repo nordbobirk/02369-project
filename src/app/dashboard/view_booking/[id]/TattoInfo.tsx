@@ -41,7 +41,6 @@ export function TattooInfo({ tattoos }: TattooInfoProps) {
     }
 
     const tattoo = tattoos[index];
-    console.log(tattoo.tattoo_type + "TESTSTERSTE");
 
     const handleEdit = () => {
         setEditedWidth(tattoo.width);
