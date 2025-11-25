@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import ViewBooking from "./ViewBooking";
+import ViewBooking from "../ViewBooking";
 import "@testing-library/jest-dom";
 
 // Mock Next.js <Link> to behave like a normal anchor for testing

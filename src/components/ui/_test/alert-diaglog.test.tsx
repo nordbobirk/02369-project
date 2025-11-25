@@ -11,9 +11,9 @@ import {
     AlertDialogDescription,
     AlertDialogAction,
     AlertDialogCancel,
-} from "./alert-dialog";
+} from "../alert-dialog";
 import "@testing-library/jest-dom";
-import { Button } from "./button"
+import { Button } from "../button"
 
 
 describe("Alert-dialog", () => {
