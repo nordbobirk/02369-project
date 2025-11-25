@@ -66,77 +66,10 @@ describe("Alert-dialog", () => {
         const button = screen.getByRole("button", { name: "Annuller"})
         const dialog = screen.getByRole("alertdialog")
         expect(dialog).toHaveAttribute("data-state", "open");
+
         // Alert closes when "Annuller" is pressed 
         fireEvent.click(button);
         expect(dialog).toHaveAttribute("data-state", "closed");
         
     })
 });
-/* it("expands and collapses accordion items", () => {
-  render(
-    <Accordion type="single" collapsible>
-      <AccordionItem value="item-1">
-        <AccordionTrigger>Click me</AccordionTrigger>
-        <AccordionContent>Hidden content</AccordionContent>
-      </AccordionItem>
-    </Accordion>
-  );
-
-  const trigger = screen.getByRole("button", { name: "Click me" });
-  
-  expect(trigger).toHaveAttribute("data-state", "closed");
-
-  fireEvent.click(trigger);
-  expect(trigger).toHaveAttribute("data-state", "open");
-
-  fireEvent.click(trigger);
-  expect(trigger).toHaveAttribute("data-state", "closed");
-});
-
-it("applies custom className to accordion item", () => {
-  render(
-    <Accordion type="single" collapsible>
-      <AccordionItem value="item-1" className="custom-class">
-        <AccordionTrigger>Test</AccordionTrigger>
-        <AccordionContent>Content</AccordionContent>
-      </AccordionItem>
-    </Accordion>
-  );
-
-  const item = screen.getByRole("button", { name: "Test" }).closest('[data-slot="accordion-item"]');
-  expect(item).toHaveClass("custom-class");
-});
-
-it("renders chevron icon in trigger", () => {
-  render(
-    <Accordion type="single" collapsible>
-      <AccordionItem value="item-1">
-        <AccordionTrigger>Test</AccordionTrigger>
-        <AccordionContent>Content</AccordionContent>
-      </AccordionItem>
-    </Accordion>
-  );
-
-  const trigger = screen.getByRole("button", { name: "Test" });
-  const svg = trigger.querySelector("svg");
-  expect(svg).toBeInTheDocument();
-});
-
-it("shows content when accordion is opened", () => {
-  render(
-    <Accordion type="single" collapsible>
-      <AccordionItem value="item-1">
-        <AccordionTrigger>Test</AccordionTrigger>
-        <AccordionContent>This is the content</AccordionContent>
-      </AccordionItem>
-    </Accordion>
-  );
-
-  // Click to open
-  const trigger = screen.getByRole("button", { name: "Test" });
-  fireEvent.click(trigger);
-
-  // Now content should be visible
-  expect(screen.getByText("This is the content")).toBeVisible();
-});
-}); */
