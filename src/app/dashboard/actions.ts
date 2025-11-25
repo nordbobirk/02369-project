@@ -87,7 +87,7 @@ export async function getPendingBookings() {
             *,
             tattoos(*)
         `)
-    .in("status", ["pending", "edited"])
+    .in("status", ["pending"])
   return bookings as Booking[];
 }
 
@@ -114,7 +114,7 @@ export async function getLimitedBookingsAfterDate(limit = 5, offset = 0): Promis
     .from("bookings")
     .select(`*, tattoos(*)`)
     .gte("date_and_time", start)
-    .in("status", ["confirmed"])
+    .in("status", ["confirmed", "edited"])
     .order("date_and_time", { ascending: true })
     .range(offset, offset + limit - 1); // Supabase uses inclusive ranges
     
