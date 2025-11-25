@@ -1,18 +1,18 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import BookingTable, { columns } from "../pending_bookings/BookingTable";
-import { Booking } from "../actions";
+import BookingTable, { columns } from "../BookingTable";
+import { Booking } from "../../actions";
 
 // Mock ViewBooking - avoids needing the full implementation
-jest.mock("../ViewBooking", () => {
+jest.mock("../../ViewBooking", () => {
     return function MockViewBooking({ bookingId }: any) {
         return <button data-testid={`view-${bookingId}`}>View</button>;
     };
 });
 
 // Mock duration formatter
-jest.mock("../utils/formatMinutes", () => ({
+jest.mock("../../utils/formatMinutes", () => ({
     formatMinutesHrsMins: (min: number) => `${min} min`,
 }));
 
