@@ -1,5 +1,5 @@
 export function getEnvironmentUrl() {
   const env = process.env.NODE_ENV;
-  if (env === "production") return "bebsisbooking.dk";
-  return "localhost:3000";
+  if (env === "production") return "https://bebsisbooking.dk";
+  return "http://localhost:3000";
 }
