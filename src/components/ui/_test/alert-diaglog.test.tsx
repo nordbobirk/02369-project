@@ -13,7 +13,6 @@ import {
     AlertDialogCancel,
 } from "../alert-dialog";
 import "@testing-library/jest-dom";
-import { Button } from "../button"
 
 
 describe("Alert-dialog", () => {

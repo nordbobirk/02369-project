@@ -1,4 +1,3 @@
-import { Car } from "lucide-react"
 import * as Card from "../card"
 import {render, screen} from "@testing-library/react"
 
@@ -26,7 +25,7 @@ describe("Card", () => {
                     Test footer
                 </Card.CardFooter>
             </Card.Card>
-        )
+        );
 
         expect(screen.getByText("Test Card"));
         expect(screen.getByText("Test title"));
