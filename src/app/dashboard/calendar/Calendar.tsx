@@ -7,7 +7,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { getBookingsAtDate, getAllBookings, Booking, Tattoo } from "@/app/dashboard/actions"
 import { da } from "date-fns/locale"
 import ViewBooking from "@/app/dashboard/ViewBooking"
-import BookingCard from "@/app/dashboard/Booking"
+import BookingCard from "@/app/dashboard/bookingCard"
 
 export default function Calendar31() {
   const [date, setDate] = React.useState<Date>(new Date())
