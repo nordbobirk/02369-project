@@ -1,6 +1,8 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { Calendar20 } from "../calendar-time-slots";
 
+// This test also covers calendar.tsx
+
 // Mock the server-side functions
 jest.mock("../../../app/(public)/booking/actions", () => ({
   getAvailability: jest.fn(),
@@ -44,7 +46,7 @@ describe("Calendar20", () => {
     expect(screen.getByText("15")).toBeInTheDocument();
     });
 
-    // This renders times for a given day, and uses the calculateOptimalTimes
+    // This renders times for a given day, and uses the computeOptimalSlots function
     const dateButton = screen.getByText("15");
     fireEvent.click(dateButton);
 
