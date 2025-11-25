@@ -9,6 +9,9 @@ describe("Button", () => {
         render(
             <Button>
                 Test
+                <Button asChild={true}>
+                    child
+                </Button>
             </Button>
         );
 

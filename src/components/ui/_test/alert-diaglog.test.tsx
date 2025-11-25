@@ -23,6 +23,9 @@ describe("Alert-dialog", () => {
                 <AlertDialogTrigger asChild>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
+                  <AlertDialogPortal>
+                    <AlertDialogOverlay></AlertDialogOverlay>
+                  </AlertDialogPortal>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Er du sikker?</AlertDialogTitle>
                         <AlertDialogDescription>
@@ -31,6 +34,7 @@ describe("Alert-dialog", () => {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>Annuller</AlertDialogCancel>
+                        <AlertDialogAction>Test</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
