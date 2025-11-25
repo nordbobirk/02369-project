@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button";
 import { CalendarIcon, CircleQuestionMarkIcon, HomeIcon, SettingsIcon } from "lucide-react";
 import Link from "next/link";
