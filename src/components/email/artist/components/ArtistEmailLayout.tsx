@@ -10,6 +10,7 @@ import {
   Text,
 } from "@react-email/components";
 import { main, container, box, heading, footer, hr, anchor } from "../../styles";
+import { getEnvironmentUrl } from "@/lib/url";
 
 export default function CustomerEmailLayout({
   title,
@@ -31,7 +32,7 @@ export default function CustomerEmailLayout({
             <Text style={footer}>
               Denne email er sendt automatisk og kan ikke besvares. Hvis du har
               spørgsmål, kan du finde kontaktoplysninger på min{" "}
-              <a href="https://bebsisbooking.dk" style={anchor}>
+              <a href={`${getEnvironmentUrl()}`} style={anchor}>
                 hjemmeside
               </a>
               . Andrea Carlberg, cvr: 43738380

@@ -1,6 +1,7 @@
 import { Text } from "@react-email/components";
 import CustomerEmailLayout from "./components/CustomerEmailLayout";
 import { anchor, paragraph } from "../styles";
+import { getEnvironmentUrl } from "@/lib/url";
 
 export default function BookingRequestApproved({
   bookingTime,
@@ -15,7 +16,7 @@ export default function BookingRequestApproved({
       </Text>
       <Text style={paragraph}>
         Hvis du har spørgsmål, kan du læse mere på min{" "}
-        <a href="https://bebsisbooking.dk" style={anchor}>
+        <a href={getEnvironmentUrl()} style={anchor}>
           hjemmeside
         </a>
         .

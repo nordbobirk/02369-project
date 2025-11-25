@@ -1,6 +1,7 @@
 import { Button, Text } from "@react-email/components";
 import ArtistEmailLayout from "./components/ArtistEmailLayout";
 import { paragraph } from "../styles";
+import { getEnvironmentUrl } from "@/lib/url";
 
 export default function BookingRequestApproved({
   bookingRequestId,
@@ -18,7 +19,7 @@ export default function BookingRequestApproved({
         {bookingTime}.
       </Text>
       <Button
-        href={`https://bebsisbooking.dk/dashboard/view_booking/${bookingRequestId}`}
+        href={`${getEnvironmentUrl()}/dashboard/view_booking/${bookingRequestId}`}
       >
         Se bookinganmodningen her
       </Button>

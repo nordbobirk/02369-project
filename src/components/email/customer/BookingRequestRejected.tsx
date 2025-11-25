@@ -1,6 +1,7 @@
 import { Heading, Hr, Text } from "@react-email/components";
 import CustomerEmailLayout from "./components/CustomerEmailLayout";
 import { anchor, heading, hr, paragraph } from "../styles";
+import { getEnvironmentUrl } from "@/lib/url";
 
 export default function BookingRequestRejected({
   rejectionReason,
@@ -18,7 +19,7 @@ export default function BookingRequestRejected({
       <Text style={paragraph}>{rejectionReason}</Text>
       <Text style={paragraph}>
         Hvis du har spørgsmål, kan du læse mere på min{" "}
-        <a href="https://bebsisbooking.dk" style={anchor}>
+        <a href={getEnvironmentUrl()} style={anchor}>
           hjemmeside
         </a>
         .
