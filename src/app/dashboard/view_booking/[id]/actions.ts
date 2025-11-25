@@ -3,35 +3,6 @@
 import { initServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from 'next/cache'
 
-type Tattoo_images = {
-    id: string,
-    tattoo_id: string,
-    image_url: string
-}
-
-type Tattoo = {
-    id: string,
-    notes: string,
-    booking_id: string,
-    estimated_price: number,
-    estimated_duration: number,
-    images: Tattoo_images[],
-}
-
-type Booking = {
-    id: string,
-    email: string,
-    phone: string,
-    name: string,
-    date_and_time: string,
-    created_at: string,
-    status: string,
-    is_first_tattoo: boolean,
-    internal_notes: string,
-    edited_time_and_date: string,
-    tattoos: Tattoo[],
-}
-
 /**
  * Generates a signed URL for a private tattoo image stored in Supabase Storage.
  *
@@ -92,7 +63,6 @@ export async function getTattooImageSignedUrl(imageUrl: string) {
 
     return data.signedUrl;
 }
-
 
 /**
  * Fetches a booking by its id. The booking includes all its tattoos and their images.

@@ -60,11 +60,6 @@ export function TattooInfo({ tattoos }: TattooInfoProps) {
         setIsEditing(false);
     };
 
-    // const handleSave = async () => {
-    //     const finalDetailLevel = tattoo.tattoo_type === "flash" ? null : editedDetailLevel;
-    //     setIsEditing(false);
-    // };
-
     return (
         <div className="p-2 border border-black rounded-lg flex flex-col md:flex-row gap-4">
             <div className="order-1 md:order-2 md:w-60 w-full">
