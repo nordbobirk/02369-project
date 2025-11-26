@@ -2,9 +2,8 @@
 
 import { initServerClient } from "@/lib/supabase/server";
 import { BookingFormData, TattooData } from "./_components/Form";
-import { inspect } from "util";
 import { Size } from "@/lib/types";
-import { randomInt, scryptSync, randomBytes, timingSafeEqual } from "crypto";
+import { generateOTPData } from "@/app/(public)/booking/edit_booking/[id]/otp_utils"; 
 import path from "path";
 import fs from "fs/promises";
 
@@ -17,29 +16,6 @@ export type BookingSubmissionInput = Omit<BookingFormData, "tattoos"> & {
     uploadId: string;
   })[];
 };
-
-// --- OTP HELPER FUNCTIONS ---
-
-/**
- * Generates a 6-digit code and a salted hash.
- * Returns:
- * - code: Send this to the user (Email/SMS/UI)
- * - hash: Store this in the database
- */
-function generateOTPData() {
-  // 1. Generate a secure 6-digit integer (100000 to 999999)
-  const code = randomInt(100000, 999999).toString();
-
-  // 2. Create a random salt (16 bytes)
-  const salt = randomBytes(16).toString("hex");
-
-  // 3. Hash the code with the salt using scrypt (secure against brute-force)
-  // 64 is the key length
-  const hashBuffer = scryptSync(code, salt, 64) as Buffer;
-  const hash = `${salt}:${hashBuffer.toString("hex")}`; // Store salt:hash
-
-  return { code, hash };
-}
 
 export async function submitBooking(bookingFormData: BookingSubmissionInput) {
   const supabase = await initServerClient();
@@ -63,21 +39,21 @@ export async function submitBooking(bookingFormData: BookingSubmissionInput) {
 
   const bookingId = bookingCreateResult.data[0].id;
 
-  // ---------------------------------------------------------
-  // TEMP LOGGING (Now with UUID!)
-  // ---------------------------------------------------------
+   // 3. TEMP LOGGING: Generate Magic Link
   if (process.env.NODE_ENV === "development") {
     try {
       const filePath = path.join(process.cwd(), "temp_otps.txt");
-      // Added ID to the log string
-      const logEntry = `[NEW] ID: ${bookingId} | Name: ${bookingFormData.customerName} | Email: ${bookingFormData.customerEmail} | OTP: ${rawOtpCode}\n`;
+      // Generates: http://localhost:3000/booking/edit_booking/[UUID]?code=123456
+      const magicLink = `http://localhost:3000/booking/edit_booking/${bookingId}?code=${rawOtpCode}`;
+      
+      const logEntry = `[NEW] Name: ${bookingFormData.customerName} | Link: ${magicLink}\n`;
+      
       await fs.appendFile(filePath, logEntry);
-      console.log(">>> Logged new booking to temp_otps.txt");
+      console.log(">>> Logged Magic Link to temp_otps.txt");
     } catch (err) {
       console.error("Log error:", err);
     }
   }
-  // ---------------------------------------------------------
 
   const tattoosCreateResult = await supabase
     .from("tattoos")
