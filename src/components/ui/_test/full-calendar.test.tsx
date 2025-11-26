@@ -16,7 +16,7 @@ import {
 
 
 
-// Mock the server-side functions
+// Workaround for jest not being able to parse react hotkeys library
 jest.mock("react-hotkeys-hook", () => ({
   useHotkeys: jest.fn(),
 })); 

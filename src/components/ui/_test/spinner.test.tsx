@@ -10,5 +10,4 @@ describe("Spinner", () => {
         )
         expect(screen.getByText("Loading")).toBeInTheDocument();
     });
-
 });
