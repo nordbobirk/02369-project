@@ -1,12 +1,12 @@
-import {screen, render} from "@testing-library/react"
+import {screen, render, fireEvent} from "@testing-library/react"
 import * as dpdw from "../dropdown-menu"
 
 describe("Dropdown menu", () => {
   it("renders dropdown menu", () => {
     render(
-      <dpdw.DropdownMenu>
+      <dpdw.DropdownMenu defaultOpen={true}>
         <dpdw.DropdownMenuPortal></dpdw.DropdownMenuPortal>
-        <dpdw.DropdownMenuTrigger></dpdw.DropdownMenuTrigger>
+        <dpdw.DropdownMenuTrigger>trigger</dpdw.DropdownMenuTrigger>
         <dpdw.DropdownMenuContent>
           <dpdw.DropdownMenuLabel>dropdown label</dpdw.DropdownMenuLabel>
           <dpdw.DropdownMenuSeparator/>
