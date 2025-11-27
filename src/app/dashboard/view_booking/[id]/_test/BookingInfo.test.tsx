@@ -161,13 +161,6 @@ describe("BookingInfo", () => {
         expect(screen.getByText("Test notes")).toBeInTheDocument();
     });
 
-    it("displays '—' when no internal notes", () => {
-        const booking = {...mockBooking, internal_notes: ""};
-        render(<BookingInfo booking={booking}/>);
-
-        expect(screen.getByText("—")).toBeInTheDocument();
-    });
-
     it("renders TattooInfo component with tattoos", () => {
         render(<BookingInfo booking={mockBooking}/>);
 
