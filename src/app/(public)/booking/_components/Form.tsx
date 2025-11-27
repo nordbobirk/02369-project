@@ -33,8 +33,8 @@ const estimatePrice = (formData: BookingFormData): number => {
   for (const tattoo of formData.tattoos) {
     totalPrice += getTattooPrice(tattoo);
   }
-
-  return totalPrice;
+  // Price estime + 500kr for reservation fee
+  return totalPrice + 500;
 };
 
 export const estimateTime = (formData: BookingFormData): number => {
