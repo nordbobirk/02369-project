@@ -12,6 +12,7 @@ import EditBooking from "@/app/dashboard/view_booking/[id]/EditBooking";
 import SaveEditBooking from "@/app/dashboard/view_booking/[id]/SaveEditBooking";
 import CancelEditBooking from "@/app/dashboard/view_booking/[id]/CancelEditBooking";
 import CancelBooking from "@/app/dashboard/view_booking/[id]/CancelBooking";
+import {getBookingTimeString} from "@/lib/validateBookingTime";
 
 type Booking = {
     id: string;
@@ -76,7 +77,7 @@ export default function BookingInfo({ booking }: BookingInfoProps) {
                 <div className="text-sm space-y-1 mt-2">
                     <div>
                         <span className="font-medium">Tid og dato:</span>{" "}
-                        {formatDateTime(new Date(booking.date_and_time).toLocaleString())}
+                        {getBookingTimeString( new Date(booking.date_and_time) )}
                     </div>
                     <div>
                         <span className="font-medium">Status:</span> {booking.status}
