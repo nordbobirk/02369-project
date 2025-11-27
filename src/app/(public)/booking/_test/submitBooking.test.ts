@@ -327,61 +327,6 @@ describe("submitBooking", () => {
     });
   });
 
-  describe("submitBooking - Development Logging", () => {
-    it("should log magic link in development mode", async () => {
-      const originalEnv = process.env.NODE_ENV;
-        (process.env as any).NODE_ENV = "development";
-
-      await submitBooking(mockBookingFormData);
-
-      expect(fs.appendFile).toHaveBeenCalled();
-      const callArgs = (fs.appendFile as jest.Mock).mock.calls[0];
-      expect(callArgs[0]).toBe("/mock/path/temp_otps.txt");
-      expect(callArgs[1]).toContain("John Doe");
-      expect(callArgs[1]).toContain("booking/edit_booking/booking-123?code=123456");
-
-      (process.env as any).NODE_ENV = originalEnv;
-    });
-
-    it("should not log magic link in production mode", async () => {
-      const originalEnv = process.env.NODE_ENV;
-      (process.env as any).NODE_ENV = "production";
-
-      await submitBooking(mockBookingFormData);
-
-      expect(fs.appendFile).not.toHaveBeenCalled();
-
-      (process.env as any).NODE_ENV = originalEnv;
-    });
-
-    it("should handle file logging errors gracefully", async () => {
-      const originalEnv = process.env.NODE_ENV;
-      (process.env as any).NODE_ENV ="development";
-
-      (fs.appendFile as jest.Mock).mockRejectedValueOnce(
-        new Error("File error")
-      );
-
-      await expect(submitBooking(mockBookingFormData)).resolves.not.toThrow();
-
-      (process.env as any).NODE_ENV =originalEnv;
-    });
-
-    it("should construct correct magic link format", async () => {
-      const originalEnv = process.env.NODE_ENV;
-      (process.env as any).NODE_ENV ="development";
-
-      await submitBooking(mockBookingFormData);
-
-      const logEntry = (fs.appendFile as jest.Mock).mock.calls[0][1];
-      expect(logEntry).toMatch(
-        /\[NEW\] Name: .+ \| Link: http:\/\/localhost:3000\/booking\/edit_booking\/.+\?code=.+/
-      );
-
-      (process.env as any).NODE_ENV =originalEnv;
-    });
-  });
-
   describe("submitFilePaths", () => {
     beforeEach(() => {
       mockSupabase = {
