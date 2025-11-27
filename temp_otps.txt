@@ -1,4 +1,14 @@
 
+--- BACKFILL LOG (Magic Link Run) ---
+[BACKFILL] Name: kaptajn kattemand | Link: http://localhost:3000/booking/edit_booking/c5e0ef33-de0e-4781-b894-267d250c7af6?code=1ad82f42e110576df7a85fbcf6fa295d509a9bfa9ff8d4ae7b7164c097c94194
+[BACKFILL] Name: kaptajn kattemand | Link: http://localhost:3000/booking/edit_booking/f006e190-8187-4bc8-a47b-588b329c55c9?code=66ae0c30befbd444f3427701bb296f38490717b5aad8e8a19f65c6e30a08bf7b
+[BACKFILL] Name: kaptajn kattemand | Link: http://localhost:3000/booking/edit_booking/4f234974-f3e7-453e-9e48-85fdef8e601c?code=14ce31feed67357596c537af8af47b8d13d1a383e5acd07c225f96a63aa62811
+[BACKFILL] Name: August Bønnelykke | Link: http://localhost:3000/booking/edit_booking/59f7ae47-2a94-4ee3-a4b8-9551b20d852d?code=f2b48974a149647cf0ffb13e2d9ff869099e001d7a67d074e8e916a99c37f19f
+[BACKFILL] Name: Tobias Møller Larsen | Link: http://localhost:3000/booking/edit_booking/6f2f05fe-ca64-4f08-98e5-2d6e0a861e0f?code=aad0601dec22323afea835f34491ff1b617a3c5a7455b023a2949099b1bd6c21
+[BACKFILL] Name: Hermione Granger | Link: http://localhost:3000/booking/edit_booking/50ac853c-f2b0-4640-8766-36534b864107?code=27f6c393dd04725e5d0d817291702e02510ed744311a5e782472408db02b2fbf
+[BACKFILL] Name: John Giovanni | Link: http://localhost:3000/booking/edit_booking/3a0f183f-6ee5-476a-94f3-2d7b91c0f70a?code=66acc6436404bcf416b9be0f3aca1db393d13078bd09ed355dd63bcc1ce8d214
+[BACKFILL] Name: Testing | Link: http://localhost:3000/booking/edit_booking/750e86ea-ebb0-41dc-beb8-ee71b8b1be29?code=351ee1b17a7ec03263a2063ffb19f72854383f127c3206a7e043a14e1e22d05c
+[BACKFILL] Name: August Bønnelykke | Link: http://localhost:3000/booking/edit_booking/3130c4ad-f963-45e7-908d-0df6c6979764?code=7c37c905f31893ddfbaa820fe6de4c865d5c508b7869d64a37d8e92f855b4eb6
 --- BACKFILL LOG (New Run) ---
 [BACKFILL] ID: 71a9a6fe-5c28-499f-b9db-382482d9f301 | Name: a | Email: a@a | OTP: 512947
 [BACKFILL] ID: 26823000-a7ad-4daa-b2c9-8d25437e6e18 | Name: Test IGEN | Email: ta@a | OTP: 250329
