@@ -10,7 +10,6 @@ export default function FastSkema() {
   const [availability, setAvailability] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
 
-  // Safe date formatter
   function toLocalISO(date: Date) {
     const y = date.getFullYear();
     const m = String(date.getMonth() + 1).padStart(2, "0");
@@ -29,7 +28,6 @@ export default function FastSkema() {
 
   function formatDisplayDate(date: Date) {
     return date.toLocaleDateString("da-DK", {
-      weekday: "long",
       day: "2-digit",
       month: "short",
     });
@@ -44,7 +42,7 @@ export default function FastSkema() {
   const prevWeek = () =>
     weekStart && setWeekStart(new Date(weekStart.getTime() - 7 * 86400000));
 
-  const days = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
+  const days = ["Man", "Tir", "Ons", "Tors", "Fre", "Lør", "Søn"];
   const hours = Array.from({ length: 9 }, (_, i) => i + 8);
 
   useEffect(() => {
@@ -85,53 +83,74 @@ export default function FastSkema() {
   )}`;
 
   return (
-    <div className="w-full bg-white p-6 rounded-2xl flex flex-col text-center">
-      <h2 className="text-2xl font-semibold mb-4">Fast skema</h2>
+    <div className="w-full bg-white p-3 sm:p-6 rounded-2xl flex flex-col text-center">
+      <h2 className="text-xl sm:text-2xl font-semibold mb-3">Fast skema</h2>
 
-      <div className="flex justify-between mb-4">
-        <Button onClick={prevWeek} className="bg-rose-300 hover:bg-rose-400">
-          ← Forrige uge
-        </Button>
+      <div className="flex flex-col items-center gap-2 mb-3 text-sm sm:text-base">
 
-        <p className="self-center text-gray-600">{weekRange}</p>
+  {/* Row with the two buttons */}
+  <div className="flex w-full justify-between">
+    <Button className="bg-rose-300 hover:bg-rose-400 px-3 py-1 text-xs sm:text-sm"
+      onClick={prevWeek}
+    >
+      ← Forrige uge
+    </Button>
 
-        <Button onClick={nextWeek} className="bg-rose-300 hover:bg-rose-400">
-          Næste uge →
-        </Button>
-      </div>
+    <Button className="bg-rose-300 hover:bg-rose-400 px-3 py-1 text-xs sm:text-sm"
+      onClick={nextWeek}
+    >
+      Næste uge →
+    </Button>
+  </div>
+
+  {/* Date BELOW the buttons */}
+  <p className="text-gray-600 text-xs sm:text-sm text-center">
+    {weekRange}
+  </p>
+</div>
+
 
       {loading ? (
         <p className="text-gray-500">Indlæser bookinger...</p>
       ) : (
-        <div className="overflow-x-auto">
-          <div className="grid grid-cols-[100px_repeat(7,1fr)] border-t border-l">
+        <div className="w-full overflow-hidden">
+          <div className="w-full grid grid-cols-[45px_repeat(7,minmax(0,1fr))] border-t border-l text-[9px] sm:text-xs">
+            
+            {/* Empty top-left cell */}
+            <div className="border-b border-r bg-[#f3f4f6] h-8"></div>
 
-            {/* Header */}
-            <div className="border-b border-r bg-gray-100"></div>
+            {/* Day headers */}
             {days.map((day, i) => {
               const d = new Date(weekStart);
               d.setDate(weekStart.getDate() + i);
               return (
-                <div key={i} className="border-b border-r bg-gray-100 py-2 font-semibold text-sm">
+                <div
+                  key={i}
+                  className="border-b border-r bg-[#f3f4f6] py-2 font-semibold text-center"
+                >
                   <div>{day}</div>
-                  <div className="text-xs text-gray-500">{formatDisplayDate(d)}</div>
+                  <div className="text-gray-500 text-[10px] sm:text-xs">
+                    {formatDisplayDate(d)}
+                  </div>
                 </div>
               );
             })}
 
-            {/* Hours */}
+            {/* Hour rows */}
             {hours.map((hour) => (
               <React.Fragment key={hour}>
-                <div className="border-b border-r text-sm text-gray-500 py-4 px-2 bg-gray-50">
+                
+                {/* Hour label */}
+                <div className="border-b border-r text-gray-600 h-10 flex items-center justify-center bg-gray-50">
                   {hour}:00
                 </div>
 
+                {/* Cells */}
                 {days.map((_, i) => {
                   const d = new Date(weekStart);
                   d.setDate(weekStart.getDate() + i);
 
                   const dateString = toLocalISO(d);
-
                   const isOpen = availability[dateString];
 
                   const bookingsForSlot = bookings.filter((b) => {
@@ -147,46 +166,47 @@ export default function FastSkema() {
                   // Lunch
                   if (hour === 13 && isOpen) {
                     return (
-                      <div
-                        key={`${dateString}-frokost`}
-                        className="border-b border-r bg-rose-50 flex items-center justify-center"
-                      >
-                        <span className="bg-rose-300 text-white px-3 py-1 rounded-lg text-xs">
-                          Frokost
-                        </span>
-                      </div>
-                    );
+  <div
+    key={`${dateString}-lunch`}
+    className="border-b border-r bg-rose-300 flex items-center justify-center w-full h-full"
+  >
+    <span className="text-white text-[6px] sm:text-xs font-small">
+      Frokost
+    </span>
+  </div>
+);
+
                   }
 
-                  // Closed day
+                  // Closed
                   if (!isOpen) {
                     return (
                       <div
                         key={`${dateString}-${hour}`}
                         className="border-b border-r bg-gray-100 flex items-center justify-center"
                       >
-                        <span className="text-gray-400 text-xs">Lukket</span>
+                        <span className="text-gray-400 text-[10px]">Lukket</span>
                       </div>
                     );
                   }
 
-                  // Open day
+                  // Open day cell – ✔ updated booking layout
                   return (
                     <div
                       key={`${dateString}-${hour}`}
-                      className="border-b border-r h-16 flex flex-col justify-center items-center"
+                      className="border-b border-r h-10 flex flex-col justify-center items-center overflow-hidden gap-0.5"
                     >
                       {bookingsForSlot.length > 0 ? (
                         bookingsForSlot.map((b) => (
                           <div
                             key={b.id}
-                            className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-md shadow-sm"
+                            className="bg-rose-200 text-black-800 text-[8px] px-2 py-[2px] rounded w-full text-center"
                           >
                             {b.name}
                           </div>
                         ))
                       ) : (
-                        <span className="text-gray-300 text-xs">–</span>
+                        <span className="text-gray-300 text-[10px]">–</span>
                       )}
                     </div>
                   );

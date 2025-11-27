@@ -87,7 +87,7 @@ export async function getPendingBookings() {
             *,
             tattoos(*)
         `)
-    .in("status", ["pending", "edited"])
+    .in("status", ["pending"])
   return bookings as Booking[];
 }
 
