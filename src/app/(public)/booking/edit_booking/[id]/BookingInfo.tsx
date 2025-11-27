@@ -172,7 +172,8 @@ export default function BookingInfo({ booking }: BookingInfoProps) {
                     </div>
                 </div>
 
-                {/* --- COLLAPSIBLE DATE PICKER SECTION --- */}
+                {["rejected", "customer_cancelled", "artist_cancelled"].includes(booking.status) ? null : <div>
+                    {/* --- COLLAPSIBLE DATE PICKER SECTION --- */}
                 <div className="border-t border-b border-gray-100 py-6">
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="text-xl font-bold text-gray-900">Ændre tidspunkt?</h3>
@@ -259,7 +260,7 @@ export default function BookingInfo({ booking }: BookingInfoProps) {
                             </div>
                         </div>
                     )}
-                </div>
+                </div></div>}
                 
                 {/* Contact Info */}
                 <div className="pt-2">
