@@ -11,7 +11,7 @@ interface SaveEditTattooProps {
     width?: number;
     height?: number;
     placement: string;
-    detailLevel: string;
+    detailLevel: string | null;
     coloredOption: string;
     colorDescription: string;
     onSaveAction: () => void;
