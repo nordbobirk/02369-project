@@ -14,11 +14,11 @@ import {
   CalendarYearView,
 } from '@/components/ui/full-calendar';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { getAllBookings, Tattoo } from "../actions";
+import { getValidBookings, Tattoo } from "../actions";
 
 
 async function getEventsForCalendar() {
-  const bookings = await getAllBookings();
+  const bookings = await getValidBookings();
 
   // Right now, we use the "CalendarEvent" type from full-calendar.tsx
   // We might need to change this, or how the CalendarEvent is defined
