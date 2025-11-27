@@ -1,5 +1,11 @@
 import '@testing-library/jest-dom'
 
+import { sendEmail } from "./src/lib/email/send";
+
+jest.mock("./src/lib/email/send", () => ({
+    sendEmail: jest.fn(),
+}))
+
 beforeAll(() => {
     process.env = {
         ...process.env,
