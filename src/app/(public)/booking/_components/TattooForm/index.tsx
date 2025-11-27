@@ -161,9 +161,10 @@ export function TattooForm({
         handleTattooInputChange={handleInputChange}
       />
 
-      <div className="flex justify-center text-slate-500/50 text-m">
-        {saving ? "Gemmer..." : "Informationerne om din tatovering er gemt"}
-      </div>
+        <div className="w-full text-center text-slate-500/50 text-m">
+            {saving ? "Gemmer..." : "Informationerne om din tatovering er gemt"}
+        </div>
+
     </div>
   );
 }
