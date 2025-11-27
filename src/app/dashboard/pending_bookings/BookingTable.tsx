@@ -31,6 +31,26 @@ import { formatMinutesHrsMins } from "@/app/dashboard/utils/formatMinutes";
 
 export const columns: ColumnDef<Booking>[] = [
     {
+        accessorKey: "status",
+        header: "Status",
+        filterFn: "includesString",
+        cell: ({ row }) => {
+            const status = row.getValue("status") as string;
+
+            // Map status to Tailwind styles
+            const statusClasses: Record<string, string> = {
+                pending: "bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded",
+                edited: "bg-blue-100 text-blue-800 px-2 py-0.5 rounded",
+                confirmed: "bg-green-100 text-green-800 px-2 py-0.5 rounded",
+                cancelled: "bg-red-100 text-red-800 px-2 py-0.5 rounded",
+            };
+
+            const className = statusClasses[status.toLowerCase()] || "bg-gray-100 text-gray-800 px-2 py-0.5 rounded";
+
+            return <span className={className}>{status}</span>;
+        },
+    },
+    {
         accessorKey: "date_and_time",
         header: "Dato",
         sortingFn: (a, b) => {
