@@ -18,6 +18,7 @@ jest.mock("../../utils/formatMinutes", () => ({
 
 const mockData = [
     {
+        status: "pending",
         id: "1",
         name: "Alice",
         email: "alice@example.com",
@@ -28,6 +29,7 @@ const mockData = [
         ],
     },
     {
+        status: "pending",
         id: "2",
         name: "Bob",
         email: "bob@example.com",
@@ -43,6 +45,7 @@ describe("BookingTable", () => {
         render(<BookingTable data={mockData as Booking[]} />);
 
         const headers = [
+            "Status",
             "Dato",
             "Navn",
             "Email",
@@ -106,7 +109,7 @@ describe("BookingTable", () => {
         render(<BookingTable data={mockData as Booking[]} />);
 
         // First row should be Alice (future)
-        const firstRowName = screen.getAllByRole("cell")[1]; // name column in first row
+        const firstRowName = screen.getAllByRole("cell")[2]; // name column in first row
         expect(firstRowName).toHaveTextContent("Alice");
     });
 });
