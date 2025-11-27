@@ -81,7 +81,7 @@ export async function sendEmail(email: SendEmailOptions) {
       }
 
       console.log("email sent: %s", info.messageId);
-      if (process.env.NODE_ENV !== "development") {
+      if (process.env.NODE_ENV === "development") {
         console.log("email preview url: %s", getTestMessageUrl(info));
       }
     }
