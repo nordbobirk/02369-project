@@ -3,9 +3,7 @@ import {
   cancelBooking,
   validateBookingOtp,
   updateBookingDate,
-  backfillMissingOTPs,
 } from '../actions';
-import { initServerClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import fs from 'fs/promises';
 import { generateOTPData, verifyOTP } from '../otp_utils';
@@ -89,7 +87,7 @@ describe('Server Actions Tests', () => {
   describe('cancelBooking', () => {
     it('updates status to customer_cancelled and revalidates', async () => {
       // Mock the END of the chain (.select)
-      mockSupabase.select.mockResolvedValueOnce({ error: null });
+      mockSupabase.select.mockResolvedValueOnce({ error: null, data: [{id: "id", date_and_time: "date_and_time", name: "name"}] });
 
       await cancelBooking('123');
 
@@ -162,7 +160,7 @@ describe('Server Actions Tests', () => {
   describe('updateBookingDate', () => {
     it('updates date and status, then revalidates paths', async () => {
       // Mock the END of the chain (.select)
-      mockSupabase.select.mockResolvedValueOnce({ error: null });
+      mockSupabase.select.mockResolvedValueOnce({ error: null, data: [{id: "id", date_and_time: "date_and_time", name: "name"}] });
       const newDate = new Date('2025-01-01T12:00:00Z');
 
       const result = await updateBookingDate('123', newDate);
@@ -192,111 +190,6 @@ describe('Server Actions Tests', () => {
 
       expect(result).toEqual({ success: false, error: 'DB Update Failed' });
       expect(consoleSpy).toHaveBeenCalled();
-
-      consoleSpy.mockRestore();
-    });
-  });
-
-  // ----------------------------------------------------------------
-  // Test: backfillMissingOTPs
-  // Chain 1 (Select): .from().select() -> Returns Data
-  // Chain 2 (Update loop): .from().update().eq() -> Returns Error
-  // ----------------------------------------------------------------
-  describe('backfillMissingOTPs', () => {
-    it('returns message if no bookings found', async () => {
-      // Mock Select returning empty
-      mockSupabase.select.mockResolvedValueOnce({ data: [], error: null });
-
-      const result = await backfillMissingOTPs();
-
-      expect(result).toEqual({ success: true, message: 'No bookings found.' });
-      expect(fs.appendFile).not.toHaveBeenCalled();
-    });
-
-    it('handles database fetch error', async () => {
-      mockSupabase.select.mockResolvedValueOnce({
-        data: null,
-        error: { message: 'Fetch Fail' },
-      });
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-
-      const result = await backfillMissingOTPs();
-
-      expect(result).toEqual({ success: false, error: 'Fetch Fail' });
-      consoleSpy.mockRestore();
-    });
-
-    it('loops through bookings, updates DB, and writes to file', async () => {
-      // 1. Mock Initial Fetch
-      const mockBookings = [
-        { id: '1', email: 'a@b.com', name: 'Alice' },
-        { id: '2', email: 'b@c.com', name: 'Bob' },
-      ];
-      mockSupabase.select.mockResolvedValueOnce({ data: mockBookings, error: null });
-
-      // 2. Mock OTP Generation
-      (generateOTPData as jest.Mock)
-        .mockReturnValueOnce({ code: '1111', hash: 'hash1' })
-        .mockReturnValueOnce({ code: '2222', hash: 'hash2' });
-
-      // 3. Mock The Loop Updates
-      // In backfill(), the code is: await supabase.update().eq()
-      // It DOES NOT call .select().
-      // Because we set .eq.mockReturnThis() in beforeEach, awaiting `.eq()` resolves to the `mockSupabase` object.
-      // We need to ensure that when the code does `const { error } = await ...eq()`, `error` is undefined/null.
-      // Since `mockSupabase` does not have an `error` property by default, it works for success cases (error is undefined).
-      // We don't need to change anything for the SUCCESS case here.
-
-      const result = await backfillMissingOTPs();
-
-      expect(result).toEqual({ success: true, count: 2 });
-
-      // Verify Updates
-      expect(mockSupabase.update).toHaveBeenCalledWith({ otp_hash: 'hash1' });
-      expect(mockSupabase.update).toHaveBeenCalledWith({ otp_hash: 'hash2' });
-      expect(mockSupabase.update).toHaveBeenCalledTimes(2);
-
-      // Verify File Write
-      expect(fs.appendFile).toHaveBeenCalledTimes(1);
-
-      const [filePath, content] = (fs.appendFile as jest.Mock).mock.calls[0];
-      expect(filePath).toContain('temp_otps.txt');
-      expect(content).toContain(
-        'Alice | Link: http://localhost:3000/booking/edit_booking/1?code=1111'
-      );
-      expect(content).toContain(
-        'Bob | Link: http://localhost:3000/booking/edit_booking/2?code=2222'
-      );
-    });
-
-    it('continues loop even if one update fails', async () => {
-      const mockBookings = [
-        { id: '1', name: 'Alice' },
-        { id: '2', name: 'Bob' },
-      ];
-
-      mockSupabase.select.mockResolvedValueOnce({ data: mockBookings, error: null });
-      (generateOTPData as jest.Mock).mockReturnValue({ code: '0000', hash: 'hash' });
-
-      // TRICKY PART: Mocking one failure in the loop.
-      // backfill() awaits .eq().
-      // We need .eq() to return { error: 'Fail' } for the first call, and {} for the second.
-
-      mockSupabase.eq
-        .mockResolvedValueOnce({ error: { message: 'Update Fail' } }) // 1. Alice fails (Break chain, return error directly)
-        .mockResolvedValueOnce({ error: null }); // 2. Bob succeeds
-
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-
-      const result = await backfillMissingOTPs();
-
-      // Only Bob should be counted
-      expect(result).toEqual({ success: true, count: 1 });
-
-      // File should only contain Bob
-      const [, content] = (fs.appendFile as jest.Mock).mock.calls[0];
-      expect(content).not.toContain('Alice');
-      expect(content).toContain('Bob');
 
       consoleSpy.mockRestore();
     });

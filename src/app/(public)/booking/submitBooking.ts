@@ -47,22 +47,6 @@ export async function submitBooking(bookingFormData: BookingSubmissionInput) {
 
   const bookingId = bookingCreateResult.data[0].id;
 
-  // 3. TEMP LOGGING: Generate Magic Link
-  if (process.env.NODE_ENV === "development") {
-    try {
-      const filePath = path.join(process.cwd(), "temp_otps.txt");
-      // Generates: http://localhost:3000/booking/edit_booking/[UUID]?code=123456
-      const magicLink = `http://localhost:3000/booking/edit_booking/${bookingId}?code=${rawOtpCode}`;
-
-      const logEntry = `[NEW] Name: ${bookingFormData.customerName} | Link: ${magicLink}\n`;
-
-      await fs.appendFile(filePath, logEntry);
-      console.log(">>> Logged Magic Link to temp_otps.txt");
-    } catch (err) {
-      console.error("Log error:", err);
-    }
-  }
-
   const tattoosCreateResult = await supabase
     .from("tattoos")
     .insert(
