@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import BookingRequestReceived from "./BookingRequestReceived";
+import BookingRequestReceived from "../BookingRequestReceived";
 
 describe("BookingRequestReceived", () => {
   const mockManageBookingLink = "https://example.com/manage/booking123";
