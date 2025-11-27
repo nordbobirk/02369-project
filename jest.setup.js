@@ -6,6 +6,11 @@ import {
   getBookingTimeString,
   getBookingTime,
 } from "./src/lib/validateBookingTime";
+import { getNotificationEmail } from "./src/lib/email/getNotificationEmail"
+
+jest.mock("./src/lib/email/getNotificationEmail", () => ({
+  getNotificationEmail: jest.fn().mockResolvedValue("artist@example.com"),
+}))
 
 jest.mock("./src/lib/email/send", () => ({
   sendEmail: jest.fn(),
