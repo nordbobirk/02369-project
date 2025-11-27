@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/table"
 import { Booking } from "../actions"
 import ViewBooking from "../ViewBooking"
-import { ArrowUpDown } from "lucide-react"
 import { formatMinutesHrsMins } from "@/app/dashboard/utils/formatMinutes";
 
 

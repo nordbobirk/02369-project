@@ -1,26 +1,11 @@
+"use client"
+
 import * as React from "react"
 
 import ViewBooking from "@/app/dashboard/ViewBooking";
 import { Booking, Tattoo } from "./actions"
 import { formatMinutesHrsMins } from "@/app/dashboard/utils/formatMinutes";
-
-
-// Should create a new user-side component for this. Currently also used in actions which is serverside
-function getTimeUntilBooking(date_and_time: string): string {
-    const now = new Date();
-    const bookingDate = new Date(date_and_time);
-
-    const diffMs = bookingDate.getTime() - now.getTime();
-
-    if (diffMs <= 0) return "Bookingen er startet";
-
-    const totalMinutes = Math.floor(diffMs / (1000 * 60));
-    const days = Math.floor(totalMinutes / (60 * 24));
-    const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
-    const minutes = totalMinutes % 60;
-
-    return `${days} Dage, ${hours} Timer, ${minutes} Minuter indtil bookingen`;
-}
+import { getTimeUntilBooking } from "@/app/dashboard/utils/getTimeUntilBooking";
 
 
 export default function BookingCard({ booking }: { booking: Booking }) {
