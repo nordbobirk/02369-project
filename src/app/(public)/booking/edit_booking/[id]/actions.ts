@@ -146,7 +146,7 @@ export async function updateBookingDate(bookingId: string, newDate: Date) {
     subject: "Booking ændret",
     content: BookingMovedByCustomer({
       bookingRequestId: data[0].id,
-      bookingTime: getBookingTimeString(getBookingTime(data[0].date_and_time)),
+      bookingTime: getBookingTimeString(getBookingTime(data)),
       customerName: data[0].name,
     }),
   });
