@@ -3,10 +3,18 @@
 import { initServerClient } from "@/lib/supabase/server";
 import { BookingFormData, TattooData } from "./_components/Form";
 import { Size } from "@/lib/types";
-import { generateOTPData } from "@/app/(public)/booking/edit_booking/[id]/otp_utils"; 
+import { generateOTPData } from "@/app/(public)/booking/edit_booking/[id]/otp_utils";
 import path from "path";
 import fs from "fs/promises";
-
+import { sendEmail } from "@/lib/email/send";
+import BookingRequestReceived from "@/components/email/customer/BookingRequestReceived";
+import { getEnvironmentUrl } from "@/lib/url";
+import BookingRequestReceivedNotification from "@/components/email/artist/BookingRequestReceived";
+import { getNotificationEmail } from "@/lib/email/getNotificationEmail";
+import {
+  getBookingTime,
+  getBookingTimeString,
+} from "@/lib/validateBookingTime";
 
 export type BookingSubmissionInput = Omit<BookingFormData, "tattoos"> & {
   tattoos: (Omit<
@@ -30,7 +38,7 @@ export async function submitBooking(bookingFormData: BookingSubmissionInput) {
       name: bookingFormData.customerName,
       date_and_time: bookingFormData.dateTime,
       is_FirstTattoo: bookingFormData.isFirstTattoo,
-      otp_hash: secureOtpHash
+      otp_hash: secureOtpHash,
     })
     .select("id");
   if (!bookingCreateResult.data) {
@@ -39,15 +47,15 @@ export async function submitBooking(bookingFormData: BookingSubmissionInput) {
 
   const bookingId = bookingCreateResult.data[0].id;
 
-   // 3. TEMP LOGGING: Generate Magic Link
+  // 3. TEMP LOGGING: Generate Magic Link
   if (process.env.NODE_ENV === "development") {
     try {
       const filePath = path.join(process.cwd(), "temp_otps.txt");
       // Generates: http://localhost:3000/booking/edit_booking/[UUID]?code=123456
       const magicLink = `http://localhost:3000/booking/edit_booking/${bookingId}?code=${rawOtpCode}`;
-      
+
       const logEntry = `[NEW] Name: ${bookingFormData.customerName} | Link: ${magicLink}\n`;
-      
+
       await fs.appendFile(filePath, logEntry);
       console.log(">>> Logged Magic Link to temp_otps.txt");
     } catch (err) {
@@ -76,10 +84,35 @@ export async function submitBooking(bookingFormData: BookingSubmissionInput) {
         upload_id: tattoo.uploadId,
       }))
     )
-    .select("id, upload_id");
+    .select("id, upload_id, date_and_time, name");
   if (!tattoosCreateResult.data) {
     throw new Error("Failed to create tattoos");
   }
+
+  const data = tattoosCreateResult.data;
+
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    throw new Error("failed to load booking");
+  }
+
+  await sendEmail({
+    to: bookingFormData.customerEmail,
+    subject: "Din bookinganmodning er modtaget",
+    content: BookingRequestReceived({
+      manageBookingLink: `${getEnvironmentUrl()}/booking/edit_booking/${bookingId}?code=${rawOtpCode}`,
+    }),
+  });
+
+  await sendEmail({
+    to: await getNotificationEmail(),
+    subject: "Bookinganmodning indsendt",
+    content: BookingRequestReceivedNotification({
+      bookingRequestId: data[0].id,
+      bookingTime: getBookingTimeString(getBookingTime(data[0].date_and_time)),
+      customerName: data[0].name,
+    }),
+  });
+
   return tattoosCreateResult.data as { id: number; upload_id: string }[];
 }
 

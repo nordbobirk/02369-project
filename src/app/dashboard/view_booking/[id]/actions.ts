@@ -1,6 +1,7 @@
 'use server'
 
 import BookingCancelledByArtist from "@/components/email/customer/BookingCancelledByArtist";
+import BookingRequestApproved from "@/components/email/customer/BookingRequestApproved";
 import { sendEmail } from "@/lib/email/send";
 import { getCustomerEmail } from "@/lib/email/validate";
 import { initServerClient } from "@/lib/supabase/server";
@@ -118,12 +119,20 @@ export async function getPendingBookingById( params : string ) {
 export async function acceptPendingBooking(params: string | Array<string> | undefined) {
 
     const supabase = await initServerClient()
-    const { error } = await supabase
+    const { data, error } = await supabase
         .from('bookings')
         .update({ status: 'confirmed' })
         .eq('id', params)
+        .select("email")
 
     if (error) throw error
+
+    await sendEmail({
+        to: getCustomerEmail(data),
+        subject: "Din bookinganmodning er blevet godkendt",
+        content: BookingRequestApproved(),
+    })
+
     revalidatePath('/dashboard/view_booking' + params)
     return
 }

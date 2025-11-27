@@ -3,7 +3,7 @@ import ArtistEmailLayout from "./components/ArtistEmailLayout";
 import { paragraph } from "../styles";
 import { getEnvironmentUrl } from "@/lib/url";
 
-export default function BookingRequestReceived({
+export default function BookingRequestReceivedNotification({
   bookingRequestId,
   customerName,
   bookingTime,
