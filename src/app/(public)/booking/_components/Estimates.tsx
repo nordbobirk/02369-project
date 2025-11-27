@@ -20,8 +20,8 @@ export function Estimates({
         <div className="rounded-lg p-6 flex items-center gap-4">
           <DollarSign className="h-10 w-10" />
           <div>
-            <h3 className="font-medium">Estimeret pris</h3>
-            <p className="text-2xl font-bold">DKK {priceEstimate}</p>
+            <h3 className="font-medium">Estimeret pris (+reservations gebyr)</h3>
+            <p className="text-2xl font-bold">DKK {priceEstimate} + 500</p>
           </div>
         </div>
 
