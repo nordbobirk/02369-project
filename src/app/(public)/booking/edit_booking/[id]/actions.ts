@@ -1,11 +1,12 @@
-'use server'
+"use server";
 
 import { initServerClient } from "@/lib/supabase/server";
-import { revalidatePath } from 'next/cache'
-import { randomBytes, randomInt, scryptSync, timingSafeEqual } from "crypto";
+import { revalidatePath } from 'next/cache';
 import path from "path";
 import fs from "fs/promises";
+import { generateOTPData, verifyOTP } from "./otp_utils";
 
+// --- TYPES ---
 
 type Tattoo_images = {
     id: string,
@@ -23,34 +24,27 @@ type Tattoo = {
 }
 
 type Booking = {
-    id: string,
-    email: string,
-    phone: string,
-    name: string,
-    date_and_time: string,
-    created_at: string,
-    status: string,
-    is_first_tattoo: boolean,
-    internal_notes: string,
-    edited_time_and_date: string,
-    tattoos: Tattoo[],
+    id: string;
+    email: string;
+    phone_number: string;
+    name: string;
+    date_and_time: string;
+    created_at: string;
+    status: string;
+    is_FirstTattoo: boolean;
+    internal_notes: string;
+    edited_date_and_time: string | null;
+    tattoos: Tattoo[];
     otp_hash: string;
 }
 
+// --- SERVER ACTIONS ---
 
-/**
- * Fetches a booking by its id. The booking includes all its tattoos and their images.
- *
- * @param params - The id of the booking to fetch.
- * @returns {Promise<Booking>} The booking data.
- * @throws {Error} If there is an error fetching the booking.
- */
+
 export async function getPendingBookingById( params : string ) {
     const supabase = await initServerClient()
 
     const { data, error } = await supabase
-        // TODO: fix such that fields are specified and not everything (*).
-        //       dont wanna do this before the database is set up though..
         .from('bookings')
         .select(`
             *,
@@ -63,21 +57,13 @@ export async function getPendingBookingById( params : string ) {
             )
         `)
         .eq('id', params)
-        // .in('status', ['pending', 'edited'])
         .order('created_at', { ascending: false })
 
     if (error) throw error
 
-    return data
+    return data as Booking[]
 }
 
-
-/**
- * Cancels a confirmed booking by changing its status to 'customer_cancelled'.
- *
- * @param bookingId - The id of the booking to cancel.
- * @throws {Error} If there is an error updating the booking status.
- */
 export async function cancelBooking(bookingId: string) {
     const supabase = await initServerClient()
 
@@ -85,8 +71,6 @@ export async function cancelBooking(bookingId: string) {
         .from('bookings')
         .update({ status: 'customer_cancelled' })
         .eq('id', bookingId)
-        //  Denne sikkerhed er ikke nødvendig når det er en kunde
-        // .eq('status', 'confirmed') // Extra sikkerhed - kun confirmed bookings kan aflyses
 
     if (error) throw error
 
@@ -94,15 +78,7 @@ export async function cancelBooking(bookingId: string) {
     return
 }
 
-
-/**
- * Verifies the OTP.
- * 1. Fetches the booking securely on the server.
- * 2. Compares the input code with the stored hash.
- */
 export async function validateBookingOtp(bookingId: string, inputCode: string) {
-  // 1. Fetch the booking again to get the hash securely from DB
-  // (Do not pass the hash from the client)
   const bookings = await getPendingBookingById(bookingId);
 
   if (!bookings || bookings.length === 0) {
@@ -110,8 +86,6 @@ export async function validateBookingOtp(bookingId: string, inputCode: string) {
   }
 
   const storedHash = bookings[0].otp_hash;
-
-  // 2. Verify using your existing logic
   const isValid = verifyOTP(inputCode, storedHash);
 
   if (isValid) {
@@ -121,40 +95,39 @@ export async function validateBookingOtp(bookingId: string, inputCode: string) {
   }
 }
 
-function verifyOTP(inputCode: string, storedHash: string): boolean {
-  const [salt, key] = storedHash.split(":");
-  if (!salt || !key) return false;
+export async function updateBookingDate(bookingId: string, newDate: Date) {
+    const supabase = await initServerClient()
 
-  const hashedBuffer = scryptSync(inputCode, salt, 64) as Buffer;
-  const keyBuffer = Buffer.from(key, "hex");
+    const { error } = await supabase
+        .from('bookings')
+        .update({
+            date_and_time: newDate.toISOString(),
+            edited_date_and_time: new Date().toISOString(),
+            status: 'edited' // <--- Added status update here
+        })
+        .eq('id', bookingId)
 
-  return timingSafeEqual(hashedBuffer, keyBuffer);
+    if (error) {
+        console.error('Error updating booking date:', error)
+        return { success: false, error: error.message }
+    }
+
+    revalidatePath(`/booking/edit_booking/${bookingId}`)
+    revalidatePath(`/dashboard/view_booking/${bookingId}`)
+
+    return { success: true }
 }
 
-
-// The following function are for regenerating the old booking otp_hash
-
-
-// --- Helper: Generate Code & Hash ---
-function generateOTPData() {
-  const code = randomInt(100000, 999999).toString();
-  const salt = randomBytes(16).toString("hex");
-  const hashBuffer = scryptSync(code, salt, 64) as Buffer;
-  const hash = `${salt}:${hashBuffer.toString("hex")}`;
-  return { code, hash };
-}
-
-// --- Main Backfill Function ---
 export async function backfillMissingOTPs() {
   const supabase = await initServerClient();
   
+  const filePath = path.join(process.cwd(), "temp_otps.txt");
+  console.log(">>> 📂 TARGET FILE PATH:", filePath);
   console.log(">>> Starting OTP Backfill...");
 
-  // 1. Fetch bookings that are missing the otp_hash
   const { data: bookings, error } = await supabase
     .from("bookings")
-    .select("id, email, name")
-    .is("otp_hash", null); // Only get rows where hash is missing
+    .select("id, email, name");
 
   if (error) {
     console.error("Error fetching bookings:", error);
@@ -162,18 +135,18 @@ export async function backfillMissingOTPs() {
   }
 
   if (!bookings || bookings.length === 0) {
-    console.log(">>> No bookings found that need an OTP.");
-    return { success: true, message: "No bookings needed updates." };
+    console.log(">>> No bookings found.");
+    return { success: true, message: "No bookings found." };
   }
 
-  let logBuffer = "\n--- BACKFILL LOG (New Run) ---\n";
+  console.log(`>>> Found ${bookings.length} bookings. Generating new links...`);
+
+  let logBuffer = `\n--- BACKFILL RUN (${new Date().toLocaleTimeString()}) ---\n`;
   let updateCount = 0;
 
-  // 2. Loop through every booking found
   for (const booking of bookings) {
     const { code, hash } = generateOTPData();
 
-    // Update Supabase with the Hash
     const { error: updateError } = await supabase
       .from("bookings")
       .update({ otp_hash: hash })
@@ -184,17 +157,15 @@ export async function backfillMissingOTPs() {
       continue;
     }
 
-    // 3. Add to Log Buffer (INCLUDING THE ID/UUID)
-    logBuffer += `[BACKFILL] ID: ${booking.id} | Name: ${booking.name} | Email: ${booking.email} | OTP: ${code}\n`;
+    const magicLink = `http://localhost:3000/booking/edit_booking/${booking.id}?code=${code}`;
+    logBuffer += `[BACKFILL] Name: ${booking.name} | Link: ${magicLink}\n`;
     updateCount++;
   }
 
-  // 4. Write to temp_otps.txt
   if (updateCount > 0) {
     try {
-      const filePath = path.join(process.cwd(), "temp_otps.txt");
       await fs.appendFile(filePath, logBuffer);
-      console.log(`>>> Successfully backfilled ${updateCount} bookings. Check temp_otps.txt for IDs.`);
+      console.log(`>>> ✅ SUCCESSFULLY wrote ${updateCount} links to file.`);
     } catch (err) {
       console.error("Failed to write to file:", err);
     }

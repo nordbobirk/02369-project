@@ -1,6 +1,7 @@
-import { Button, Text } from "@react-email/components";
-import CustomerEmailLayout from "./CustomerEmailLayout";
-import { button, paragraph } from "../styles";
+import { Text } from "@react-email/components";
+import CustomerEmailLayout from "./components/CustomerEmailLayout";
+import { paragraph } from "../styles";
+import { ManageBookingLinkButton } from "./components/ManageBookingLinkButton";
 
 export default function BookingRequestReceived({
   manageBookingLink,
@@ -18,12 +19,7 @@ export default function BookingRequestReceived({
         eller de tatoveringer, du ønsker at få lavet hos mig, og bekræfte din
         booking. Når din booking bliver bekræftet, modtager du endnu en email.
       </Text>
-      <Text style={paragraph}>
-        yeet yada yeet yeet yada yoooooo wazzzzupppppp
-      </Text>
-      <Button style={button} href={manageBookingLink} target="_blank">
-        Ændr tid eller aflys din booking
-      </Button>
+      <ManageBookingLinkButton manageBookingLink={manageBookingLink} />
     </CustomerEmailLayout>
   );
 }
