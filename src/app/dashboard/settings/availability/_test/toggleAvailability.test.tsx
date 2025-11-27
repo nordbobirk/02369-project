@@ -1,4 +1,4 @@
-import { toggleAvailabilityLocal } from "./toggleAvailability";
+import { toggleAvailabilityLocal } from "../../../utils/toggleAvailability";
 
 describe("toggleAvailabilityLocal", () => {
   test("toggles from false to true", () => {
