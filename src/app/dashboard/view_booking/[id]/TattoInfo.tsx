@@ -14,7 +14,7 @@ export type Tattoo = {
     height?: number;
     placement?: string;
     tattoo_type?: string;
-    detail_level?: string;
+    detail_level?: string | null;
     tattoo_images?: { id: number; image_url: string }[];
     colored_option?: string;
     estimated_price?: number;
@@ -81,7 +81,7 @@ export function TattooInfo({ tattoos }: TattooInfoProps) {
                                 width={editedWidth}
                                 height={editedHeight}
                                 placement={editedPlacement}
-                                detailLevel={editedDetailLevel}
+                                detailLevel={tattoo.tattoo_type === "flash" ? null : editedDetailLevel}
                                 coloredOption={editedColoredOption}
                                 colorDescription={editedColorDescription}
                                 onSaveAction={handleSave}
