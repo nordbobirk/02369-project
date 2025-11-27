@@ -1,13 +1,9 @@
 import { submitBooking, submitFilePaths, BookingSubmissionInput } from "../submitBooking";
 import { initServerClient } from "../../../../lib/supabase/server";
 import { generateOTPData } from "../edit_booking/[id]/otp_utils";
-import path from "path";
-import fs from "fs/promises";
 
 jest.mock("../../../../lib/supabase/server");
 jest.mock("../edit_booking/[id]/otp_utils");
-jest.mock("fs/promises");
-jest.mock("path");
 
 const mockInitServerClient = initServerClient as jest.MockedFunction<typeof initServerClient>;
 const mockGenerateOTPData = generateOTPData as jest.MockedFunction<typeof generateOTPData>;
@@ -70,8 +66,6 @@ describe("submitBooking", () => {
       code: "123456",
       hash: "secure-hash",
     });
-    (path.join as jest.Mock).mockReturnValue("/mock/path/temp_otps.txt");
-    (fs.appendFile as jest.Mock).mockResolvedValue(undefined);
   });
 
   describe("submitBooking - Booking Creation", () => {

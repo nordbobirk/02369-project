@@ -4,8 +4,6 @@ import { initServerClient } from "@/lib/supabase/server";
 import { BookingFormData, TattooData } from "./_components/Form";
 import { Size } from "@/lib/types";
 import { generateOTPData } from "@/app/(public)/booking/edit_booking/[id]/otp_utils";
-import path from "path";
-import fs from "fs/promises";
 import { sendEmail } from "@/lib/email/send";
 import BookingRequestReceived from "@/components/email/customer/BookingRequestReceived";
 import { getEnvironmentUrl } from "@/lib/url";
@@ -40,7 +38,7 @@ export async function submitBooking(bookingFormData: BookingSubmissionInput) {
       is_FirstTattoo: bookingFormData.isFirstTattoo,
       otp_hash: secureOtpHash,
     })
-    .select("id");
+    .select("id, name, date_and_time");
   if (!bookingCreateResult.data) {
     throw new Error("Failed to create booking");
   }
@@ -68,12 +66,12 @@ export async function submitBooking(bookingFormData: BookingSubmissionInput) {
         upload_id: tattoo.uploadId,
       }))
     )
-    .select("id, upload_id, date_and_time, name");
+    .select("id, upload_id");
   if (!tattoosCreateResult.data) {
     throw new Error("Failed to create tattoos");
   }
 
-  const data = tattoosCreateResult.data;
+  const data = bookingCreateResult.data;
 
   if (!data || !Array.isArray(data) || data.length === 0) {
     throw new Error("failed to load booking");
@@ -92,7 +90,7 @@ export async function submitBooking(bookingFormData: BookingSubmissionInput) {
     subject: "Bookinganmodning indsendt",
     content: BookingRequestReceivedNotification({
       bookingRequestId: data[0].id,
-      bookingTime: getBookingTimeString(getBookingTime(data[0].date_and_time)),
+      bookingTime: getBookingTimeString(getBookingTime(data)),
       customerName: data[0].name,
     }),
   });
