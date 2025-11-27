@@ -1,14 +1,9 @@
 import { Text } from "@react-email/components";
 import CustomerEmailLayout from "./components/CustomerEmailLayout";
 import { anchor, paragraph } from "../styles";
-import { ManageBookingLinkButton } from "./components/ManageBookingLinkButton";
 import { getEnvironmentUrl } from "@/lib/url";
 
-export default function BookingRequestApproved({
-  manageBookingLink,
-}: {
-  manageBookingLink: string;
-}) {
+export default function BookingRequestApproved() {
   return (
     <CustomerEmailLayout title="Din bookinganmodning er blevet godkendt">
       <Text style={paragraph}>
@@ -21,9 +16,13 @@ export default function BookingRequestApproved({
         på min{" "}
         <a href={`${getEnvironmentUrl()}`} style={anchor}>
           hjemmeside
-        </a>.
+        </a>
+        .
       </Text>
-      <ManageBookingLinkButton manageBookingLink={manageBookingLink} />
+      <Text style={paragraph}>
+        Hvis du ønsker at ændre tidspunktet for din booking eller aflyse den,
+        kan du finde et link i bookinganmodningsbekræftelsen, der tidligere er blevet sendt til dig på mail.
+      </Text>
     </CustomerEmailLayout>
   );
 }

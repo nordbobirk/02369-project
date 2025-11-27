@@ -1,6 +1,11 @@
 'use server'
 
+import BookingCancelledByArtist from "@/components/email/customer/BookingCancelledByArtist";
+import BookingRequestApproved from "@/components/email/customer/BookingRequestApproved";
+import { sendEmail } from "@/lib/email/send";
+import { getCustomerEmail } from "@/lib/email/validate";
 import { initServerClient } from "@/lib/supabase/server";
+import { getBookingTime, getBookingTimeString } from "@/lib/validateBookingTime";
 import { revalidatePath } from 'next/cache'
 
 /**
@@ -114,12 +119,20 @@ export async function getPendingBookingById( params : string ) {
 export async function acceptPendingBooking(params: string | Array<string> | undefined) {
 
     const supabase = await initServerClient()
-    const { error } = await supabase
+    const { data, error } = await supabase
         .from('bookings')
         .update({ status: 'confirmed' })
         .eq('id', params)
+        .select("email")
 
     if (error) throw error
+
+    await sendEmail({
+        to: getCustomerEmail(data),
+        subject: "Din bookinganmodning er blevet godkendt",
+        content: BookingRequestApproved(),
+    })
+
     revalidatePath('/dashboard/view_booking' + params)
     return
 }
@@ -244,13 +257,22 @@ export async function updateTattooDetails(
 export async function cancelBooking(bookingId: string) {
     const supabase = await initServerClient()
 
-    const { error } = await supabase
+    const { data, error } = await supabase
         .from('bookings')
         .update({ status: 'artist_cancelled' })
         .eq('id', bookingId)
         .eq('status', 'confirmed') // Extra sikkerhed - kun confirmed bookings kan aflyses
+        .select("email, date_and_time")
 
     if (error) throw error
+
+    const email = getCustomerEmail(data)
+
+    await sendEmail({
+        to: email,
+        subject: "Din booking er blevet aflyst",
+        content: BookingCancelledByArtist({bookingTime: getBookingTimeString(getBookingTime(data))})
+    })
 
     revalidatePath(`/dashboard/view_booking/${bookingId}`)
     return
