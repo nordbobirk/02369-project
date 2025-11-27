@@ -1,4 +1,5 @@
 import { revalidatePath } from "next/cache";
+import { initServerClient } from "../../../../../lib/supabase/server";
 
 // Mock Supabase client - must be before importing actions
 jest.mock("../../../../../lib/supabase/server", () => ({
@@ -24,14 +25,9 @@ import {
 describe("Server Actions", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let mockSupabase: any;
-    let initServerClient: jest.Mock;
 
     beforeEach(async () => {
         jest.clearAllMocks();
-        
-        // Import the mocked module
-        const supabaseModule = await import("../../../../../lib/supabase/server");
-        initServerClient = supabaseModule.initServerClient as jest.Mock;
 
         // Create mock Supabase client with chainable methods
         mockSupabase = {
@@ -55,7 +51,7 @@ describe("Server Actions", () => {
         mockSupabase.order.mockReturnValue(mockSupabase);
         mockSupabase.single.mockResolvedValue({ data: null, error: null });
 
-        initServerClient.mockResolvedValue(mockSupabase);
+        (initServerClient as jest.Mock).mockResolvedValue(mockSupabase);
     });
 
     describe("getTattooImageSignedUrl", () => {
@@ -212,21 +208,17 @@ describe("Server Actions", () => {
 
     describe("acceptPendingBooking", () => {
         it("should update booking status to confirmed", async () => {
-            mockSupabase.eq.mockResolvedValue({
-                data: null,
-                error: null,
-            });
-
             await acceptPendingBooking("123");
 
             expect(mockSupabase.from).toHaveBeenCalledWith("bookings");
             expect(mockSupabase.update).toHaveBeenCalledWith({ status: "confirmed" });
             expect(mockSupabase.eq).toHaveBeenCalledWith("id", "123");
+            expect(mockSupabase.select).toHaveBeenCalledWith("email");
             expect(revalidatePath).toHaveBeenCalledWith("/dashboard/view_booking123");
         });
 
         it("should throw error if update fails", async () => {
-            mockSupabase.eq.mockResolvedValue({
+            mockSupabase.select.mockResolvedValue({
                 data: null,
                 error: { message: "Update error" },
             });
@@ -235,11 +227,6 @@ describe("Server Actions", () => {
         });
 
         it("should handle array of ids", async () => {
-            mockSupabase.eq.mockResolvedValue({
-                data: null,
-                error: null,
-            });
-
             await acceptPendingBooking(["123", "456"]);
 
             expect(mockSupabase.eq).toHaveBeenCalledWith("id", ["123", "456"]);
@@ -471,25 +458,18 @@ describe("Server Actions", () => {
         it("should update booking status to artist_cancelled", async () => {
             const bookingId = "123";
 
-            // Mock the final resolution of the chain
-            mockSupabase.eq.mockReturnValueOnce(mockSupabase);
-            mockSupabase.eq.mockResolvedValueOnce({
-                data: null,
-                error: null,
-            });
-
             await cancelBooking(bookingId);
 
             expect(mockSupabase.from).toHaveBeenCalledWith("bookings");
             expect(mockSupabase.update).toHaveBeenCalledWith({ status: "artist_cancelled" });
             expect(mockSupabase.eq).toHaveBeenCalledWith("id", bookingId);
             expect(mockSupabase.eq).toHaveBeenCalledWith("status", "confirmed");
+            expect(mockSupabase.select).toHaveBeenCalledWith("email, date_and_time");
             expect(revalidatePath).toHaveBeenCalledWith(`/dashboard/view_booking/${bookingId}`);
         });
 
         it("should throw error if update fails", async () => {
-            mockSupabase.eq.mockReturnValueOnce(mockSupabase);
-            mockSupabase.eq.mockResolvedValueOnce({
+            mockSupabase.select.mockResolvedValueOnce({
                 data: null,
                 error: { message: "Update error" },
             });
@@ -498,12 +478,6 @@ describe("Server Actions", () => {
         });
 
         it("should only cancel confirmed bookings", async () => {
-            mockSupabase.eq.mockReturnValueOnce(mockSupabase);
-            mockSupabase.eq.mockResolvedValueOnce({
-                data: null,
-                error: null,
-            });
-
             await cancelBooking("123");
 
             const eqCalls = mockSupabase.eq.mock.calls;
