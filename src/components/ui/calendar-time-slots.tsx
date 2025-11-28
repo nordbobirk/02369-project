@@ -428,8 +428,44 @@ export function Calendar20({
 
     const d = new Date(checkDate);
     d.setHours(0, 0, 0, 0);
-    return fullyBookedDates.has(d.toISOString());
+    
+    // Check if date is fully booked
+    if (fullyBookedDates.has(d.toISOString())) return true;
+    
+    // Check if there are any available time slots for this date with the desired duration
+    const slots = computeOptimalSlots(checkDate, desiredDuration || slotDuration);
+    return slots.length === 0;
   };
+
+  // Auto-select the first non-disabled date when availability or desired duration changes
+  React.useEffect(() => {
+    if (availability.length > 0 && fullyBookedDates) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      // Search forward up to 90 days for the first available non-disabled date
+      for (let i = 0; i < 90; i++) {
+        const checkDate = new Date(today);
+        checkDate.setDate(checkDate.getDate() + i);
+        
+        // Inline the disable check logic to avoid circular dependency
+        if (isTodayOrTomorrow(checkDate)) continue;
+        if (isPrevDates(checkDate)) continue;
+        if (!isDateAvailable(checkDate)) continue;
+        
+        const d = new Date(checkDate);
+        d.setHours(0, 0, 0, 0);
+        if (fullyBookedDates.has(d.toISOString())) continue;
+        
+        const slots = computeOptimalSlots(checkDate, desiredDuration || slotDuration);
+        if (slots.length === 0) continue;
+        
+        // Found a valid date
+        setDate(checkDate);
+        return;
+      }
+    }
+  }, [availability, fullyBookedDates, desiredDuration]);
 
   return (
     <Card className="gap-0 p-0">
