@@ -62,6 +62,7 @@ export function ContactInfo({
           required
           className="w-full px-4 py-3 border rounded-lg"
           placeholder="Telefonnummer"
+          maxLength={8}
         />
       </div>
       <div className="mt-6">
