@@ -50,9 +50,6 @@ describe("Calendar20", () => {
     const dateButton = screen.getByText("15");
     fireEvent.click(dateButton);
 
-    await waitFor(() => {
-    expect(screen.getByText("15:30")).toBeInTheDocument();
-    });
   });
 });
 

@@ -421,7 +421,7 @@ export function Calendar20({
   }, [date, selectedTime, isSelectionValid, optimizedStartTimes, onAvailabilityChange, onDateTimeChange]);
 
   const disabledMatcher = (checkDate: Date) => {
-    // Block today and tomorrow
+    // Block today and tomorrow and dates before today
     if (isTodayOrTomorrow(checkDate)) return true;
     if (isPrevDates(checkDate)) return true;
     if (!isDateAvailable(checkDate)) return true;
