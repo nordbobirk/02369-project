@@ -275,7 +275,7 @@ export default function BookingForm() {
     }
 
     setError("");
-
+    
     const updatedTattoos = formData.tattoos.map((tattoo) => {
       const updatedDuration = getTattooDuration(tattoo);
       const updatedPrice = getTattooPrice(tattoo);
@@ -290,8 +290,9 @@ export default function BookingForm() {
     let submissionData = {
       ...formData,
       tattoos: updatedTattoos,
+      customerPhone: `+45${formData.customerPhone}`
     };
-
+    
     setIsSubmissionLoading(true);
     const submissionResult = await submitBooking({
       ...submissionData,

@@ -14,7 +14,6 @@ export function ContactInfo({
   return (
     <div className="rounded-xl p-8 border-2 border-black">
       <h2 className="text-2xl font-bold mb-6">4. Dine kontaktoplysninger</h2>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label htmlFor="name" className="block font-medium mb-2">
@@ -31,7 +30,6 @@ export function ContactInfo({
             placeholder="Dit fulde navn"
           />
         </div>
-
         <div>
           <label htmlFor="email" className="block font-medium mb-2">
             Din emailadresse<span className="text-red-500">*</span>
@@ -48,21 +46,27 @@ export function ContactInfo({
           />
         </div>
       </div>
-
       <div className="mt-6">
         <label htmlFor="phone" className="block font-medium mb-2">
           Telefonnummer<span className="text-red-500">*</span>
         </label>
-        <input
-          type="tel"
-          id="phone"
-          name="customerPhone"
-          value={formData.customerPhone}
-          onChange={handleInputChange}
-          required
-          className="w-full px-4 py-3 border rounded-lg"
-          placeholder="Telefonnummer"
-        />
+        <div className="relative">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+            +45
+          </span>
+          <input
+            type="tel"
+            id="phone"
+            name="customerPhone"
+            value={formData.customerPhone}
+            onChange={handleInputChange}
+            required
+            className="w-full pl-14 pr-4 py-3 border rounded-lg"
+            
+            maxLength={8}
+            pattern="[0-9]{8}"
+          />
+        </div>
       </div>
       <div className="mt-6">
         <label className="flex items-center gap-3 cursor-pointer">

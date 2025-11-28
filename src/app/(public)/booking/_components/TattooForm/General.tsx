@@ -128,12 +128,14 @@ export function General({
 
         {tattooData.colorOption === "colored" && (
           <div className="mt-4">
-            <label
-              htmlFor="colorDescription"
-              className="block font-medium mb-2"
-            >
-              Beskrivelse af farver*
-            </label>
+            <div className="flex justify-between items-center mb-2">
+              <label htmlFor="colorDescription" className="block font-medium">
+                Beskrivelse af farver*
+              </label>
+              <span className="text-sm text-slate-500">
+                {tattooData.colorDescription?.length || 0}/550
+              </span>
+            </div>
             <textarea
               id="colorDescription"
               name="colorDescription"
@@ -143,6 +145,7 @@ export function General({
               required
               className="w-full px-4 py-3 border rounded-lg"
               placeholder="Beskriv de farver, du gerne vil have, og hvor de skal være..."
+              maxLength={550}
             ></textarea>
           </div>
         )}

@@ -105,9 +105,14 @@ export function TypeDetails({
           </div>
 
           <div>
-            <label htmlFor="flashComments" className="block font-medium mb-2">
-              Eventuelle kommentarer (valgfri)
-            </label>
+            <div className="flex justify-between items-center mb-2">
+              <label htmlFor="flashComments" className="block font-medium">
+                Eventuelle kommentarer (valgfri)
+              </label>
+              <span className="text-sm text-slate-500">
+                {tattooData.flashComments?.length || 0}/550
+              </span>
+            </div>
             <textarea
               id="flashComments"
               name="flashComments"
@@ -116,18 +121,21 @@ export function TypeDetails({
               rows={3}
               className="w-full px-4 py-3 border rounded-lg"
               placeholder="Eventuelle små ændringer til flashet..."
+              maxLength={550}
             ></textarea>
           </div>
         </div>
       ) : (
         <div className="space-y-6">
           <div>
-            <label
-              htmlFor="customDescription"
-              className="block font-medium mb-2"
-            >
-              Beskriv din ide*
-            </label>
+           <div className="flex justify-between items-center mb-2">
+              <label htmlFor="customDescription" className="block font-medium">
+                Besriv din ide*
+              </label>
+              <span className="text-sm text-slate-500">
+                {tattooData.customDescription?.length || 0}/550
+              </span>
+            </div>
             <textarea
               id="customDescription"
               name="customDescription"
@@ -137,6 +145,7 @@ export function TypeDetails({
               required
               className="w-full px-4 py-3 rounded-lg border"
               placeholder="Beskriv venligst din ide i detaljer..."
+              maxLength={550}
             ></textarea>
           </div>
 
