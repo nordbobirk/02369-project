@@ -164,6 +164,16 @@ export function Calendar20({
     return d.getTime() === today.getTime() || d.getTime() === tomorrow.getTime();
   };
 
+  const isPrevDates = (checkDate: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const d = new Date(checkDate);
+    d.setHours(0, 0, 0, 0);
+
+    return d.getTime() < today.getTime() 
+  };
+
   const isDateAvailable = (checkDate: Date) => {
     return availableDates.some(
       (availableDate) =>
@@ -177,6 +187,7 @@ export function Calendar20({
     if (!date) return false;
     if (!isDateAvailable(date)) return false;
     if (isTodayOrTomorrow(date)) return false;
+    if (isPrevDates(date)) return false;
 
     const d = new Date(date);
     d.setHours(0, 0, 0, 0);
@@ -412,7 +423,7 @@ export function Calendar20({
   const disabledMatcher = (checkDate: Date) => {
     // Block today and tomorrow
     if (isTodayOrTomorrow(checkDate)) return true;
-
+    if (isPrevDates(checkDate)) return true;
     if (!isDateAvailable(checkDate)) return true;
 
     const d = new Date(checkDate);
