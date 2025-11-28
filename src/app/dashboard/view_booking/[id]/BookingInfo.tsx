@@ -122,7 +122,7 @@ export default function BookingInfo({ booking }: BookingInfoProps) {
                     </div>
                     <div>
                         <span className="font-medium">Oprettet:</span>{" "}
-                        {formatDateTime(new Date(booking.created_at).toLocaleString())}
+                        {getBookingTimeString(new Date(booking.created_at))}
                     </div>
                     <div>
                         <span className="font-medium">Interne Notes:</span>
@@ -141,9 +141,9 @@ export default function BookingInfo({ booking }: BookingInfoProps) {
                     </div>
                     <div>
                         <span className="font-medium">Ændret:</span>{" "}
-                        {formatDateTime(booking.edited_date_and_time
-                            ? new Date(booking.edited_date_and_time).toLocaleString()
-                            : "—")}
+                        {booking.edited_date_and_time
+                            ? getBookingTimeString(new Date(booking.edited_date_and_time))
+                            : "—"}
                     </div>
                 </div>
                 {(booking.status === "pending" || booking.status === "edited") && (
