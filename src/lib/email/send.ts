@@ -80,10 +80,9 @@ export async function sendEmail(email: SendEmailOptions) {
         return;
       }
 
+      // display email preview in server console
       console.log("email sent: %s", info.messageId);
-      if (process.env.NODE_ENV === "development") {
-        console.log("email preview url: %s", getTestMessageUrl(info));
-      }
+      console.log("email preview url: %s", getTestMessageUrl(info));
     }
   );
 }

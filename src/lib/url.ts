@@ -1,5 +1,4 @@
 export function getEnvironmentUrl() {
-  const env = process.env.NODE_ENV;
-  if (env === "production") return "https://bebsisbooking.dk";
+  // in an app actually deployed, this would return the prod domain in prod, but that's not important for this project ¯\_( ͡° ͜ʖ ͡°)_/¯
   return "http://localhost:3000";
 }
