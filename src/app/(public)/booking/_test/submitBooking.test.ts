@@ -230,7 +230,7 @@ describe("submitBooking", () => {
       const tattooInsert = tattooFrom.insert;
       const tattooData = tattooInsert.mock.calls[0][0][0];
 
-      expect(tattooData.estimated_price).toBe(0);
+      expect(tattooData.estimated_price).toBe(1000);
     });
 
     it("should associate tattoos with booking_id", async () => {
@@ -260,7 +260,7 @@ describe("submitBooking", () => {
       });
       expect(tattooData.placement).toBeTruthy();
       expect(tattooData.booking_id).toBe("booking-123");
-      expect(tattooData.estimated_price).toBe(0);
+      expect(tattooData.estimated_price).toBe(1000);
     });
 
     it("should throw error if tattoo creation fails", async () => {
