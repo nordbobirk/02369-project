@@ -23,10 +23,18 @@ import { initBrowserClient } from "@/lib/supabase/client";
 import { BOOKING_IMAGES_BUCKET_NAME } from "@/lib/storage";
 import { DatePicker } from "./DatePicker";
 import { getTattooDuration } from "./TattooDurationEstimator";
+import { getTattooPrice } from "./TattooPriceEstimator";
+import { useRouter } from "next/navigation";
 
 // Placeholder functions for price and time estimates
 const estimatePrice = (formData: BookingFormData): number => {
-  return 1000;
+  let totalPrice = 0;
+
+  for (const tattoo of formData.tattoos) {
+    totalPrice += getTattooPrice(tattoo);
+  }
+  // Price estime + 500kr for reservation fee
+  return totalPrice + 500;
 };
 
 export const estimateTime = (formData: BookingFormData): number => {
@@ -67,6 +75,7 @@ export type TattooData = {
   colorDescription?: string;
   title: string;
   estimated_duration: number;
+  estimated_price: number;
 };
 
 /**
@@ -112,6 +121,9 @@ export default function BookingForm() {
   const [error, setError] = useState<string | null>(null);
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
   const [isSelectionAvailable, setIsSelectionAvailable] = useState(false);
+
+  // For navigating to confirmation page
+  const router = useRouter();
 
   useEffect(() => {
     if (selectedTattooIndex !== null && !isFirstView) {
@@ -263,12 +275,14 @@ export default function BookingForm() {
     }
 
     setError("");
-
+    
     const updatedTattoos = formData.tattoos.map((tattoo) => {
       const updatedDuration = getTattooDuration(tattoo);
+      const updatedPrice = getTattooPrice(tattoo);
       return {
         ...tattoo,
         estimated_duration: updatedDuration,
+        estimated_price: updatedPrice,
         uploadId: crypto.randomUUID(),
       };
     });
@@ -276,8 +290,9 @@ export default function BookingForm() {
     let submissionData = {
       ...formData,
       tattoos: updatedTattoos,
+      customerPhone: `+45${formData.customerPhone}`
     };
-
+    
     setIsSubmissionLoading(true);
     const submissionResult = await submitBooking({
       ...submissionData,
@@ -292,6 +307,7 @@ export default function BookingForm() {
         detailLevel: tattoo.detailLevel,
         flashComments: tattoo.flashComments,
         estimated_duration: tattoo.estimated_duration,
+        estimated_price: tattoo.estimated_price,
       })),
     });
 
@@ -324,6 +340,7 @@ export default function BookingForm() {
       submitFilePaths(paths, entry.id);
     }
 
+    router.push("/booking/confirmation");
     setIsSubmissionLoading(false);
   };
 

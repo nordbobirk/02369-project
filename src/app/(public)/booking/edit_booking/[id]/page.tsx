@@ -1,26 +1,47 @@
-import { getPendingBookingById } from '@/app/(public)/booking/edit_booking/[id]/actions';
-import BookingInfo from "@/app/(public)/booking/edit_booking/[id]/BookingInfo";
-import BookingGate from "./BookingGate"; // The client component we made
+import { getPendingBookingById } from './actions';
+import { verifyOTP } from './otp_utils';
+import BookingInfo from "./BookingInfo";
+import BookingGate from "./BookingGate";
 
-export default async function ViewBookingsPage({ params }: { params: { id: string } }) {
-    // 1. Get the ID from the URL (e.g. "466058")
-    // In Next.js 15+, params must be awaited. In 14, it's optional but good practice.
-    const { id } = await params; 
-    
-    // 2. Pass that URL ID to your database function
+export default async function ViewBookingsPage({ 
+    params, 
+    searchParams 
+}: { 
+    params: { id: string },
+    searchParams: { code?: string } 
+}) {
+    const { id } = await params;
+    const { code } = await searchParams;
+
     const bookings = await getPendingBookingById(id);
 
-    // 3. If database returns nothing
     if (!bookings || bookings.length === 0) {
-        return <div>Ingen booking fundet med id: {id}</div>;
+        return (
+            <div className="flex flex-col items-center justify-center h-screen gap-4">
+                <h1 className="text-2xl font-bold">Ingen bookinger fundet</h1>
+                <p>Der er ingen booking med id: {id}</p>
+            </div>
+        );
     }
 
-    // 4. Pass the ID to the Gate (for verification) 
-    //    and the Data to the Info component (hidden until verified)
+    const booking = bookings[0];
+
+    // If the URL has a code, and it matches the hash, we skip the gate!
+    let isLinkValid = false;
+    if (code && booking.otp_hash) {
+        isLinkValid = verifyOTP(code, booking.otp_hash);
+    }
+
+    // 4. If link is valid, show content IMMEDIATELY (No Lock Screen)
+    if (isLinkValid) {
+        return <BookingInfo booking={booking} />;
+    }
+
+    // 5. Fallback: Show Lock Screen if link is missing or invalid
+    // (This allows them to type the code manually if the link breaks)
     return (
-        <BookingGate bookingId={id}>
-             {/* This component is only rendered AFTER the gate is unlocked */}
-            <BookingInfo booking={bookings[0]} />
+        <BookingGate bookingId={booking.id.toString()}>
+            <BookingInfo booking={booking} />
         </BookingGate>
     );
 }

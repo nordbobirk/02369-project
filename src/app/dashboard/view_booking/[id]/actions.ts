@@ -1,36 +1,12 @@
 'use server'
 
+import BookingCancelledByArtist from "@/components/email/customer/BookingCancelledByArtist";
+import BookingRequestApproved from "@/components/email/customer/BookingRequestApproved";
+import { sendEmail } from "@/lib/email/send";
+import { getCustomerEmail } from "@/lib/email/validate";
 import { initServerClient } from "@/lib/supabase/server";
+import { getBookingTime, getBookingTimeString } from "@/lib/validateBookingTime";
 import { revalidatePath } from 'next/cache'
-
-type Tattoo_images = {
-    id: string,
-    tattoo_id: string,
-    image_url: string
-}
-
-type Tattoo = {
-    id: string,
-    notes: string,
-    booking_id: string,
-    estimated_price: number,
-    estimated_duration: number,
-    images: Tattoo_images[],
-}
-
-type Booking = {
-    id: string,
-    email: string,
-    phone: string,
-    name: string,
-    date_and_time: string,
-    created_at: string,
-    status: string,
-    is_first_tattoo: boolean,
-    internal_notes: string,
-    edited_time_and_date: string,
-    tattoos: Tattoo[],
-}
 
 /**
  * Generates a signed URL for a private tattoo image stored in Supabase Storage.
@@ -93,7 +69,6 @@ export async function getTattooImageSignedUrl(imageUrl: string) {
     return data.signedUrl;
 }
 
-
 /**
  * Fetches a booking by its id. The booking includes all its tattoos and their images.
  *
@@ -135,8 +110,6 @@ export async function getPendingBookingById( params : string ) {
     return data
 }
 
-
-
 /**
  * Accepts a pending booking with the given id.
  *
@@ -146,12 +119,20 @@ export async function getPendingBookingById( params : string ) {
 export async function acceptPendingBooking(params: string | Array<string> | undefined) {
 
     const supabase = await initServerClient()
-    const { error } = await supabase
+    const { data, error } = await supabase
         .from('bookings')
         .update({ status: 'confirmed' })
         .eq('id', params)
+        .select("email")
 
     if (error) throw error
+
+    await sendEmail({
+        to: getCustomerEmail(data),
+        subject: "Din bookinganmodning er blevet godkendt",
+        content: BookingRequestApproved(),
+    })
+
     revalidatePath('/dashboard/view_booking' + params)
     return
 }
@@ -225,7 +206,7 @@ export async function updateTattooDetails(
     width: number | undefined,
     height: number | undefined,
     placement: string,
-    detailLevel: string,
+    detailLevel: string | null,
     coloredOption: string,
     colorDescription: string
 ) {
@@ -276,13 +257,22 @@ export async function updateTattooDetails(
 export async function cancelBooking(bookingId: string) {
     const supabase = await initServerClient()
 
-    const { error } = await supabase
+    const { data, error } = await supabase
         .from('bookings')
         .update({ status: 'artist_cancelled' })
         .eq('id', bookingId)
         .eq('status', 'confirmed') // Extra sikkerhed - kun confirmed bookings kan aflyses
+        .select("email, date_and_time")
 
     if (error) throw error
+
+    const email = getCustomerEmail(data)
+
+    await sendEmail({
+        to: email,
+        subject: "Din booking er blevet aflyst",
+        content: BookingCancelledByArtist({bookingTime: getBookingTimeString(getBookingTime(data))})
+    })
 
     revalidatePath(`/dashboard/view_booking/${bookingId}`)
     return

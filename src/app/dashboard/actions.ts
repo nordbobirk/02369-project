@@ -87,7 +87,19 @@ export async function getPendingBookings() {
             *,
             tattoos(*)
         `)
-    .in("status", ["pending", "edited"])
+    .in("status", ["pending"])
+  return bookings as Booking[];
+}
+
+export async function getValidBookings() {
+  const supabase = await initServerClient();
+  const { data: bookings, error } = await supabase
+    .from("bookings")
+    .select(`
+            *,
+            tattoos(*)
+        `)
+    .in("status", ["pending", "edited", "confirmed"])
   return bookings as Booking[];
 }
 

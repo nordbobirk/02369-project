@@ -10,7 +10,7 @@ export async function deleteAll() {
     .neq("id", 0); // deletes ALL rows safely
 
   if (error) {
-    console.error("❌ Error deleting all bookings:", error);
+    console.error("Error deleting all bookings:", error);
     throw error;
   }
 
@@ -27,7 +27,7 @@ export async function getAllBookings() {
     .eq("is_open", true);
 
   if (availabilityError) {
-    console.error("❌ Error fetching availability:", availabilityError);
+    console.error("Error fetching availability:", availabilityError);
     return [];
   }
 
@@ -41,7 +41,7 @@ export async function getAllBookings() {
     .in("date_and_time", openDates);
 
   if (error) {
-    console.error("❌ Supabase error:", error);
+    console.error("Supabase error:", error);
     return [];
   }
 

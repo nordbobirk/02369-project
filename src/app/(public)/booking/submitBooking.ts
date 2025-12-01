@@ -2,12 +2,17 @@
 
 import { initServerClient } from "@/lib/supabase/server";
 import { BookingFormData, TattooData } from "./_components/Form";
-import { inspect } from "util";
 import { Size } from "@/lib/types";
-import { randomInt, scryptSync, randomBytes, timingSafeEqual } from "crypto";
-import path from "path";
-import fs from "fs/promises";
-
+import { generateOTPData } from "@/app/(public)/booking/edit_booking/[id]/otp_utils";
+import { sendEmail } from "@/lib/email/send";
+import BookingRequestReceived from "@/components/email/customer/BookingRequestReceived";
+import { getEnvironmentUrl } from "@/lib/url";
+import BookingRequestReceivedNotification from "@/components/email/artist/BookingRequestReceived";
+import { getNotificationEmail } from "@/lib/email/getNotificationEmail";
+import {
+  getBookingTime,
+  getBookingTimeString,
+} from "@/lib/validateBookingTime";
 
 export type BookingSubmissionInput = Omit<BookingFormData, "tattoos"> & {
   tattoos: (Omit<
@@ -17,29 +22,6 @@ export type BookingSubmissionInput = Omit<BookingFormData, "tattoos"> & {
     uploadId: string;
   })[];
 };
-
-// --- OTP HELPER FUNCTIONS ---
-
-/**
- * Generates a 6-digit code and a salted hash.
- * Returns:
- * - code: Send this to the user (Email/SMS/UI)
- * - hash: Store this in the database
- */
-function generateOTPData() {
-  // 1. Generate a secure 6-digit integer (100000 to 999999)
-  const code = randomInt(100000, 999999).toString();
-
-  // 2. Create a random salt (16 bytes)
-  const salt = randomBytes(16).toString("hex");
-
-  // 3. Hash the code with the salt using scrypt (secure against brute-force)
-  // 64 is the key length
-  const hashBuffer = scryptSync(code, salt, 64) as Buffer;
-  const hash = `${salt}:${hashBuffer.toString("hex")}`; // Store salt:hash
-
-  return { code, hash };
-}
 
 export async function submitBooking(bookingFormData: BookingSubmissionInput) {
   const supabase = await initServerClient();
@@ -54,30 +36,14 @@ export async function submitBooking(bookingFormData: BookingSubmissionInput) {
       name: bookingFormData.customerName,
       date_and_time: bookingFormData.dateTime,
       is_FirstTattoo: bookingFormData.isFirstTattoo,
-      otp_hash: secureOtpHash
+      otp_hash: secureOtpHash,
     })
-    .select("id");
+    .select("id, name, date_and_time");
   if (!bookingCreateResult.data) {
     throw new Error("Failed to create booking");
   }
 
   const bookingId = bookingCreateResult.data[0].id;
-
-  // ---------------------------------------------------------
-  // TEMP LOGGING (Now with UUID!)
-  // ---------------------------------------------------------
-  if (process.env.NODE_ENV === "development") {
-    try {
-      const filePath = path.join(process.cwd(), "temp_otps.txt");
-      // Added ID to the log string
-      const logEntry = `[NEW] ID: ${bookingId} | Name: ${bookingFormData.customerName} | Email: ${bookingFormData.customerEmail} | OTP: ${rawOtpCode}\n`;
-      await fs.appendFile(filePath, logEntry);
-      console.log(">>> Logged new booking to temp_otps.txt");
-    } catch (err) {
-      console.error("Log error:", err);
-    }
-  }
-  // ---------------------------------------------------------
 
   const tattoosCreateResult = await supabase
     .from("tattoos")
@@ -96,7 +62,7 @@ export async function submitBooking(bookingFormData: BookingSubmissionInput) {
         color_description: tattoo.colorDescription,
         detail_level: tattoo.detailLevel,
         estimated_duration: tattoo.estimated_duration,
-        estimated_price: 0,
+        estimated_price: tattoo.estimated_price,
         upload_id: tattoo.uploadId,
       }))
     )
@@ -104,6 +70,31 @@ export async function submitBooking(bookingFormData: BookingSubmissionInput) {
   if (!tattoosCreateResult.data) {
     throw new Error("Failed to create tattoos");
   }
+
+  const data = bookingCreateResult.data;
+
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    throw new Error("failed to load booking");
+  }
+
+  await sendEmail({
+    to: bookingFormData.customerEmail,
+    subject: "Din bookinganmodning er modtaget",
+    content: BookingRequestReceived({
+      manageBookingLink: `${getEnvironmentUrl()}/booking/edit_booking/${bookingId}?code=${rawOtpCode}`,
+    }),
+  });
+
+  await sendEmail({
+    to: await getNotificationEmail(),
+    subject: "Bookinganmodning indsendt",
+    content: BookingRequestReceivedNotification({
+      bookingRequestId: data[0].id,
+      bookingTime: getBookingTimeString(getBookingTime(data)),
+      customerName: data[0].name,
+    }),
+  });
+
   return tattoosCreateResult.data as { id: number; upload_id: string }[];
 }
 

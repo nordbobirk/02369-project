@@ -164,6 +164,16 @@ export function Calendar20({
     return d.getTime() === today.getTime() || d.getTime() === tomorrow.getTime();
   };
 
+  const isPrevDates = (checkDate: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const d = new Date(checkDate);
+    d.setHours(0, 0, 0, 0);
+
+    return d.getTime() < today.getTime() 
+  };
+
   const isDateAvailable = (checkDate: Date) => {
     return availableDates.some(
       (availableDate) =>
@@ -177,6 +187,7 @@ export function Calendar20({
     if (!date) return false;
     if (!isDateAvailable(date)) return false;
     if (isTodayOrTomorrow(date)) return false;
+    if (isPrevDates(date)) return false;
 
     const d = new Date(date);
     d.setHours(0, 0, 0, 0);
@@ -410,15 +421,51 @@ export function Calendar20({
   }, [date, selectedTime, isSelectionValid, optimizedStartTimes, onAvailabilityChange, onDateTimeChange]);
 
   const disabledMatcher = (checkDate: Date) => {
-    // Block today and tomorrow
+    // Block today and tomorrow and dates before today
     if (isTodayOrTomorrow(checkDate)) return true;
-
+    if (isPrevDates(checkDate)) return true;
     if (!isDateAvailable(checkDate)) return true;
 
     const d = new Date(checkDate);
     d.setHours(0, 0, 0, 0);
-    return fullyBookedDates.has(d.toISOString());
+    
+    // Check if date is fully booked
+    if (fullyBookedDates.has(d.toISOString())) return true;
+    
+    // Check if there are any available time slots for this date with the desired duration
+    const slots = computeOptimalSlots(checkDate, desiredDuration || slotDuration);
+    return slots.length === 0;
   };
+
+  // Auto-select the first non-disabled date when availability or desired duration changes
+  React.useEffect(() => {
+    if (availability.length > 0 && fullyBookedDates) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      // Search forward up to 90 days for the first available non-disabled date
+      for (let i = 0; i < 90; i++) {
+        const checkDate = new Date(today);
+        checkDate.setDate(checkDate.getDate() + i);
+        
+        // Inline the disable check logic to avoid circular dependency
+        if (isTodayOrTomorrow(checkDate)) continue;
+        if (isPrevDates(checkDate)) continue;
+        if (!isDateAvailable(checkDate)) continue;
+        
+        const d = new Date(checkDate);
+        d.setHours(0, 0, 0, 0);
+        if (fullyBookedDates.has(d.toISOString())) continue;
+        
+        const slots = computeOptimalSlots(checkDate, desiredDuration || slotDuration);
+        if (slots.length === 0) continue;
+        
+        // Found a valid date
+        setDate(checkDate);
+        return;
+      }
+    }
+  }, [availability, fullyBookedDates, desiredDuration]);
 
   return (
     <Card className="gap-0 p-0">

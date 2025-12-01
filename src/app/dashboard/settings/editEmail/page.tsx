@@ -10,6 +10,7 @@ export default function EditEmail() {
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saved, setSaved] = useState(false);
+  const [emailError, setEmailError] = useState("");
 
   useEffect(() => {
     async function fetchEmail() {
@@ -22,28 +23,40 @@ export default function EditEmail() {
         .single();
 
       if (error) {
-        console.error("❌ Error fetching email:", error);
+        console.error("Error fetching email:", error);
       } else if (data) {
-        console.log("📬 Fetched email:", data);
         setRecordId(data.id);
         setEmail(data.email);
         setNewEmail(data.email);
       }
       setLoading(false);
     }
+
     fetchEmail();
   }, []);
 
+  function isValidEmail(email: string): boolean {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email.trim());
+  }
+
   async function handleSave() {
-    if (!recordId) {
-      console.error("❌ No record ID found, cannot update.");
+    setSaved(false);
+
+    // Validate first
+    if (!isValidEmail(newEmail)) {
+      setEmailError("Ugyldig e-mailadresse");
       return;
     }
 
-    setSaved(false);
-    const supabase = initBrowserClient();
+    setEmailError("");
 
-    console.log("🆕 Updating email to:", newEmail, "for ID:", recordId);
+    if (!recordId) {
+      console.error("No record ID found.");
+      return;
+    }
+
+    const supabase = initBrowserClient();
 
     const { data, error } = await supabase
       .from("notifications")
@@ -52,23 +65,23 @@ export default function EditEmail() {
       .select()
       .maybeSingle();
 
-    console.log("🔄 Supabase result:", { data, error });
-
     if (error) {
-      console.error("❌ Error updating:", error);
-    } else {
-      setEmail(newEmail);
-      setEditing(false);
-      setSaved(true);
-      console.log("✅ Email updated successfully!");
+      console.error("Error updating:", error);
+      return;
     }
+
+    setEmail(newEmail);
+    setEditing(false);
+    setSaved(true);
   }
 
   if (loading) return <p className="text-gray-500">Indlæser e-mail...</p>;
 
   return (
     <div className="p-8 flex flex-col items-center w-full max-w-lg mx-auto">
-      <h2 className="text-2xl font-semibold mb-8 text-center">Opdater din e-mail for notifikationer</h2>
+      <h2 className="text-2xl font-semibold mb-8 text-center">
+        Opdater din e-mail for notifikationer
+      </h2>
 
       <div className="flex items-center justify-between w-full mb-6">
         <span className="text-gray-500 font-medium">Din nuværende e-mail</span>
@@ -89,12 +102,19 @@ export default function EditEmail() {
           <input
             type="email"
             value={newEmail}
-            onChange={(e) => setNewEmail(e.target.value)}
+            onChange={(e) => {
+              setNewEmail(e.target.value);
+              setEmailError(""); // remove error while typing
+            }}
             placeholder="Indtast ny e-mail"
-            className="border border-gray-300 rounded-xl px-4 py-3 w-full mb-4 focus:outline-none focus:ring-2 focus:ring-rose-300 shadow-sm"
+            className="border border-gray-300 rounded-xl px-4 py-3 w-full mb-1 focus:outline-none focus:ring-2 focus:ring-rose-300 shadow-sm"
           />
 
-          <div className="flex gap-3">
+          {emailError && (
+            <p className="text-black-500 text-sm mb-3">{emailError}</p>
+          )}
+
+          <div className="flex gap-3 mt-2">
             <Button
               onClick={handleSave}
               className="bg-rose-300 hover:bg-rose-400 font-semibold rounded-xl px-5"
@@ -106,6 +126,7 @@ export default function EditEmail() {
               onClick={() => {
                 setNewEmail(email);
                 setEditing(false);
+                setEmailError("");
               }}
               className="bg-gray-100 text-gray-700 hover:bg-gray-200 font-semibold rounded-xl px-5"
             >
@@ -115,7 +136,9 @@ export default function EditEmail() {
         </div>
       )}
 
-      {saved && <p className="text-black-300 mt-5 text-sm">Din email er nu opdateret!</p>}
+      {saved && (
+        <p className="text-gray-700 mt-5 text-sm">Din email er nu opdateret!</p>
+      )}
     </div>
   );
 }
