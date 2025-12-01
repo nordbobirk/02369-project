@@ -13,13 +13,13 @@ describe("Calendar20", () => {
   beforeEach(() => {
     // Setup mocked return values for each function
     const mockAvailability = [
-      { date: new Date('2025-11-15T00:00:00Z'), is_open: true },
-      { date: new Date('2025-11-16T00:00:00Z'), is_open: true },
+      { date: new Date('2025-12-15T00:00:00Z'), is_open: true },
+      { date: new Date('2025-12-16T00:00:00Z'), is_open: true },
     ];
     
     const mockBookings = [
-      { id: "1", date_and_time: new Date('2025-11-15T10:00:00Z'), total_duration: 60 },
-      { id: "2", date_and_time: new Date('2025-11-15T11:30:00Z'), total_duration: 60 },
+      { id: "1", date_and_time: new Date('2025-12-15T10:00:00Z'), total_duration: 60 },
+      { id: "2", date_and_time: new Date('2025-12-15T11:30:00Z'), total_duration: 60 },
       // { id: "3", date_and_time: new Date('2026-11-15T14:30:00Z'), total_duration: 60 },
     ];
 

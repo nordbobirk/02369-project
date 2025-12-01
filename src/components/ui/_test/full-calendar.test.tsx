@@ -25,10 +25,10 @@ describe("Full calendar", () => {
   
     
     const mockEvents: CalendarEvent[] = [
-      { id: "1", start: new Date('2025-11-15T10:00:00Z'), 
-        end: new Date('2025-11-15T11:00:00Z'), title: "John Test", color: "green" },
-      { id: "2", start: new Date('2025-11-15T11:30:00Z'), 
-        end: new Date('2025-11-15T12:30:00Z'), title: "Jane Test", color: "green" },
+      { id: "1", start: new Date('2025-12-15T10:00:00Z'), 
+        end: new Date('2025-12-15T11:00:00Z'), title: "John Test", color: "green" },
+      { id: "2", start: new Date('2025-12-15T11:30:00Z'), 
+        end: new Date('2025-12-15T12:30:00Z'), title: "Jane Test", color: "green" },
     ];
 
     
@@ -92,7 +92,7 @@ describe("Full calendar", () => {
         fireEvent.click(yearViewButton)
         fireEvent.click(nextTrigger)
         await waitFor(() =>{
-        expect(screen.getByText("november 2026")).toBeInTheDocument()
+        expect(screen.getByText("december 2026")).toBeInTheDocument()
         })
         
    
