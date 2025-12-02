@@ -7,7 +7,7 @@
 5. Setup up the environment (see below).
 6. Build the project with `npm run build`.
 7. Start the server locally `npm run start`.
-8. Visit `localhost:3000` to view the landing for customers.
+8. Visit `localhost:3000` to view the landing page for customers.
 9. Visit `localhost:3000/dashboard` to view the administrator dashboard.
 
 #### Setting up the environment
